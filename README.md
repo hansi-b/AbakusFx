@@ -1,0 +1,2 @@
+# AbakusFx
+Gehaltsberechnung nach ÖTV
