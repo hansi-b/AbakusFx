@@ -1,9 +1,7 @@
 package abakus
 
-
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 
 class ÖtvCsvParser {
 
@@ -13,28 +11,30 @@ class ÖtvCsvParser {
     ÖtvCsvParser() {
     }
 
-    File getResourceFile(String fileName) {
-        def res = getClass().getClassLoader().getResource(fileName)
-        new File(URLDecoder.decode(res.getFile(), utf8))
+    Tarif parseTarif() {
+        new Tarif(gehälter: parseGehälter())
     }
 
-    Tarif parseTarif() {
-        def tarifMap = Files.lines(getResourceFile(ötvCsv).toPath()).map(String::trim).filter((String l) -> !l.isEmpty() && !l.startsWith("#"))
-                .collect {
-                    def parts = it.split('\t')
-                    if (parts.size() != 9)
-                        throw new IllegalStateException("Expected 9 parts, but got only ${parts.size()} in '$parts'")
-                    def jahr = Integer.valueOf(parts[0])
-                    def gruppe = Gruppe.valueOf(parts[1])
+    private def parseGehälter() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(ötvCsv)))) {
+            return br.lines().map(String::trim).filter((String l) -> !l.isEmpty() && !l.startsWith("#"))
+                    .collect { parseLine(it) }.collectEntries()
+        }
+    }
 
-                    def sz = Help.toBigDec(parts[2])
-                    def bruttos = parts[3..-1].collect { Help.toEuro(it) }
+    private def parseLine(String csvLine) {
+        def parts = csvLine.split('\t')
+        if (parts.size() != 9)
+            throw new IllegalStateException("Expected 9 parts, but got only ${parts.size()} in '$parts'")
+        def jahr = Integer.valueOf(parts[0])
+        def gruppe = Gruppe.valueOf(parts[1])
 
-                    def guj = new GruppeUndJahr(gruppe, jahr)
-                    def geh = new Gehälter(sz, [Stufe.values(), bruttos].transpose().collectEntries())
+        def sz = Help.toBigDec(parts[2])
+        def bruttos = parts[3..-1].collect { Help.toEuro(it) }
 
-                    [guj, geh]
-                }.collectEntries()
-        new Tarif(gehälter: tarifMap)
+        def guj = new GruppeUndJahr(gruppe, jahr)
+        def geh = new Gehälter(sz, [Stufe.values(), bruttos].transpose().collectEntries())
+
+        [guj, geh]
     }
 }
