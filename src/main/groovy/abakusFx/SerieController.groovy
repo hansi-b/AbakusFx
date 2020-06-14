@@ -9,25 +9,12 @@ import javafx.scene.control.DatePicker
 import javafx.scene.control.Spinner
 import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.VBox
-import javafx.util.StringConverter
 
 import java.time.LocalDate
 
 @Log4j2
 class SerieController {
 
-    private static class StufeConverter extends StringConverter<Stufe> {
-
-        @Override
-        String toString(Stufe stufe) {
-            stufe.asString()
-        }
-
-        @Override
-        Stufe fromString(String string) {
-            Stufe.fromString(string)
-        }
-    }
     @FXML
     VBox seriePane
 
@@ -57,7 +44,7 @@ class SerieController {
         gruppe.getItems().setAll(Gruppe.values())
         gruppe.getSelectionModel().select(0)
 
-        stufe.setConverter(new StufeConverter())
+        stufe.setConverter(new Converters.StufeConverter())
         stufe.getItems().setAll(Stufe.values())
         stufe.getSelectionModel().select(0)
     }

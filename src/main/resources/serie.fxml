@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import abakusFx.Converters?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
@@ -18,14 +19,18 @@
         <DatePicker fx:id="bis"/>
 
         <Label text="Entgeltgruppe"/>
-        <ComboBox fx:id="gruppe"/>
+        <ComboBox fx:id="gruppe" />
 
         <Label text="Umfang"/>
         <Spinner fx:id="umfang" editable="true" styleClass="percent-spinner">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory
                         initialValue="100" min="5" max="100"
-                        amountToStepBy="10"/>
+                        amountToStepBy="5">
+                    <converter>
+                        <abakusFx.Converters fx:factory="createPercentConverter"/>
+                    </converter>
+                </SpinnerValueFactory.IntegerSpinnerValueFactory>
             </valueFactory>
         </Spinner>
     </HBox>
@@ -45,6 +50,10 @@
         </RadioButton>
 
         <Label text="Stufe"/>
-        <ComboBox fx:id="stufe"/>
+        <ComboBox fx:id="stufe">
+            <converter>
+                <abakusFx.Converters fx:factory="createStufeConverter"/>
+            </converter>
+        </ComboBox>
     </HBox>
 </VBox>
