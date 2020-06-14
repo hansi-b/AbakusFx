@@ -1,5 +1,7 @@
 package abakusFx
 
+import abakus.Tarif
+import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
 import javafx.application.Platform
 import javafx.event.ActionEvent
@@ -14,11 +16,17 @@ class AppController {
     BorderPane topLevelPane
 
     @FXML
+    SerieController serieController
+
+    @FXML
     Label status
+
+    Tarif tarif
 
     @FXML
     void initialize() {
-        setStatus("")
+        tarif = new ÖtvCsvParser().parseTarif()
+        setStatus("Tarif geladen.")
     }
 
     void setStatus(String msg) {

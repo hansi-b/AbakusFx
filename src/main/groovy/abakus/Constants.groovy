@@ -7,9 +7,11 @@ import javax.money.Monetary
 import java.text.DecimalFormat
 
 class Constants {
-    private static final CurrencyUnit euros = Monetary.getCurrency(Locale.GERMANY)
 
-    private static final DecimalFormat df = DecimalFormat.getNumberInstance(Locale.GERMANY)
+    static final Locale locale = Locale.GERMANY
+    private static final CurrencyUnit euros = Monetary.getCurrency(locale)
+
+    private static final DecimalFormat df = DecimalFormat.getNumberInstance(locale)
     static {
         df.setParseBigDecimal(true)
     }
