@@ -44,7 +44,6 @@ class SerieController {
         gruppe.getItems().setAll(Gruppe.values())
         gruppe.getSelectionModel().select(0)
 
-        stufe.setConverter(new Converters.StufeConverter())
         stufe.getItems().setAll(Stufe.values())
         stufe.getSelectionModel().select(0)
     }
