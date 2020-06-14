@@ -10,16 +10,18 @@
       stylesheets="app.css, serie.css">
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="20" bottom="50" right="2"/>
+            <Insets top="10" left="10" bottom="2" right="10"/>
         </padding>
         <Label text="von"/>
         <DatePicker fx:id="von" prefWidth="120"/>
         <Label text="bis"/>
         <DatePicker fx:id="bis"/>
+
         <Label text="Entgeltgruppe"/>
         <ComboBox fx:id="gruppe"/>
+
         <Label text="Umfang"/>
-        <Spinner fx:id="umfang" editable="true">
+        <Spinner fx:id="umfang" editable="true" styleClass="percent-spinner">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory
                         initialValue="100" min="5" max="100"
@@ -27,10 +29,12 @@
             </valueFactory>
         </Spinner>
     </HBox>
-    <HBox>
+    <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="2" left="2" bottom="10" right="2"/>
+            <Insets top="10" left="10" bottom="2" right="10"/>
         </padding>
-        <Label text="and another line"/>
+
+        <Label text="Stufe"/>
+        <ComboBox fx:id="stufe"/>
     </HBox>
 </VBox>
