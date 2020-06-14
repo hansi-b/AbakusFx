@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+            fx:controller="abakusFx.AppController"
+            fx:id="topLevelPane"
+            stylesheets="app.css">
+    <top>
+        <MenuBar>
+            <Menu fx:id="menuMain" mnemonicParsing="true" text="Main">
+                <MenuItem accelerator="CTRL+Q" text="_Beenden" onAction="#exit"></MenuItem>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+    </center>
+    <bottom>
+        <Label styleClass="status-line" maxWidth="Infinity" alignment="BOTTOM_RIGHT" text="" fx:id="status">
+            <padding>
+                <Insets top="2" left="2" bottom="2" right="2"/>
+            </padding>
+        </Label>
+    </bottom>
+
+</BorderPane>

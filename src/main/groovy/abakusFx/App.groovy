@@ -6,19 +6,35 @@ package abakusFx
 
 import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
+import javafx.application.Application
+import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
+import javafx.scene.Scene
+import javafx.stage.Stage
 
 import java.util.logging.Level
 import java.util.logging.Logger
 
 @Log4j2
-class App {
+class App extends Application {
+
+    @Override
+    void start(Stage primaryStage) throws Exception {
+        def fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"))
+        Parent root = fxmlLoader.load()
+
+        primaryStage.setTitle("Abakus")
+        primaryStage.setScene(new Scene(root, 840, 520))
+        primaryStage.show()
+    }
 
     static void main(String[] args) {
         Logger logger = Logger.getLogger("org.javamoney.moneta")
         logger.setLevel(Level.WARNING)
 
         def tarif = new ÖtvCsvParser().parseTarif()
-
-        log.info "$tarif"
+        launch(App, args)
     }
 }
+
+
