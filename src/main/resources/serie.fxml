@@ -33,6 +33,16 @@
         <padding>
             <Insets top="10" left="10" bottom="2" right="10"/>
         </padding>
+        <RadioButton fx:id="neu" text="Neueinstellung">
+            <toggleGroup>
+                <ToggleGroup fx:id="neuOderWeiter"/>
+            </toggleGroup>
+        </RadioButton>
+        <RadioButton fx:id="weiter" text="WeiterBeschäftigung">
+            <toggleGroup>
+                <fx:reference source="neuOderWeiter"/>
+            </toggleGroup>
+        </RadioButton>
 
         <Label text="Stufe"/>
         <ComboBox fx:id="stufe"/>

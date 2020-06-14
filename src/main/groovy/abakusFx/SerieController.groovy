@@ -7,6 +7,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.ComboBox
 import javafx.scene.control.DatePicker
 import javafx.scene.control.Spinner
+import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.VBox
 import javafx.util.StringConverter
 
@@ -43,6 +44,9 @@ class SerieController {
 
     @FXML
     ComboBox<Stufe> stufe
+
+    @FXML
+    ToggleGroup neuOderWeiter
 
     @FXML
     void initialize() {
