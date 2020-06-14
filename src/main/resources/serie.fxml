@@ -56,9 +56,9 @@
             </converter>
         </ComboBox>
 
-        <Label text="seit"/>
+        <Label text="seit" fx:id="seitLabel"/>
         <DatePicker fx:id="seit"/>
-        <Label text="Umfang"/>
+        <Label text="Umfang" fx:id="umfangSeitLabel"/>
         <Spinner fx:id="umfangSeit" editable="true" styleClass="percent-spinner">
             <valueFactory>
                 <Converters.PercentSpinnerFactory fx:id="umfangSeitSpinnerFactory"/>
