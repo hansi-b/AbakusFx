@@ -5,12 +5,20 @@ package abakusFx
 
 
 import abakus.ÖtvCsvParser
+import groovy.util.logging.Log4j2
 
+import java.util.logging.Level
+import java.util.logging.Logger
+
+@Log4j2
 class App {
 
     static void main(String[] args) {
+        Logger logger = Logger.getLogger("org.javamoney.moneta")
+        logger.setLevel(Level.WARNING)
+
         def tarif = new ÖtvCsvParser().parseTarif()
 
-        println tarif
+        log.info "$tarif"
     }
 }
