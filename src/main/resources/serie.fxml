@@ -9,17 +9,20 @@
       fx:controller="abakusFx.SerieController"
       fx:id="seriePane"
       stylesheets="app.css, serie.css">
+
+    <!-- erste Zeile -->
+
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" left="10" bottom="2" right="10"/>
         </padding>
         <Label text="von"/>
-        <DatePicker fx:id="von" prefWidth="120"/>
+        <DatePicker fx:id="von"/>
         <Label text="bis"/>
         <DatePicker fx:id="bis"/>
 
         <Label text="Entgeltgruppe"/>
-        <ComboBox fx:id="gruppe" />
+        <ComboBox fx:id="gruppe"/>
 
         <Label text="Umfang"/>
         <Spinner fx:id="umfang" editable="true" styleClass="percent-spinner">
@@ -34,6 +37,9 @@
             </valueFactory>
         </Spinner>
     </HBox>
+
+    <!-- zweite Zeile -->
+
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" left="10" bottom="2" right="10"/>
@@ -55,5 +61,20 @@
                 <abakusFx.Converters fx:factory="createStufeConverter"/>
             </converter>
         </ComboBox>
+
+        <Label text="seit"/>
+        <DatePicker fx:id="seit"/>
+        <Label text="Umfang"/>
+        <Spinner fx:id="umfangSeit" editable="true" styleClass="percent-spinner">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory
+                        initialValue="100" min="5" max="100"
+                        amountToStepBy="5">
+                    <converter>
+                        <abakusFx.Converters fx:factory="createPercentConverter"/>
+                    </converter>
+                </SpinnerValueFactory.IntegerSpinnerValueFactory>
+            </valueFactory>
+        </Spinner>
     </HBox>
 </VBox>
