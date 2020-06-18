@@ -6,9 +6,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
-      fx:controller="abakusFx.SerieController"
-      fx:id="seriePane"
-      stylesheets="app.css, serie.css">
+      fx:controller="abakusFx.SerieSettingsController"
+      stylesheets="app.css, serieSettings.css">
 
     <!-- erste Zeile -->
 

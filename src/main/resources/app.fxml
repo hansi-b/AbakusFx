@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
             fx:controller="abakusFx.AppController"
             fx:id="topLevelPane"
@@ -18,7 +19,9 @@
         </MenuBar>
     </top>
     <center>
-        <fx:include fx:id="serie" source="serie.fxml"/>
+        <VBox>
+            <fx:include fx:id="serieSettings" source="serieSettings.fxml"/>
+        </VBox>
     </center>
     <bottom>
         <Label styleClass="status-line" maxWidth="Infinity" alignment="BOTTOM_RIGHT" text="" fx:id="status">

@@ -5,21 +5,17 @@ import abakus.Stufe
 import groovy.util.logging.Log4j2
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.layout.VBox
 
 import java.time.LocalDate
 
 @Log4j2
-class SerieController {
-
-    @FXML
-    VBox seriePane
+class SerieSettingsController {
 
     @FXML
     DatePicker von
-
     @FXML
     DatePicker bis
+
     @FXML
     ComboBox<Gruppe> gruppe
 

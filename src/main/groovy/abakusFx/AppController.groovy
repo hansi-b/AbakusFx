@@ -16,7 +16,7 @@ class AppController {
     BorderPane topLevelPane
 
     @FXML
-    SerieController serieController
+    SerieSettingsController serieSettingsController
 
     @FXML
     Label status
