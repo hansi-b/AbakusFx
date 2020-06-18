@@ -21,6 +21,7 @@
     <center>
         <VBox>
             <fx:include fx:id="serieSettings" source="serieSettings.fxml"/>
+            <fx:include fx:id="serieTable" source="serieTable.fxml"/>
         </VBox>
     </center>
     <bottom>

@@ -9,7 +9,7 @@ import java.text.DecimalFormat
 class Constants {
 
     static final Locale locale = Locale.GERMANY
-    private static final CurrencyUnit euros = Monetary.getCurrency(locale)
+    static final CurrencyUnit euros = Monetary.getCurrency(locale)
 
     private static final DecimalFormat df = DecimalFormat.getNumberInstance(locale)
     static {
