@@ -11,11 +11,19 @@ class ÖtvCsvParser {
         new Tarif(gehälter: parseGehälter())
     }
 
-    private def parseGehälter() {
+    private Map<Gruppe, Map<Integer, Gehälter>> parseGehälter() {
+        Map<Gruppe, Map<Integer, Gehälter>> gehälterMap = new HashMap<>()
         try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(ötvCsv)))) {
-            return br.lines().map(String::trim).filter((String l) -> !l.isEmpty() && !l.startsWith("#"))
-                    .collect { parseLine(it) }.collectEntries()
+            br.lines().map(String::trim).filter((String l) -> !l.isEmpty() && !l.startsWith("#"))
+                    .collect {
+                        def (Gruppe gruppe, int jahr, Gehälter gehälter) = parseLine(it)
+                        def gruppeMap = gehälterMap.computeIfAbsent(gruppe, g -> new HashMap<>())
+                        if (gruppeMap.containsKey(jahr))
+                            throw new IllegalArgumentException("Doppelte Daten für Gruppe ${gruppe} im Jahr ${jahr}")
+                        gruppeMap.put(jahr, gehälter)
+                    }
         }
+        return gehälterMap
     }
 
     private def parseLine(String csvLine) {
@@ -25,9 +33,9 @@ class ÖtvCsvParser {
         def jahr = Integer.valueOf(parts[0])
         def gruppe = Gruppe.valueOf(parts[1])
 
-        def sz = Constants.toBigDec(parts[2])
+        def sz = Constants.percent(Constants.toBigDec(parts[2]))
         def bruttos = parts[3..-1].collect { Constants.toEuro(it) }
 
-        [new GruppeUndJahr(gruppe, jahr), new Gehälter(sz, [Stufe.values(), bruttos].transpose().collectEntries())]
+        [gruppe, jahr, new Gehälter(sz, [Stufe.values(), bruttos].transpose().collectEntries())]
     }
 }
