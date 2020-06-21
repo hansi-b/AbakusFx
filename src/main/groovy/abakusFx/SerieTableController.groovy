@@ -1,12 +1,13 @@
 package abakusFx
 
-import abakus.Constants
+
 import abakus.Gruppe
 import abakus.Stufe
 import groovy.util.logging.Log4j2
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -52,7 +53,7 @@ class SerieTableController {
     @FXML
     private TableColumn<Kosten, Money> kostenCol
 
-    private javafx.collections.ObservableList<Kosten> kosten = FXCollections.observableArrayList()
+    ObservableList<Kosten> kosten = FXCollections.observableArrayList()
 
     @FXML
     void initialize() {
@@ -65,9 +66,6 @@ class SerieTableController {
         umfangCol.setCellValueFactory(cellData -> cellData.getValue().getUmfang())
         kostenCol.setCellValueFactory(cellData -> cellData.getValue().getKosten())
 
-        kosten.addAll(Kosten.of(LocalDate.now(),
-                Gruppe.E10, Stufe.drei, BigDecimal.valueOf(90), Money.of(BigDecimal.TEN, Constants.euros)))
         kostenTabelle.setItems(kosten)
     }
-
 }

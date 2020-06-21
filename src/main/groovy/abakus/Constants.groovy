@@ -10,7 +10,11 @@ import java.text.NumberFormat
 class Constants {
 
     static final Locale locale = Locale.GERMANY
-    static final CurrencyUnit euros = Monetary.getCurrency(locale)
+    private static final CurrencyUnit euros = Monetary.getCurrency(locale)
+
+    static Money euros(Number amount) {
+        Money.of(amount, euros)
+    }
 
     private static final DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale)
     static {

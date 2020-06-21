@@ -43,6 +43,9 @@ class Stelle {
     BigDecimal umfang = 100
 
     Stelle am(LocalDate datum) {
+        if (datum < beginn)
+            throw new IllegalArgumentException("Argument ${datum} liegt vor dem Anfang ${beginn}")
+
         def (Stufe nächsteStufe, LocalDate aufstiegsDatum) = stufe.stufeAm(beginn, datum)
         nächsteStufe == stufe ?
                 this : new Stelle(gruppe, nächsteStufe, aufstiegsDatum, umfang)
