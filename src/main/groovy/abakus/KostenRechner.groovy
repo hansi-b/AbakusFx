@@ -39,7 +39,7 @@ class KostenRechner {
         while (stichtag <= ende) {
             def aktStelle = stelle.am(stichtag)
             def brutto = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, stichtag.year, aktStelle.umfang)
-            kostenListe << new Monatskosten(stichtag: stichtag, stelle: stelle, brutto: brutto, sonderzahlung: Constants.euros(0))
+            kostenListe << new Monatskosten(stichtag: stichtag, stelle: aktStelle, brutto: brutto, sonderzahlung: Constants.euros(0))
             stichtag = nextStichtag(stichtag)
         }
 
