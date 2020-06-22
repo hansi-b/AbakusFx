@@ -1,7 +1,7 @@
 package abakusFx
 
-
 import abakus.Gruppe
+import abakus.Monatskosten
 import abakus.Stufe
 import groovy.util.logging.Log4j2
 import javafx.beans.property.ObjectProperty
@@ -28,13 +28,13 @@ class SerieTableController {
         ObjectProperty<BigDecimal> umfang
         ObjectProperty<Money> kosten
 
-        static Kosten of(LocalDate monat, Gruppe gruppe, Stufe stufe, BigDecimal umfang, Money kosten) {
+        static Kosten of(Monatskosten mKosten) {
             Kosten k = new Kosten()
-            k.monat = new SimpleObjectProperty<>(monat)
-            k.gruppe = new SimpleObjectProperty<>(gruppe)
-            k.stufe = new SimpleObjectProperty<>(stufe)
-            k.umfang = new SimpleObjectProperty<>(umfang)
-            k.kosten = new SimpleObjectProperty<>(kosten)
+            k.monat = new SimpleObjectProperty<>(mKosten.stichtag)
+            k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe)
+            k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe)
+            k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfang)
+            k.kosten = new SimpleObjectProperty<>(mKosten.brutto)
             return k
         }
     }

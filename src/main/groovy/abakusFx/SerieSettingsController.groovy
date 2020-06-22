@@ -1,6 +1,7 @@
 package abakusFx
 
 import abakus.Gruppe
+import abakus.Stelle
 import abakus.Stufe
 import groovy.util.logging.Log4j2
 import javafx.fxml.FXML
@@ -60,4 +61,16 @@ class SerieSettingsController {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
     }
+
+    Stelle getStelle() {
+        def istWeiter = weiter.selectedProperty().value
+        def beginn = istWeiter ? seit.value : von.value
+        def umfang = istWeiter ? umfangSeit.value : umfang.value
+        return new Stelle(gruppe: gruppe.value, stufe: stufe.value, beginn: beginn, umfang: umfang)
+    }
+
+    def getVonBis() {
+        [von.value, bis.value]
+    }
+
 }

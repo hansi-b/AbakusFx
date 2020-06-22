@@ -38,7 +38,6 @@ class KostenRechner {
         List<Monatskosten> kostenListe = new ArrayList<>()
         while (stichtag <= ende) {
             def aktStelle = stelle.am(stichtag)
-            println "$stichtag $aktStelle"
             def brutto = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, stichtag.year, aktStelle.umfang)
             kostenListe << new Monatskosten(stichtag: stichtag, stelle: stelle, brutto: brutto, sonderzahlung: Constants.euros(0))
             stichtag = nextStichtag(stichtag)

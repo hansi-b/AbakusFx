@@ -1,10 +1,14 @@
 package abakusFx
 
-import abakus.*
+
+import abakus.KostenRechner
+import abakus.Stelle
+import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
 
@@ -14,33 +18,42 @@ import java.time.LocalDate
 class AppController {
 
     @FXML
-    BorderPane topLevelPane
+    private BorderPane topLevelPane
 
     @FXML
-    SerieSettingsController serieSettingsController
+    private SerieSettingsController serieSettingsController
     @FXML
-    SerieTableController serieTableController
+    private Button calcKosten
+    @FXML
+    private SerieTableController serieTableController
 
     @FXML
-    Label status
+    private Label status
 
-    Tarif tarif
+    private KostenRechner rechner
 
     @FXML
     void initialize() {
-        tarif = new ÖtvCsvParser().parseTarif()
-        setStatus("Tarif geladen.")
+        def tarif = new ÖtvCsvParser().parseTarif()
+        rechner = new KostenRechner(tarif)
+        setStatus("Tarif geladen")
 
-        serieTableController.kosten.add(SerieTableController.Kosten.of(LocalDate.of(2020, 1, 2),
-                Gruppe.E10, Stufe.fünf, BigDecimal.TEN, Constants.euros(1200)))
+        calcKosten.setOnAction(a -> fillKostenTable())
     }
 
-    void setStatus(String msg) {
+    def fillKostenTable() {
+        Stelle s = serieSettingsController.stelle
+        def (LocalDate von, LocalDate bis) = serieSettingsController.vonBis
+        def kl = rechner.monatsKosten(s, von, bis)
+        serieTableController.kosten.setAll(kl.collect { SerieTableController.Kosten.of(it) })
+    }
+
+    def setStatus(String msg) {
         status.setText(msg)
         log.info msg
     }
 
-    void exit(ActionEvent actionEvent) {
+    def exit(ActionEvent actionEvent) {
         Platform.exit()
     }
 }
