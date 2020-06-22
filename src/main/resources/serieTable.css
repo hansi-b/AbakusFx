@@ -1,0 +1,21 @@
+
+.table-cell {
+    -fx-alignment: CENTER;
+}
+
+#colMonat {
+   -fx-pref-width: 7em;
+   -fx-alignment: CENTER-RIGHT;
+}
+#colGruppe {
+   -fx-pref-width: 4em;
+}
+#colStufe {
+   -fx-pref-width: 6em;
+}
+#colUmfang {
+   -fx-pref-width: 4em;
+}
+#colKosten {
+   -fx-pref-width: 8em;
+}

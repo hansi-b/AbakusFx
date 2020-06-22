@@ -4,15 +4,15 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
       fx:controller="abakusFx.SerieTableController"
-      stylesheets="app.css, table.css">
+      stylesheets="app.css, serieTable.css">
 
     <TableView fx:id="kostenTabelle">
         <columns>
-            <TableColumn fx:id="monatCol" text="Monat"/>
-            <TableColumn fx:id="gruppeCol" text="Gruppe"/>
-            <TableColumn fx:id="stufeCol" text="Stufe"/>
-            <TableColumn fx:id="umfangCol" text="\%"/>
-            <TableColumn fx:id="kostenCol" text="Kosten"/>
+            <TableColumn fx:id="monatCol" id="colMonat" text="Monat"/>
+            <TableColumn fx:id="gruppeCol" id="colGruppe" text="Gruppe"/>
+            <TableColumn fx:id="stufeCol" id="colStufe"  text="Stufe"/>
+            <TableColumn fx:id="umfangCol" id="colUmfang"  text="\%"/>
+            <TableColumn fx:id="kostenCol" id="colKosten" text="Kosten"/>
         </columns>
     </TableView>
 </VBox>
