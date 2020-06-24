@@ -40,7 +40,7 @@ class Stelle {
     Gruppe gruppe
     Stufe stufe
     LocalDate beginn
-    BigDecimal umfang = 100
+    BigDecimal umfang = BigDecimal.valueOf(100)
 
     Stelle am(LocalDate datum) {
         if (datum < beginn)
