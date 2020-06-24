@@ -1,9 +1,16 @@
 package abakusFx;
 
+import abakus.Constants;
 import abakus.Stufe;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import org.javamoney.moneta.Money;
+import org.javamoney.moneta.format.CurrencyStyle;
+
+import javax.money.format.AmountFormatQueryBuilder;
+import javax.money.format.MonetaryAmountFormat;
+import javax.money.format.MonetaryFormats;
 
 public class Converters {
 
@@ -21,6 +28,23 @@ public class Converters {
         @Override
         public Stufe fromString(String string) {
             return Stufe.fromString(string);
+        }
+    }
+
+    public static class MoneyConverter extends StringConverter<Money> {
+        private static final MonetaryAmountFormat format = MonetaryFormats.getAmountFormat(
+                AmountFormatQueryBuilder.of(Constants.getLocale())
+                        .set(CurrencyStyle.SYMBOL)
+                        .build());
+
+        @Override
+        public String toString(Money money) {
+            return format.format(money);
+        }
+
+        @Override
+        public Money fromString(String string) {
+            return Money.parse(string);
         }
     }
 

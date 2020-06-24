@@ -1,5 +1,6 @@
 package abakusFx
 
+
 import abakus.Gruppe
 import abakus.Monatskosten
 import abakus.Stufe
@@ -64,7 +65,10 @@ class SerieTableController {
         gruppeCol.setCellValueFactory(cellData -> cellData.getValue().getGruppe())
         stufeCol.setCellValueFactory(cellData -> cellData.getValue().getStufe())
         umfangCol.setCellValueFactory(cellData -> cellData.getValue().getUmfang())
+
         kostenCol.setCellValueFactory(cellData -> cellData.getValue().getKosten())
+        kostenCol.setCellFactory(TextFieldTableCell.forTableColumn(
+                new Converters.MoneyConverter()))
 
         kostenTabelle.setItems(kosten)
     }
