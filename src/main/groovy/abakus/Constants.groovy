@@ -32,4 +32,8 @@ class Constants {
     static BigDecimal percent(BigDecimal percent) {
         percent / BigDecimal.valueOf(100)
     }
+
+    static BigDecimal percent(int percent) {
+        BigDecimal.valueOf(percent) / BigDecimal.valueOf(100)
+    }
 }
