@@ -57,7 +57,7 @@ class KostenRechner {
     }
 
     Money monatsBrutto(Gruppe gruppe, Stufe stufe, int jahr, BigDecimal umfang) {
-        tarif.brutto(gruppe, stufe, jahr) * zuschlagProzent * Constants.percent(umfang)
+        tarif.brutto(gruppe, stufe, jahr) * zuschlagProzent * percent(umfang)
     }
 
     /**
@@ -76,7 +76,9 @@ class KostenRechner {
             return euros(0)
 
         def baseStellen = calcBaseStellen(year, ausgangsStelle)
-        def kosten = baseStellen.collect { monatsBrutto(it.gruppe, it.stufe, year, it.umfang) }
+        def kosten = baseStellen.collect {
+            tarif.sonderzahlung(it.gruppe, it.stufe, year) * zuschlagProzent * percent(it.umfang)
+        }
         def summe = euros(0)
         kosten.each { summe = summe.add(it) }
         return summe.divide(kosten.size())

@@ -14,10 +14,16 @@ class Tarif {
 
     private Map<Gruppe, Map<Integer, Gehälter>> gehälter
 
+    /**
+     * @return the 100%-Bruttogehalt for the given Gruppe, Stufe, and Year
+     */
     Money brutto(Gruppe gruppe, Stufe stufe, int jahr) {
         lookupYearTolerant(gruppe, jahr).bruttos.get(stufe)
     }
 
+    /**
+     * @return the Sonderzahlung on a 100%-Bruttogehalt for the given Gruppe, Stufe, and Year
+     */
     Money sonderzahlung(Gruppe gruppe, Stufe stufe, int jahr) {
         def geh = lookupYearTolerant(gruppe, jahr)
         geh.bruttos.get(stufe) * geh.sonderzahlungProzent

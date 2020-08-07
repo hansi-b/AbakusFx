@@ -80,13 +80,14 @@ class KostenRechnerTest extends Specification {
     def "sonderzuschlag einfach"() {
 
         when:
+        Stelle s = new Stelle(gruppe: Gruppe.E10, stufe: Stufe.eins, beginn: startOfMonth(2020, 1))
+
         def stichtag = startOfMonth(2020, 11)
         def bis = endOfMonth(2021, 1)
 
-        Stelle s = new Stelle(gruppe: Gruppe.E10, stufe: Stufe.eins, beginn: startOfMonth(2018, 4))
-
         then:
-        rechner.sonderzahlung(stichtag, bis, s) == euros(1)
+        // E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
+        rechner.sonderzahlung(stichtag, bis, s) == euros(1.3 * 0.7531 * 3367.04)
     }
 
     def "calcBaseStellen happy path"() {
