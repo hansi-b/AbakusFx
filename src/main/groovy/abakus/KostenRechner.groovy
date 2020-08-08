@@ -30,18 +30,16 @@ class KostenRechner {
         this.tarif = tarif
     }
 
-    List<Monatskosten> monatsKosten(Stelle ausgangsStelle, LocalDate von, LocalDate bis) {
+    List<Monatskosten> monatsKosten(Anstellung anst, LocalDate von, LocalDate bis) {
         if (bis < von)
             throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}")
-        if (von < ausgangsStelle.beginn)
-            throw new IllegalArgumentException("Argument ${von} liegt vor dem Anfang ${ausgangsStelle.beginn}")
 
         def stichtag = von.withDayOfMonth(von.lengthOfMonth())
         def ende = bis.withDayOfMonth(bis.lengthOfMonth())
 
         List<Monatskosten> kostenListe = []
         while (stichtag <= ende) {
-            def aktStelle = ausgangsStelle.am(stichtag)
+            def aktStelle = anst.am(stichtag)
             def brutto = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, stichtag.year, aktStelle.umfang)
             sonderzahlung(stichtag, bis, ausgangsStelle)
             kostenListe << new Monatskosten(stichtag: stichtag, stelle: aktStelle, brutto: brutto, sonderzahlung: euros(0))
@@ -84,7 +82,7 @@ class KostenRechner {
         return summe.divide(kosten.size())
     }
 
-    def calcBaseStellen(int year, Stelle ausgangsStelle) {
+    def static calcBaseStellen(int year, Stelle ausgangsStelle) {
 
         assert ausgangsStelle.beginn.isBefore(YearMonth.of(year, Month.NOVEMBER).atEndOfMonth())
 
