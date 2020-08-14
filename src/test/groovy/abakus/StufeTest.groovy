@@ -3,7 +3,8 @@ package abakus
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static abakus.Constants.startOfMonth
+import java.time.YearMonth
+
 
 class StufeTest extends Specification {
 
@@ -11,7 +12,7 @@ class StufeTest extends Specification {
     def "Stufe 1 nach #plusMonths Monaten ist #neueStufe"() {
 
         expect:
-        def start = startOfMonth(2019, 1)
+        def start = YearMonth.of(2019, 1)
         Stufe.eins.stufeAm(start, start.plusMonths(plusMonths)) == neueStufe
 
         where:
@@ -26,7 +27,7 @@ class StufeTest extends Specification {
     def "Stufe 1 nach #plusYears Jahren spring zu #neueStufe"() {
 
         expect:
-        def start = startOfMonth(2019, 1)
+        def start = YearMonth.of(2019, 1)
         Stufe.eins.stufeAm(start, start.plusYears(plusYears)) == neueStufe
 
         where:

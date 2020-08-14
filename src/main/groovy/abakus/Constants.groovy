@@ -6,8 +6,6 @@ import javax.money.CurrencyUnit
 import javax.money.Monetary
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.YearMonth
 
 class Constants {
 
@@ -37,19 +35,5 @@ class Constants {
 
     static BigDecimal percent(int percent) {
         BigDecimal.valueOf(percent) / BigDecimal.valueOf(100)
-    }
-
-    /**
-     * @return a LocalDate at the start of the given month in the given year
-     */
-    static LocalDate startOfMonth(int year, int month) {
-        LocalDate.of(year, month, 1)
-    }
-
-    /**
-     * @return a LocalDate at the end of the given month in the given year
-     */
-    static LocalDate endOfMonth(int year, int month) {
-        YearMonth.of(year, month).atEndOfMonth()
     }
 }

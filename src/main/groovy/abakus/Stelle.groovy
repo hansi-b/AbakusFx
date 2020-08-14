@@ -2,7 +2,8 @@ package abakus
 
 import groovy.transform.Immutable
 
-import java.time.LocalDate
+import java.time.Month
+import java.time.YearMonth
 
 enum Gruppe {
     E10, E13
@@ -23,17 +24,17 @@ enum Stufe {
         ordinal() < sechs.ordinal() ? values()[ordinal() + 1] : sechs
     }
 
-    LocalDate nächsterAufstieg(LocalDate seit) {
+    YearMonth nächsterAufstieg(YearMonth seit) {
         return seit.plusYears(ordinal() + 1)
     }
 
-    Stufe stufeAm(LocalDate seit, LocalDate am) {
+    Stufe stufeAm(YearMonth seit, YearMonth am) {
 
         def n = nächste()
         if (n == this) return this
 
         def aufstieg = nächsterAufstieg(seit)
-        return aufstieg.isAfter(am) ? this : n.stufeAm(aufstieg, am)
+        return aufstieg > am ? this : n.stufeAm(aufstieg, am)
     }
 }
 
@@ -53,32 +54,70 @@ class Stelle {
  */
 class Anstellung {
 
-    private final SortedMap<LocalDate, Stelle> stelleByBeginn = new TreeMap<>()
+    private final SortedMap<YearMonth, Stelle> stelleByBeginn = new TreeMap<>()
+    private YearMonth ende
 
-    static Anstellung of(LocalDate beginn, Stelle antrittsStelle) {
-        def a = new Anstellung()
+    static Anstellung of(YearMonth beginn, Stelle antrittsStelle, YearMonth ende) {
+        def a = new Anstellung(ende: ende)
         a.add(beginn, antrittsStelle)
         return a
     }
 
-    LocalDate getBeginn() {
+    YearMonth getBeginn() {
         stelleByBeginn.firstKey()
     }
 
-    private void add(LocalDate beginn, Stelle antrittsStelle) {
+    private void add(YearMonth beginn, Stelle antrittsStelle) {
+        if (beginn > ende)
+            throw new IllegalArgumentException("Stellenbeginn ${beginn} liegt nach dem Anstellungsende ${ende}")
+
         assert !stelleByBeginn.containsKey(beginn)
         stelleByBeginn[beginn] = antrittsStelle
     }
 
-    Stelle am(LocalDate datum) {
-        def entry = stelleByBeginn.find { it.key.isBefore(datum) }
+    Stelle am(YearMonth ym) {
+
+        if (ym > ende)
+            throw new IllegalArgumentException("Argument ${ym} liegt nach dem Anstellungsende ${ende}")
+
+        def entry = stelleByBeginn.find { it.key <= ym }
         if (!entry)
-            throw new IllegalArgumentException("Argument ${datum} liegt vor dem ersten Anfang ${beginn}")
+            throw new IllegalArgumentException("Argument ${ym} liegt vor dem Anstellungsbeginn ${beginn}")
         def (beginn, stelle) = [entry.key, entry.value]
 
-        def neueStufe = stelle.stufe.stufeAm(beginn, datum)
+        def neueStufe = stelle.stufe.stufeAm(beginn, ym)
         neueStufe == stelle.stufe ?
                 stelle : new Stelle(stelle.gruppe, neueStufe, stelle.umfang)
+    }
+
+    SortedMap<YearMonth, Stelle> monatsStellen(YearMonth von, YearMonth bis) {
+
+        if (bis < von)
+            throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}")
+
+        SortedMap<YearMonth, Stelle> stellenByYm = new TreeMap<>()
+        def current = von
+        while (current <= bis) {
+            stellenByYm[current] = am(current)
+            current = current.plusMonths(1)
+        }
+
+        return stellenByYm
+    }
+
+
+    /**
+     * @return the Stellen of the argument year for the Sonderzahlung
+     */
+    def calcBaseStellen(int year) {
+
+        assert beginn <= YearMonth.of(year, Month.NOVEMBER)
+
+        def months = [Month.JULY, Month.AUGUST, Month.SEPTEMBER]
+                .collect { YearMonth.of(year, it.value) }
+                .findAll { it >= beginn }
+                ?: [YearMonth.of(year, beginn.month.value)]
+        return months.collect { am(it) }
     }
 
     /**

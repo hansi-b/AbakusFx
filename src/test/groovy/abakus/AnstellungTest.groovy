@@ -1,37 +1,40 @@
 package abakus
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
-import static abakus.Constants.startOfMonth
+import java.time.YearMonth
+
 
 class AnstellungTest extends Specification {
 
-    def start = startOfMonth(2019, 12)
-    def stelle = Stelle.of(Gruppe.E10, Stufe.eins)
+    def start_2019_12 = YearMonth.of(2019, 12)
+    def stelle_e10_1 = Stelle.of(Gruppe.E10, Stufe.eins)
 
     def "'am' darf nicht vor Anstellungsbeginn liegen"() {
 
         given:
-        def a = Anstellung.of(start, stelle)
+        def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10))
 
         when:
-        def vorher = start.minusMonths(1)
+        def vorher = start_2019_12.minusMonths(1)
         a.am(vorher)
 
         then:
         def ex = thrown IllegalArgumentException
-        ex.message == "Argument ${vorher} liegt vor dem ersten Anfang ${start}"
+        ex.message == "Argument ${vorher} liegt vor dem Anstellungsbeginn ${start_2019_12}"
     }
 
     def "einfache Anstellung"() {
 
         when:
-        def a = Anstellung.of(start, stelle)
+        def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10))
 
         then:
-        a.am(start.plusMonths(11)) == stelle
-        a.am(start.plusMonths(12)) == Stelle.of(Gruppe.E10, Stufe.zwei)
-        a.am(start.plusMonths(13)) == Stelle.of(Gruppe.E10, Stufe.zwei)
+        a.am(start_2019_12) == stelle_e10_1
+        a.am(start_2019_12.plusMonths(11)) == stelle_e10_1
+        a.am(start_2019_12.plusMonths(12)) == Stelle.of(Gruppe.E10, Stufe.zwei)
+        a.am(start_2019_12.plusMonths(13)) == Stelle.of(Gruppe.E10, Stufe.zwei)
     }
 
     def "bei stufe sechs ist schluß"() {
@@ -40,9 +43,53 @@ class AnstellungTest extends Specification {
         def stelle_5 = Stelle.of(Gruppe.E10, Stufe.fünf)
 
         when:
-        def a = Anstellung.of(start, stelle_5)
+        def a = Anstellung.of(start_2019_12, stelle_5, start_2019_12.plusYears(30))
 
         then:
-        a.am(start.plusYears(20)) == Stelle.of(Gruppe.E10, Stufe.sechs)
+        a.am(start_2019_12.plusYears(20)) == Stelle.of(Gruppe.E10, Stufe.sechs)
+    }
+
+    def "calcBaseStellen happy path"() {
+
+        when:
+        def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10))
+
+        then:
+        a.calcBaseStellen(2020) == [
+                stelle_e10_1, stelle_e10_1, stelle_e10_1
+        ]
+    }
+
+
+    @Unroll
+    def "calcBaseStellen Randfall: Einstellung zu Monat #beginnMonth"() {
+
+        expect:
+        def start = YearMonth.of(2018, beginnMonth)
+        def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2))
+
+        ans.calcBaseStellen(2018) == Collections.nCopies(noOfStellen, stelle_e10_1)
+
+        where:
+        beginnMonth | noOfStellen
+        6           | 3
+        7           | 3
+        8           | 2
+        9           | 1
+        10          | 1
+        11          | 1
+    }
+
+    def "calcBaseStellen Randfall mit Aufstieg"() {
+
+        given:
+        def start = YearMonth.of(2018, 8)
+        Stelle sZwei = new Stelle(gruppe: Gruppe.E10, stufe: Stufe.zwei)
+
+        when:
+        def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2))
+
+        then:
+        ans.calcBaseStellen(2019) == [stelle_e10_1, sZwei, sZwei]
     }
 }

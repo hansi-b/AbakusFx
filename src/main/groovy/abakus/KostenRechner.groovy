@@ -3,15 +3,15 @@ package abakus
 import groovy.transform.Immutable
 import org.javamoney.moneta.Money
 
-import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
 
-import static abakus.Constants.*
+import static abakus.Constants.euros
+import static abakus.Constants.percent
 
 @Immutable(knownImmutableClasses = [Money])
 class Monatskosten {
-    LocalDate stichtag
+    YearMonth stichtag
     Stelle stelle
     Money brutto
     Money sonderzahlung
@@ -30,28 +30,23 @@ class KostenRechner {
         this.tarif = tarif
     }
 
-    List<Monatskosten> monatsKosten(Anstellung anst, LocalDate von, LocalDate bis) {
+    /**
+     * @param anst die zugrundeliegende Anstellung
+     * @param von der Startmonat (inklusiv)
+     * @param bis der Endmonat (inklusiv)
+     * @return a list of the Monatskosten
+     */
+    List<Monatskosten> monatsKosten(Anstellung anstellung, YearMonth von, YearMonth bis) {
         if (bis < von)
             throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}")
 
-        def stichtag = von.withDayOfMonth(von.lengthOfMonth())
-        def ende = bis.withDayOfMonth(bis.lengthOfMonth())
-
-        List<Monatskosten> kostenListe = []
-        while (stichtag <= ende) {
-            def aktStelle = anst.am(stichtag)
-            def brutto = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, stichtag.year, aktStelle.umfang)
-            sonderzahlung(stichtag, bis, ausgangsStelle)
-            kostenListe << new Monatskosten(stichtag: stichtag, stelle: aktStelle, brutto: brutto, sonderzahlung: euros(0))
-            stichtag = nextStichtag(stichtag)
+        anstellung.monatsStellen(von, bis).collect {
+            def ym = it.key
+            def aktStelle = it.value
+            def money = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, ym.year, aktStelle.umfang)
+            def sz = euros(0) // sonderzahlung(current, bis, ausgangsStelle)
+            new Monatskosten(stichtag: ym, stelle: aktStelle, brutto: money, sonderzahlung: sz)
         }
-
-        return kostenListe
-    }
-
-    static LocalDate nextStichtag(LocalDate current) {
-        def next = current.plusMonths(1)
-        endOfMonth(next.year, next.monthValue)
     }
 
     Money monatsBrutto(Gruppe gruppe, Stufe stufe, int jahr, BigDecimal umfang) {
@@ -62,7 +57,7 @@ class KostenRechner {
      * Calculate the Jahressonderzahlung according to
      * https://oeffentlicher-dienst.info/tv-l/allg/jahressonderzahlung.html
      */
-    Money sonderzahlung(LocalDate stichtag, LocalDate bis, Stelle ausgangsStelle) {
+    Money sonderzahlung(YearMonth stichtag, Anstellung anstellung) {
 
         // 1. only in November
         if (stichtag.month != Month.NOVEMBER)
@@ -70,26 +65,15 @@ class KostenRechner {
 
         def year = stichtag.year
         // 2. only if to be employed at least for the coming December
-        if (bis.isBefore(startOfMonth(year, 12)))
+        if (anstellung.ende < YearMonth.of(year, 12))
             return euros(0)
 
-        def baseStellen = calcBaseStellen(year, ausgangsStelle)
+        def baseStellen = anstellung.calcBaseStellen(year)
         def kosten = baseStellen.collect {
             tarif.sonderzahlung(it.gruppe, it.stufe, year) * zuschlagProzent * percent(it.umfang)
         }
         def summe = euros(0)
         kosten.each { summe = summe.add(it) }
         return summe.divide(kosten.size())
-    }
-
-    def static calcBaseStellen(int year, Stelle ausgangsStelle) {
-
-        assert ausgangsStelle.beginn.isBefore(YearMonth.of(year, Month.NOVEMBER).atEndOfMonth())
-
-        def months = [Month.JULY, Month.AUGUST, Month.SEPTEMBER]
-                .collect { endOfMonth(year, it.value) }
-                .findAll { it.isAfter(ausgangsStelle.beginn) }
-                ?: [endOfMonth(year, ausgangsStelle.beginn.month.value)]
-        return months.collect { ausgangsStelle.am(it) }
     }
 }
