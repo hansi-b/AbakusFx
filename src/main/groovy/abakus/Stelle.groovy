@@ -105,6 +105,11 @@ class Anstellung {
         return stellenByYm
     }
 
+    def monthsInYear(int year) {
+        (1..12).collect { YearMonth.of(year, it) }.findAll {
+            beginn <= it && it <= ende
+        }
+    }
 
     /**
      * @return the Stellen of the argument year for the Sonderzahlung

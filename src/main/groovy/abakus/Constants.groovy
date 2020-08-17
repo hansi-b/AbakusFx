@@ -10,11 +10,7 @@ import java.text.NumberFormat
 class Constants {
 
     static final Locale locale = Locale.GERMANY
-    private static final CurrencyUnit euros = Monetary.getCurrency(locale)
-
-    static Money euros(Number amount) {
-        Money.of(amount, euros)
-    }
+    private static final CurrencyUnit eur = Monetary.getCurrency(locale)
 
     private static final DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale)
     static {
@@ -26,7 +22,11 @@ class Constants {
     }
 
     static Money toEuro(String floatStr) {
-        Money.of(toBigDec(floatStr), euros)
+        Money.of(toBigDec(floatStr), eur)
+    }
+
+    static Money euros(Number amount) {
+        Money.of(amount, eur)
     }
 
     static BigDecimal percent(BigDecimal percent) {

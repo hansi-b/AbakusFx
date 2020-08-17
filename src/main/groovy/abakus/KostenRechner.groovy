@@ -68,12 +68,13 @@ class KostenRechner {
         if (anstellung.ende < YearMonth.of(year, 12))
             return euros(0)
 
+        def monthsInYear = anstellung.monthsInYear(year).size()
+
         def baseStellen = anstellung.calcBaseStellen(year)
         def kosten = baseStellen.collect {
             tarif.sonderzahlung(it.gruppe, it.stufe, year) * zuschlagProzent * percent(it.umfang)
         }
-        def summe = euros(0)
-        kosten.each { summe = summe.add(it) }
-        return summe.divide(kosten.size())
+        def summe = kosten.inject(euros(0)) { c, i -> c.add(i) }
+        return summe.divide(kosten.size()) * (monthsInYear / 12)
     }
 }

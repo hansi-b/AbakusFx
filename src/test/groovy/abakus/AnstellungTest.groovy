@@ -60,6 +60,23 @@ class AnstellungTest extends Specification {
         ]
     }
 
+    def "months in year"() {
+
+        expect:
+        a.monthsInYear(2019) == resultMonthRange.collect { YearMonth.of(2019, it) }
+
+        where:
+        beginn                 | ende                   | resultMonthRange
+        YearMonth.of(2018, 12) | YearMonth.of(2019, 7)  | (1..7)
+        YearMonth.of(2019, 1)  | YearMonth.of(2019, 7)  | (1..7)
+        YearMonth.of(2018, 12) | YearMonth.of(2020, 2)  | (1..12)
+        YearMonth.of(2019, 1)  | YearMonth.of(2019, 12) | (1..12)
+        YearMonth.of(2019, 3)  | YearMonth.of(2020, 2)  | (3..12)
+        YearMonth.of(2019, 3)  | YearMonth.of(2019, 4)  | (3..4)
+
+        a = Anstellung.of(beginn, stelle_e10_1, ende)
+    }
+
 
     @Unroll
     def "calcBaseStellen Randfall: Einstellung zu Monat #beginnMonth"() {

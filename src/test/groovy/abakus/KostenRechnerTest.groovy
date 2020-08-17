@@ -2,6 +2,7 @@ package abakus
 
 import org.javamoney.moneta.Money
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.time.YearMonth
 
@@ -92,7 +93,6 @@ class KostenRechnerTest extends Specification {
     def "sonderzuschlag einfach"() {
 
         when:
-        when:
         def start = YearMonth.of(2020, 1)
         def stichtag = YearMonth.of(2020, 11)
         Anstellung ans = Anstellung.of(start,
@@ -101,5 +101,24 @@ class KostenRechnerTest extends Specification {
         then:
         // E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
         rechner.sonderzahlung(stichtag, ans) == euros(1.3 * 0.7531 * 3367.04)
+    }
+
+    @Unroll
+    def "sonderzuschlag anteilig ab Monat #beginnMonth"() {
+
+        given:
+        def stichtag = YearMonth.of(2020, 11)
+        def fullSalary = euros(1.3 * 0.7531 * 3367.04)
+
+        expect:
+        // E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
+        rechner.sonderzahlung(stichtag, ans) == fullSalary * anteil
+
+        where:
+        start << (1..11).collect { YearMonth.of(2020, it) }
+        anteil = (1 + 12 - start.month.value) / 12
+        ans = Anstellung.of(start,
+                new Stelle(gruppe: Gruppe.E10, stufe: Stufe.eins),
+                start.plusYears(2))
     }
 }
