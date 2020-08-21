@@ -8,6 +8,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.*
 
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Log4j2
 class SerieSettingsController {
@@ -63,14 +64,15 @@ class SerieSettingsController {
     }
 
     Stelle getStelle() {
-        def istWeiter = weiter.selectedProperty().value
-        def beginn = istWeiter ? seit.value : von.value
-        def umfang = istWeiter ? umfangSeit.value : umfang.value
-        return new Stelle(gruppe: gruppe.value, stufe: stufe.value, beginn: beginn, umfang: umfang)
+        def umfang = weiter.selectedProperty().value ? umfangSeit.value : umfang.value
+        return Stelle.of(gruppe.value, stufe.value, umfang)
+    }
+
+    YearMonth getAnstellungsBeginn() {
+        YearMonth.from(weiter.selectedProperty().value ? seit.value : von.value)
     }
 
     def getVonBis() {
-        [von.value, bis.value]
+        [von.value, bis.value].collect { YearMonth.from(it) }
     }
-
 }

@@ -1,6 +1,5 @@
 package abakusFx
 
-
 import abakus.Gruppe
 import abakus.Monatskosten
 import abakus.Stufe
@@ -14,17 +13,15 @@ import javafx.scene.control.Label
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.TextFieldTableCell
-import javafx.util.converter.LocalDateStringConverter
 import org.javamoney.moneta.Money
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.YearMonth
 
 @Log4j2
 class SerieTableController {
 
     static class Kosten {
-        ObjectProperty<LocalDate> monat
+        ObjectProperty<YearMonth> monat
         ObjectProperty<Gruppe> gruppe
         ObjectProperty<Stufe> stufe
         ObjectProperty<BigDecimal> umfang
@@ -45,7 +42,7 @@ class SerieTableController {
     private TableView<Kosten> kostenTabelle
 
     @FXML
-    private TableColumn<Kosten, LocalDate> monatCol
+    private TableColumn<Kosten, YearMonth> monatCol
     @FXML
     private TableColumn<Kosten, Gruppe> gruppeCol
     @FXML
@@ -60,8 +57,7 @@ class SerieTableController {
     @FXML
     void initialize() {
         monatCol.setCellValueFactory(cellData -> cellData.getValue().getMonat())
-        monatCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter(DateTimeFormatter.ofPattern("LLL yyyy"),
-                DateTimeFormatter.ofPattern("LLL yyyy"))))
+        monatCol.setCellFactory(TextFieldTableCell.forTableColumn(new Converters.YearMonthConverter()))
 
         gruppeCol.setCellValueFactory(cellData -> cellData.getValue().getGruppe())
         stufeCol.setCellValueFactory(cellData -> cellData.getValue().getStufe())

@@ -11,6 +11,7 @@ import org.javamoney.moneta.format.CurrencyStyle;
 import javax.money.format.AmountFormatQueryBuilder;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
+import java.time.YearMonth;
 
 public class Converters {
 
@@ -28,6 +29,19 @@ public class Converters {
         @Override
         public Stufe fromString(String string) {
             return Stufe.fromString(string);
+        }
+    }
+
+    public static class YearMonthConverter extends StringConverter<YearMonth> {
+
+        @Override
+        public String toString(YearMonth yearMonth) {
+            return yearMonth.toString();
+        }
+
+        @Override
+        public YearMonth fromString(String string) {
+            return YearMonth.parse(string);
         }
     }
 

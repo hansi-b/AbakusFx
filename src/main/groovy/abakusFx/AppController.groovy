@@ -1,8 +1,7 @@
 package abakusFx
 
-
+import abakus.Anstellung
 import abakus.KostenRechner
-import abakus.Stelle
 import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
 import javafx.application.Platform
@@ -12,7 +11,7 @@ import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
 
-import java.time.LocalDate
+import java.time.YearMonth
 
 @Log4j2
 class AppController {
@@ -42,9 +41,9 @@ class AppController {
     }
 
     def fillKostenTable() {
-        Stelle s = serieSettingsController.stelle
-        def (LocalDate von, LocalDate bis) = serieSettingsController.vonBis
-        def kl = rechner.monatsKosten(s, von, bis)
+        def (YearMonth von, YearMonth bis) = serieSettingsController.vonBis
+        def ans = Anstellung.of(serieSettingsController.anstellungsBeginn, serieSettingsController.stelle, bis)
+        def kl = rechner.monatsKosten(ans, von, bis)
         serieTableController.kosten.setAll(kl.collect { SerieTableController.Kosten.of(it) })
     }
 
