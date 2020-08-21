@@ -41,11 +41,11 @@ class KostenRechner {
             throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}")
 
         anstellung.monatsStellen(von, bis).collect {
-            def ym = it.key
+            def current = it.key
             def aktStelle = it.value
-            def money = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, ym.year, aktStelle.umfang)
-            def sz = euros(0) // sonderzahlung(current, bis, ausgangsStelle)
-            new Monatskosten(stichtag: ym, stelle: aktStelle, brutto: money, sonderzahlung: sz)
+            def money = monatsBrutto(aktStelle.gruppe, aktStelle.stufe, current.year, aktStelle.umfang)
+            def sz = sonderzahlung(current, anstellung)
+            new Monatskosten(stichtag: current, stelle: aktStelle, brutto: money, sonderzahlung: sz)
         }
     }
 

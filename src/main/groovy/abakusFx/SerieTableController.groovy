@@ -33,7 +33,7 @@ class SerieTableController {
             k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe)
             k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe)
             k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfang)
-            k.kosten = new SimpleObjectProperty<>(mKosten.brutto)
+            k.kosten = new SimpleObjectProperty<>(mKosten.brutto.add(mKosten.sonderzahlung))
             return k
         }
     }
