@@ -8,7 +8,6 @@ import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
 
 import java.time.YearMonth
@@ -26,16 +25,13 @@ class AppController {
     @FXML
     private SerieTableController serieTableController
 
-    @FXML
-    private Label status
-
     private KostenRechner rechner
 
     @FXML
     void initialize() {
         def tarif = new ÖtvCsvParser().parseTarif()
         rechner = new KostenRechner(tarif)
-        setStatus("Tarif geladen")
+        log.info "Tarif geladen"
 
         calcKosten.setOnAction(a -> fillKostenTable())
     }
@@ -45,11 +41,6 @@ class AppController {
         def ans = Anstellung.of(serieSettingsController.anstellungsBeginn, serieSettingsController.stelle, bis)
         def kl = rechner.monatsKosten(ans, von, bis)
         serieTableController.kosten.setAll(kl.collect { SerieTableController.Kosten.of(it) })
-    }
-
-    def setStatus(String msg) {
-        status.setText(msg)
-        log.info msg
     }
 
     def exit(ActionEvent actionEvent) {
