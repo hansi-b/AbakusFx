@@ -70,4 +70,11 @@ class SerieTableController {
         kostenTabelle.setPlaceholder(new Label("Keine Daten"))
         kostenTabelle.setItems(kosten)
     }
+
+    /**
+     * @param kostenListe the Monatskosten which to display
+     */
+    boolean updateKosten(List<Monatskosten> kostenListe) {
+        kosten.setAll(kostenListe.collect { Kosten.of(it) })
+    }
 }
