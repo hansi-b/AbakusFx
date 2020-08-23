@@ -1,5 +1,6 @@
 package abakusFx
 
+import abakus.Anstellung
 import abakus.Gruppe
 import abakus.Stelle
 import abakus.Stufe
@@ -68,11 +69,12 @@ class SerieSettingsController {
         return Stelle.of(gruppe.value, stufe.value, umfang)
     }
 
-    YearMonth getAnstellungsBeginn() {
-        YearMonth.from(weiter.selectedProperty().value ? seit.value : von.value)
-    }
-
     def getVonBis() {
         [von.value, bis.value].collect { YearMonth.from(it) }
+    }
+
+    def getAnstellung() {
+        def beginn = YearMonth.from(weiter.selectedProperty().value ? seit.value : von.value)
+        Anstellung.of(beginn, stelle, YearMonth.from(bis.value))
     }
 }

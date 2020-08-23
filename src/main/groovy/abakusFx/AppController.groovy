@@ -1,6 +1,6 @@
 package abakusFx
 
-import abakus.Anstellung
+
 import abakus.KostenRechner
 import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
@@ -44,8 +44,7 @@ class AppController {
 
     def fillKostenTable() {
         def (YearMonth von, YearMonth bis) = serieSettingsController.vonBis
-        def ans = Anstellung.of(serieSettingsController.anstellungsBeginn, serieSettingsController.stelle, bis)
-        def moKosten = rechner.monatsKosten(ans, von, bis)
+        def moKosten = rechner.monatsKosten(serieSettingsController.anstellung, von, bis)
         serieTableController.updateKosten(moKosten)
 
         // TODO: extract MonatskostenCompound with methods
