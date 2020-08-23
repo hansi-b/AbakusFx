@@ -5,6 +5,7 @@ import abakus.Gruppe
 import abakus.Stelle
 import abakus.Stufe
 import groovy.util.logging.Log4j2
+import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.*
 
@@ -43,6 +44,7 @@ class SerieSettingsController {
     @FXML
     Spinner<Integer> umfangSeit
 
+
     @FXML
     void initialize() {
 
@@ -62,6 +64,11 @@ class SerieSettingsController {
         [seitLabel, seit, umfangSeitLabel, umfangSeit].each {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
+    }
+
+    public <T> void addChangeListener(ChangeListener<T> changeListener) {
+        [von, bis, gruppe, stufe, umfang, seit, umfangSeit].each { it.valueProperty().addListener(changeListener) }
+        weiter.selectedProperty().addListener(changeListener)
     }
 
     Stelle getStelle() {

@@ -40,6 +40,10 @@ class AppController {
         log.info "Tarif geladen"
 
         calcKosten.setOnAction(a -> fillKostenTable())
+        serieSettingsController.addChangeListener((_a, _b, _c) -> {
+            serieTableController.clearKosten()
+            clearSummenText()
+        })
     }
 
     def fillKostenTable() {
@@ -55,6 +59,10 @@ class AppController {
     def setSummenText(summe) {
         def summeStr = new Converters.MoneyConverter().toString(summe)
         summeLabel.setText("Summe: $summeStr")
+    }
+
+    def clearSummenText() {
+        summeLabel.setText("")
     }
 
 

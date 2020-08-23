@@ -77,4 +77,8 @@ class SerieTableController {
     boolean updateKosten(List<Monatskosten> kostenListe) {
         kosten.setAll(kostenListe.collect { Kosten.of(it) })
     }
+
+    void clearKosten() {
+        kosten.clear()
+    }
 }
