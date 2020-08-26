@@ -65,8 +65,11 @@ class AppController {
         summeLabel.setText("")
     }
 
-
     def exit(ActionEvent actionEvent) {
         Platform.exit()
+    }
+
+    def stop() {
+        serieSettingsController.stop()
     }
 }

@@ -14,12 +14,15 @@ import java.util.logging.Logger
 @Log4j2
 class App extends Application {
 
+    private AppController mainController
+
     @Override
     void start(Stage primaryStage) throws Exception {
         Locale.setDefault(Constants.locale)
 
         def fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"))
         Parent root = fxmlLoader.load()
+        mainController = fxmlLoader.getController()
 
         primaryStage.setTitle("Abakus")
         primaryStage.setScene(new Scene(root))
@@ -31,5 +34,10 @@ class App extends Application {
         logger.setLevel(Level.WARNING)
 
         launch(App, args)
+    }
+
+    @Override
+    void stop() {
+        mainController.stop()
     }
 }
