@@ -65,6 +65,7 @@ class AppController {
     }
 
     def exit(ActionEvent actionEvent) {
+        log.debug "Exiting on $actionEvent"
         Platform.exit()
     }
 
