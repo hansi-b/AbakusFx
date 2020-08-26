@@ -104,7 +104,7 @@ class KostenRechnerTest extends Specification {
     }
 
     @Unroll
-    def "sonderzuschlag anteilig ab Monat #beginnMonth"() {
+    def "sonderzuschlag anteilig ab #start"() {
 
         given:
         def stichtag = YearMonth.of(2020, 11)
