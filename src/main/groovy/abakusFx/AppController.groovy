@@ -1,6 +1,5 @@
 package abakusFx
 
-
 import abakus.KostenRechner
 import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
@@ -8,7 +7,7 @@ import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.control.Label
+import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 
 import java.time.YearMonth
@@ -31,7 +30,7 @@ class AppController {
     private KostenRechner rechner
 
     @FXML
-    private Label summeLabel
+    private TextField result
 
     @FXML
     void initialize() {
@@ -58,11 +57,11 @@ class AppController {
 
     def setSummenText(summe) {
         def summeStr = new Converters.MoneyConverter().toString(summe)
-        summeLabel.setText("Summe: $summeStr")
+        result.setText("Summe: $summeStr")
     }
 
     def clearSummenText() {
-        summeLabel.setText("")
+        result.setText("")
     }
 
     def exit(ActionEvent actionEvent) {

@@ -24,11 +24,11 @@
     </center>
     <bottom>
         <VBox styleClass="text-pane">
-            <Label fx:id="summeLabel">
+            <TextField fx:id="result" editable="false">
                 <padding>
                     <Insets top="2" left="2" bottom="2" right="2"/>
                 </padding>
-            </Label>
+            </TextField>
         </VBox>
     </bottom>
 </BorderPane>
