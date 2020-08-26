@@ -74,7 +74,7 @@ public class Converters {
             @Override
             public Integer fromString(String string) {
                 String numStr = string.replaceAll("%", "");
-                return numStr.isEmpty() ? 0 : Integer.valueOf(numStr);
+                return numStr.isEmpty() ? 0 : Integer.parseInt(numStr);
             }
         }
 
