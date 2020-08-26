@@ -27,9 +27,15 @@ dependencies {
     testImplementation 'org.objenesis:objenesis:3.1'
     testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
 }
+
+tasks.withType(GroovyCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
 test {
     useJUnitPlatform()
 }
+
 application {
     // Define the main class for the application.
     mainClassName = 'abakusFx.App'
