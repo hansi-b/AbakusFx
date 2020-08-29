@@ -10,7 +10,11 @@
             stylesheets="app.css">
     <top>
         <MenuBar>
-            <Menu fx:id="menuMain" mnemonicParsing="true" text="Main">
+            <Menu fx:id="menuMain" mnemonicParsing="true" text="Datei">
+                <MenuItem accelerator="CTRL+N" text="_Neu" onAction="#newSeries"></MenuItem>
+                <MenuItem accelerator="CTRL+L" text="_Laden ..." onAction="#loadSeries"></MenuItem>
+                <MenuItem accelerator="CTRL+S" text="_Speichern" onAction="#saveSeries"></MenuItem>
+                <MenuItem accelerator="CTRL+SHIFT+S" text="_Speichern als ..." onAction="#saveSeriesAs"></MenuItem>
                 <MenuItem accelerator="CTRL+Q" text="_Beenden" onAction="#exit"></MenuItem>
             </Menu>
         </MenuBar>

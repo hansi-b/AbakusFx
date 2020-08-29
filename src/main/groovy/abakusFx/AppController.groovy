@@ -64,8 +64,28 @@ class AppController {
         result.setText("")
     }
 
+    def newSeries(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#newSeries on $actionEvent"
+
+    }
+
+    def loadSeries(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#loadSeries on $actionEvent"
+
+    }
+
+    def saveSeries(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#saveSeries on $actionEvent"
+
+    }
+
+    def saveSeriesAs(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#saveSeriesAs on $actionEvent"
+
+    }
+
     def exit(ActionEvent actionEvent) {
-        log.debug "Exiting on $actionEvent"
+        if (log.isTraceEnabled()) log.trace "#exit on $actionEvent"
         Platform.exit()
     }
 
