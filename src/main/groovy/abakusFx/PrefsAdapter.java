@@ -27,11 +27,11 @@ class PrefsAdapter<T, K extends Enum<K>> {
     }
 
     public String get(K key) {
-        return backingPrefs().get(key.name(), "");
+        return backingPrefs().get(key.name(), null);
     }
 
     public boolean contains(K key) throws PrefsException {
-        return backingPrefs().get(key.name(), null) != null;
+        return get(key) != null;
     }
 
     public void remove(K key) {

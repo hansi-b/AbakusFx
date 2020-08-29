@@ -44,8 +44,6 @@ class SerieSettingsController {
     @FXML
     Spinner<Integer> umfangSeit
 
-    private SeriesPrefs seriesPrefs
-
     @FXML
     void initialize() {
 
@@ -57,8 +55,6 @@ class SerieSettingsController {
         [seitLabel, seit, umfangSeitLabel, umfangSeit].each {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
-
-        seriesPrefs = SeriesPrefs.create()
 
         setState(SeriesModel.fallback())
     }
@@ -98,13 +94,13 @@ class SerieSettingsController {
     }
 
     def saveSeries(File file) {
-        log.info "Saving to '$file' ..."
+        log.info "Saving project to '$file' ..."
         String modelYaml = new ModelMapper().asString(getState())
         Files.writeString(file.toPath(), modelYaml)
     }
 
     void loadSeries(File file) {
-        log.info "Loading from '$file' ..."
+        log.info "Loading project from '$file' ..."
         def modelYaml = Files.readString(file.toPath())
         setState(new ModelMapper().fromString(modelYaml, SeriesModel.class))
     }

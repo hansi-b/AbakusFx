@@ -1,22 +1,25 @@
 package abakusFx;
 
-class SeriesPrefs {
+import java.io.File;
+import java.util.Optional;
+
+class AppPrefs {
 
     enum PrefKeys {
         _version,
-        seriesSettings
+        lastProject
     }
 
     enum PrefVersion {
-        v1_singleSeries // single tab model
+        v1
     }
 
-    private final PrefVersion currentVersion = PrefVersion.v1_singleSeries;
+    private final PrefVersion currentVersion = PrefVersion.v1;
 
-    private final PrefsAdapter<SerieSettingsController, PrefKeys> prefs = new PrefsAdapter<>(SerieSettingsController.class);
+    private final PrefsAdapter<App, PrefKeys> prefs = new PrefsAdapter<>(App.class);
 
-    static SeriesPrefs create() {
-        SeriesPrefs prefs = new SeriesPrefs();
+    static AppPrefs create() {
+        AppPrefs prefs = new AppPrefs();
         prefs.initialize();
         return prefs;
     }
@@ -27,9 +30,6 @@ class SeriesPrefs {
     private void initialize() {
 
         if (!prefs.contains(PrefKeys._version)) {
-            /* either never used here before, or we need to remove pre-version pref content */
-            if (prefs.contains(PrefKeys.seriesSettings))
-                prefs.remove(PrefKeys.seriesSettings);
             prefs.put(PrefKeys._version, currentVersion.name());
         }
 
@@ -43,7 +43,12 @@ class SeriesPrefs {
         }
     }
 
-    String getModelString() {
-        return prefs.get(PrefKeys.seriesSettings);
+    Optional<File> getLastProject() {
+        String s = prefs.get(PrefKeys.lastProject);
+        return Optional.ofNullable(s).map(File::new);
+    }
+
+    void setLastProject(File projectFile) {
+        prefs.put(PrefKeys.lastProject, projectFile.getAbsolutePath());
     }
 }

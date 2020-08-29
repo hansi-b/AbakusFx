@@ -10,7 +10,6 @@ import javafx.scene.control.Button
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
-import javafx.stage.Window
 
 import java.time.YearMonth
 
@@ -34,6 +33,8 @@ class AppController {
     @FXML
     private TextField result
 
+    private AppPrefs prefs
+
     @FXML
     void initialize() {
         def tarif = new ÖtvCsvParser().parseTarif()
@@ -45,6 +46,14 @@ class AppController {
             serieTableController.clearKosten()
             clearSummenText()
         })
+
+        prefs = AppPrefs.create()
+        prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile))
+    }
+
+    private loadAndShow(File projectFile) {
+        serieSettingsController.loadSeries(projectFile)
+        fillKostenTable()
     }
 
     def fillKostenTable() {
@@ -66,27 +75,32 @@ class AppController {
         result.setText("")
     }
 
-    def newSeries(ActionEvent actionEvent) {
-        if (log.isTraceEnabled()) log.trace "#newSeries on $actionEvent"
+    def newProject(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#newProject on $actionEvent"
 
     }
 
-    def loadSeries(ActionEvent actionEvent) {
-        if (log.isTraceEnabled()) log.trace "#loadSeries on $actionEvent"
-        FileChooser fileChooser = createAbaChooser()
+    def loadProject(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#loadProject on $actionEvent"
+        FileChooser fileChooser = createAbaChooser("Projekt laden")
         File file = fileChooser.showOpenDialog(topLevelPane.getScene().getWindow())
         if (file == null) {
-            if (log.isDebugEnabled()) log.debug "No file for loading selected"
+            if (log.isDebugEnabled()) log.debug "No project source file for loading selected"
             return
         }
-        serieSettingsController.loadSeries(file)
+        loadAndShow(file)
+        prefs.setLastProject(file)
     }
 
-    //TODO: remember previous directory
-    def saveSeries(ActionEvent actionEvent) {
-        if (log.isTraceEnabled()) log.trace "#saveSeries on $actionEvent"
+    def saveProject(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#saveProject on $actionEvent"
 
-        FileChooser fileChooser = createAbaChooser()
+    }
+
+    def saveProjectAs(ActionEvent actionEvent) {
+        if (log.isTraceEnabled()) log.trace "#saveProjectAs on $actionEvent"
+
+        FileChooser fileChooser = createAbaChooser("Projekt speichern")
         File file = fileChooser.showSaveDialog(topLevelPane.getScene().getWindow())
         if (file == null) {
             if (log.isDebugEnabled()) log.debug "No file for saving selected"
@@ -95,33 +109,16 @@ class AppController {
         if (!file.getName().endsWith(".aba"))
             file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
         serieSettingsController.saveSeries(file)
+        prefs.setLastProject(file)
     }
 
-    private FileChooser createAbaChooser() {
+    private FileChooser createAbaChooser(String title) {
         FileChooser fileChooser = new FileChooser()
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"))
-        fileChooser.setTitle("Projekt speichern")
-        fileChooser
-    }
-
-    def saveSeriesAs(ActionEvent actionEvent) {
-        if (log.isTraceEnabled()) log.trace "#saveSeriesAs on $actionEvent"
-
-        Window stage = topLevelPane.getScene().getWindow()
-
-        FileChooser fileChooser = new FileChooser()
-        fileChooser.setTitle("Projekt speichern")
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"))
-        File file = fileChooser.showSaveDialog(stage)
-        if (file == null) {
-            if (log.isDebugEnabled()) log.debug "No file for saving selected"
-            return
-        }
-        if (!file.getName().endsWith(".aba"))
-            file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
-        serieSettingsController.saveSeries(file)
+        fileChooser.setTitle(title)
+        prefs.getLastProject().ifPresent(f -> fileChooser.setInitialDirectory(f.getParentFile()))
+        return fileChooser
     }
 
     def exit(ActionEvent actionEvent) {
