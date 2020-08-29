@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.*
 
+import java.nio.file.Files
 import java.time.YearMonth
 
 @Log4j2
@@ -102,9 +103,13 @@ class SerieSettingsController {
         return Stelle.of(gruppe.value, stufe.value, umfang)
     }
 
-    def stop() {
-        log.info "Saving ..."
+    def saveSeriesToFile(File targetFile) {
+        log.info "Saving to '$targetFile' ..."
         String modelYaml = new ModelMapper().asString(getState())
-        seriesPrefs.setModelString(modelYaml)
+        Files.writeString(targetFile.toPath(), modelYaml)
+    }
+
+    def stop() {
+        if (log.isDebugEnabled()) log.debug "Stopping ..."
     }
 }

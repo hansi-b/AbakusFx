@@ -9,6 +9,8 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
+import javafx.stage.FileChooser
+import javafx.stage.Window
 
 import java.time.YearMonth
 
@@ -74,14 +76,46 @@ class AppController {
 
     }
 
+    //TODO: remember previous directory
     def saveSeries(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#saveSeries on $actionEvent"
 
+        FileChooser fileChooser = createAbaChooser()
+        File file = fileChooser.showSaveDialog(topLevelPane.getScene().getWindow())
+        if (file == null) {
+            if (log.isDebugEnabled()) log.debug "No file for saving selected"
+            return
+        }
+        if (!file.getName().endsWith(".aba"))
+            file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
+        serieSettingsController.saveSeriesToFile(file)
+    }
+
+    private FileChooser createAbaChooser() {
+        FileChooser fileChooser = new FileChooser()
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"))
+        fileChooser.setTitle("Projekt speichern")
+        fileChooser
     }
 
     def saveSeriesAs(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#saveSeriesAs on $actionEvent"
 
+        Window stage = topLevelPane.getScene().getWindow()
+
+        FileChooser fileChooser = new FileChooser()
+        fileChooser.setTitle("Projekt speichern")
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"))
+        File file = fileChooser.showSaveDialog(stage)
+        if (file == null) {
+            if (log.isDebugEnabled()) log.debug "No file for saving selected"
+            return
+        }
+        if (!file.getName().endsWith(".aba"))
+            file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
+        serieSettingsController.saveSeriesToFile(file)
     }
 
     def exit(ActionEvent actionEvent) {

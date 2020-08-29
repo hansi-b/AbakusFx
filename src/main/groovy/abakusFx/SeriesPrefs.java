@@ -46,8 +46,4 @@ class SeriesPrefs {
     String getModelString() {
         return prefs.get(PrefKeys.seriesSettings);
     }
-
-    void setModelString(String modelString) {
-        prefs.put(PrefKeys.seriesSettings, modelString);
-    }
 }
