@@ -60,13 +60,7 @@ class SerieSettingsController {
 
         seriesPrefs = SeriesPrefs.create()
 
-        setState(readModel())
-    }
-
-
-    private SeriesModel readModel() {
-        String modelString = seriesPrefs.getModelString()
-        return modelString ? new ModelMapper().fromString(modelString, SeriesModel.class) : SeriesModel.fallback()
+        setState(SeriesModel.fallback())
     }
 
     void setState(SeriesModel model) {
@@ -84,7 +78,7 @@ class SerieSettingsController {
         SeriesModel.of(this)
     }
 
-    public <T> void addChangeListener(ChangeListener<T> changeListener) {
+    default <T> void addChangeListener(ChangeListener<T> changeListener) {
         [von, bis, gruppe, stufe, umfang, seit, umfangSeit].each { it.valueProperty().addListener(changeListener) }
         weiter.selectedProperty().addListener(changeListener as ChangeListener<? super Boolean>)
     }
@@ -103,10 +97,16 @@ class SerieSettingsController {
         return Stelle.of(gruppe.value, stufe.value, umfang)
     }
 
-    def saveSeriesToFile(File targetFile) {
-        log.info "Saving to '$targetFile' ..."
+    def saveSeries(File file) {
+        log.info "Saving to '$file' ..."
         String modelYaml = new ModelMapper().asString(getState())
-        Files.writeString(targetFile.toPath(), modelYaml)
+        Files.writeString(file.toPath(), modelYaml)
+    }
+
+    void loadSeries(File file) {
+        log.info "Loading from '$file' ..."
+        def modelYaml = Files.readString(file.toPath())
+        setState(new ModelMapper().fromString(modelYaml, SeriesModel.class))
     }
 
     def stop() {

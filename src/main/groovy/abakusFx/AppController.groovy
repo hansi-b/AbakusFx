@@ -73,7 +73,13 @@ class AppController {
 
     def loadSeries(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#loadSeries on $actionEvent"
-
+        FileChooser fileChooser = createAbaChooser()
+        File file = fileChooser.showOpenDialog(topLevelPane.getScene().getWindow())
+        if (file == null) {
+            if (log.isDebugEnabled()) log.debug "No file for loading selected"
+            return
+        }
+        serieSettingsController.loadSeries(file)
     }
 
     //TODO: remember previous directory
@@ -88,7 +94,7 @@ class AppController {
         }
         if (!file.getName().endsWith(".aba"))
             file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
-        serieSettingsController.saveSeriesToFile(file)
+        serieSettingsController.saveSeries(file)
     }
 
     private FileChooser createAbaChooser() {
@@ -115,7 +121,7 @@ class AppController {
         }
         if (!file.getName().endsWith(".aba"))
             file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
-        serieSettingsController.saveSeriesToFile(file)
+        serieSettingsController.saveSeries(file)
     }
 
     def exit(ActionEvent actionEvent) {
