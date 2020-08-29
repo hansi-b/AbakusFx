@@ -14,8 +14,6 @@ import java.time.YearMonth
 @Log4j2
 class SerieSettingsController {
 
-    private static final String SERIES_MODEL_KEY = "seriesSettings"
-
     @FXML
     DatePicker von
     @FXML
@@ -45,6 +43,8 @@ class SerieSettingsController {
     @FXML
     Spinner<Integer> umfangSeit
 
+    private SeriesPrefs seriesPrefs
+
     @FXML
     void initialize() {
 
@@ -57,11 +57,14 @@ class SerieSettingsController {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
 
+        seriesPrefs = SeriesPrefs.create()
+
         setState(readModel())
     }
 
-    private static SeriesModel readModel() {
-        String modelString = new ModelStore().get(SerieSettingsController.class, SERIES_MODEL_KEY)
+
+    private SeriesModel readModel() {
+        String modelString = seriesPrefs.getModelString()
         return modelString ? new ModelMapper().fromString(modelString, SeriesModel.class) : SeriesModel.fallback()
     }
 
@@ -85,11 +88,6 @@ class SerieSettingsController {
         weiter.selectedProperty().addListener(changeListener as ChangeListener<? super Boolean>)
     }
 
-    Stelle getStelle() {
-        def umfang = weiter.selectedProperty().value ? umfangSeit.value : umfang.value
-        return Stelle.of(gruppe.value, stufe.value, umfang)
-    }
-
     def getVonBis() {
         [von.value, bis.value].collect { YearMonth.from(it) }
     }
@@ -99,9 +97,14 @@ class SerieSettingsController {
         Anstellung.of(beginn, stelle, YearMonth.from(bis.value))
     }
 
+    private Stelle getStelle() {
+        def umfang = weiter.selectedProperty().value ? umfangSeit.value : umfang.value
+        return Stelle.of(gruppe.value, stufe.value, umfang)
+    }
+
     def stop() {
         log.info "Saving ..."
         String modelYaml = new ModelMapper().asString(getState())
-        new ModelStore().put(SerieSettingsController.class, SERIES_MODEL_KEY, modelYaml)
+        seriesPrefs.setModelString(modelYaml)
     }
 }
