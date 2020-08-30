@@ -13,7 +13,7 @@
             <Menu fx:id="menuMain" mnemonicParsing="true" text="Datei">
                 <MenuItem accelerator="CTRL+N" text="_Neu" onAction="#newProject"></MenuItem>
                 <MenuItem accelerator="CTRL+L" text="_Laden ..." onAction="#loadProject"></MenuItem>
-                <MenuItem accelerator="CTRL+S" text="_Speichern" onAction="#saveProject"></MenuItem>
+                <MenuItem fx:id="saveItem" accelerator="CTRL+S" text="_Speichern" onAction="#saveProject"></MenuItem>
                 <MenuItem accelerator="CTRL+SHIFT+S" text="_Speichern als ..." onAction="#saveProjectAs"></MenuItem>
                 <MenuItem accelerator="CTRL+Q" text="_Beenden" onAction="#exit"></MenuItem>
             </Menu>

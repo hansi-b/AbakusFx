@@ -4,9 +4,14 @@ import abakus.KostenRechner
 import abakus.ÖtvCsvParser
 import groovy.util.logging.Log4j2
 import javafx.application.Platform
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.StringProperty
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.control.MenuItem
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
@@ -22,6 +27,9 @@ class AppController {
     private BorderPane topLevelPane
 
     @FXML
+    private MenuItem saveItem
+
+    @FXML
     private SerieSettingsController serieSettingsController
     @FXML
     private Button calcKosten
@@ -33,8 +41,10 @@ class AppController {
     @FXML
     private TextField result
 
-    private AppTitle appTitle
     private AppPrefs prefs
+
+    private BooleanProperty isProjectDirty
+    private StringProperty currentProjectName
 
     @FXML
     void initialize() {
@@ -42,11 +52,15 @@ class AppController {
         rechner = new KostenRechner(tarif)
         log.info "Tarif geladen"
 
-        calcKosten.setOnAction(a -> fillKostenTable())
+        isProjectDirty = new SimpleBooleanProperty(false)
+        currentProjectName = new  SimpleStringProperty(null)
+
+        calcKosten.setOnAction(a -> fillResult())
         serieSettingsController.addChangeListener((_a, _b, _c) -> {
-            serieTableController.clearKosten()
-            clearSummenText()
+            clearResult()
+            isProjectDirty.set(true)
         })
+        saveItem.disableProperty().bind(isProjectDirty.not())
 
         // TODO: introduce model with properties
         prefs = AppPrefs.create()
@@ -57,33 +71,38 @@ class AppController {
      * (indirectly via the AppTitle)
      */
     void fill(AppTitle appTitle) {
-        this.appTitle = appTitle
+        appTitle.isDirty.bind(isProjectDirty)
+        appTitle.projectName.bind(currentProjectName)
+
         prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile))
     }
 
     private loadAndShow(File projectFile) {
-        serieSettingsController.loadSeries(projectFile)
-        fillKostenTable()
-        appTitle.projectName.setValue(projectFile.getName())
-        appTitle.isDirty.set(false)
+        try {
+            serieSettingsController.loadSeries(projectFile)
+        } catch(IOException ioEx) {
+            log.error "Could not load project file '$projectFile': $ioEx"
+            setCurrentProject(null)
+            return
+        }
+        fillResult()
+        setCurrentProject(projectFile)
     }
 
-    def fillKostenTable() {
+    def fillResult() {
         def (YearMonth von, YearMonth bis) = serieSettingsController.vonBis
         def moKosten = rechner.monatsKosten(serieSettingsController.anstellung, von, bis)
         serieTableController.updateKosten(moKosten)
 
+
         // TODO: extract MonatskostenCompound with methods
         def summe = moKosten.inject(euros(0)) { c, i -> c.add(i.brutto).add(i.sonderzahlung) }
-        setSummenText(summe)
-    }
-
-    def setSummenText(summe) {
         def summeStr = new Converters.MoneyConverter().toString(summe)
         result.setText("Summe: $summeStr")
     }
 
-    def clearSummenText() {
+    def clearResult() {
+        serieTableController.clearKosten()
         result.setText("")
     }
 
@@ -101,12 +120,18 @@ class AppController {
             return
         }
         loadAndShow(file)
-        prefs.setLastProject(file)
+    }
+
+    def setCurrentProject(File file) {
+        currentProjectName.set(file ? file.getName() : null)
+        file ? prefs.setLastProject(file) : prefs.removeLastProject()
+        isProjectDirty.set(false)
     }
 
     def saveProject(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#saveProject on $actionEvent"
-
+        serieSettingsController.saveSeries(prefs.getLastProject().get())
+        isProjectDirty.set(false)
     }
 
     def saveProjectAs(ActionEvent actionEvent) {
@@ -120,8 +145,8 @@ class AppController {
         }
         if (!file.getName().endsWith(".aba"))
             file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
-        serieSettingsController.saveSeries(file)
-        prefs.setLastProject(file)
+        setCurrentProject(file)
+        saveProject(actionEvent)
     }
 
     private FileChooser createAbaChooser(String title) {

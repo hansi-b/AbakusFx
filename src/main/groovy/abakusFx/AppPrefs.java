@@ -51,4 +51,8 @@ class AppPrefs {
     void setLastProject(File projectFile) {
         prefs.put(PrefKeys.lastProject, projectFile.getAbsolutePath());
     }
+
+    void removeLastProject() {
+        prefs.remove(PrefKeys.lastProject);
+    }
 }
