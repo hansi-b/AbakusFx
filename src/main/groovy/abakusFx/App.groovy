@@ -6,6 +6,7 @@ import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.image.Image
 import javafx.stage.Stage
 
 import java.util.logging.Level
@@ -19,6 +20,12 @@ class App extends Application {
     @Override
     void start(Stage primaryStage) throws Exception {
         Locale.setDefault(Constants.locale)
+
+        def stream = getClass().getClassLoader().getResourceAsStream("logo.png")
+        if (!stream)
+            log.warn "Could not load application icon"
+        else
+            primaryStage.getIcons().add(new Image(stream))
 
         def fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"))
         Parent root = fxmlLoader.load()
