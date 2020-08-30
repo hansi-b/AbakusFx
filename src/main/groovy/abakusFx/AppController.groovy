@@ -33,6 +33,7 @@ class AppController {
     @FXML
     private TextField result
 
+    private AppTitle appTitle
     private AppPrefs prefs
 
     @FXML
@@ -47,13 +48,24 @@ class AppController {
             clearSummenText()
         })
 
+        // TODO: introduce model with properties
         prefs = AppPrefs.create()
+    }
+
+    /**
+     * to be called after the initialization is done, when we can access the stage
+     * (indirectly via the AppTitle)
+     */
+    void fill(AppTitle appTitle) {
+        this.appTitle = appTitle
         prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile))
     }
 
     private loadAndShow(File projectFile) {
         serieSettingsController.loadSeries(projectFile)
         fillKostenTable()
+        appTitle.projectName.setValue(projectFile.getName())
+        appTitle.isDirty.set(false)
     }
 
     def fillKostenTable() {
@@ -121,12 +133,12 @@ class AppController {
         return fileChooser
     }
 
+    def stop() {
+        serieSettingsController.stop()
+    }
+
     def exit(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#exit on $actionEvent"
         Platform.exit()
-    }
-
-    def stop() {
-        serieSettingsController.stop()
     }
 }

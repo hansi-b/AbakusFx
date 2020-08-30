@@ -3,6 +3,11 @@ package abakusFx
 import abakus.Constants
 import groovy.util.logging.Log4j2
 import javafx.application.Application
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
@@ -34,6 +39,8 @@ class App extends Application {
         primaryStage.setTitle("Abakus")
         primaryStage.setScene(new Scene(root))
         primaryStage.show()
+
+        mainController.fill(new AppTitle(primaryStage))
     }
 
     static void main(String[] args) {
@@ -46,5 +53,40 @@ class App extends Application {
     @Override
     void stop() {
         mainController.stop()
+    }
+}
+
+class AppTitle {
+    private final Stage stage
+
+    SimpleStringProperty projectName
+    BooleanProperty isDirty
+
+    AppTitle(Stage stage) {
+        this.stage = stage
+        this.projectName = new SimpleStringProperty("")
+        this.isDirty = new SimpleBooleanProperty(false)
+
+        projectName.addListener(new ChangeListener<String>() {
+            @Override
+            void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                updateTitle()
+            }
+        })
+        isDirty.addListener(new ChangeListener<Boolean>() {
+            @Override
+            void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                updateTitle()
+            }
+        })
+    }
+
+    private void updateTitle() {
+        def pName = projectName.get()
+        if (pName && pName.endsWith(".aba"))
+            pName = pName.substring(0, pName.length() - 4)
+        def projectPart = pName ? " [${pName}]" : ""
+        def dirtyPart = isDirty.get() ? "*" : ""
+        stage.setTitle("Abakus${projectPart}${dirtyPart}")
     }
 }
