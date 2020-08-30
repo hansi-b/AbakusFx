@@ -56,6 +56,10 @@ class SerieSettingsController {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
 
+        reset()
+    }
+
+    void reset() {
         setState(SeriesModel.fallback())
     }
 

@@ -94,7 +94,6 @@ class AppController {
         def moKosten = rechner.monatsKosten(serieSettingsController.anstellung, von, bis)
         serieTableController.updateKosten(moKosten)
 
-
         // TODO: extract MonatskostenCompound with methods
         def summe = moKosten.inject(euros(0)) { c, i -> c.add(i.brutto).add(i.sonderzahlung) }
         def summeStr = new Converters.MoneyConverter().toString(summe)
@@ -108,7 +107,8 @@ class AppController {
 
     def newProject(ActionEvent actionEvent) {
         if (log.isTraceEnabled()) log.trace "#newProject on $actionEvent"
-
+        serieSettingsController.reset()
+        setCurrentProject(null)
     }
 
     def loadProject(ActionEvent actionEvent) {
@@ -154,7 +154,8 @@ class AppController {
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"))
         fileChooser.setTitle(title)
-        prefs.getLastProject().ifPresent(f -> fileChooser.setInitialDirectory(f.getParentFile()))
+        def dir = prefs.getLastProject().map(File::getParentFile).orElse(new File(System.getProperty("user.home")))
+        fileChooser.setInitialDirectory(dir)
         return fileChooser
     }
 
