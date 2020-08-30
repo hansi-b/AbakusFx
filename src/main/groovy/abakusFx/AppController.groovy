@@ -60,7 +60,7 @@ class AppController {
             clearResult()
             isProjectDirty.set(true)
         })
-        saveItem.disableProperty().bind(isProjectDirty.not())
+        saveItem.disableProperty().bind(currentProjectName.isNull().or(isProjectDirty.not()))
 
         // TODO: introduce model with properties
         prefs = AppPrefs.create()
