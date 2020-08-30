@@ -57,11 +57,11 @@
 
         <Label text="seit" fx:id="seitLabel"/>
         <DatePicker fx:id="seit"/>
-        <Label text="Umfang" fx:id="umfangSeitLabel"/>
+        <!--<Label text="Umfang" fx:id="umfangSeitLabel"/>
         <Spinner fx:id="umfangSeit" editable="true" styleClass="percent-spinner">
             <valueFactory>
                 <Converters.PercentSpinnerFactory fx:id="umfangSeitSpinnerFactory"/>
             </valueFactory>
-        </Spinner>
+        </Spinner>-->
     </HBox>
 </VBox>

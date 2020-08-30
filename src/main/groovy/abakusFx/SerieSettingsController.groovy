@@ -40,11 +40,6 @@ class SerieSettingsController {
     DatePicker seit
 
     @FXML
-    Label umfangSeitLabel
-    @FXML
-    Spinner<Integer> umfangSeit
-
-    @FXML
     void initialize() {
 
         gruppe.getItems().setAll(Gruppe.values())
@@ -52,7 +47,7 @@ class SerieSettingsController {
         neuOderWeiter.getToggles().first().setSelected(true)
         stufe.getItems().setAll(Stufe.values())
 
-        [seitLabel, seit, umfangSeitLabel, umfangSeit].each {
+        [seitLabel, seit].each {
             it.disableProperty().bind(weiter.selectedProperty().not())
         }
 
@@ -71,7 +66,6 @@ class SerieSettingsController {
         umfang.getValueFactory().setValue(model.umfang)
         weiter.setSelected(model.isWeiter)
         seit.setValue(model.seit)
-        umfangSeit.getValueFactory().setValue(model.umfangSeit)
     }
 
     SeriesModel getState() {
@@ -79,7 +73,7 @@ class SerieSettingsController {
     }
 
     default <T> void addChangeListener(ChangeListener<T> changeListener) {
-        [von, bis, gruppe, stufe, umfang, seit, umfangSeit].each { it.valueProperty().addListener(changeListener) }
+        [von, bis, gruppe, stufe, umfang, seit].each { it.valueProperty().addListener(changeListener) }
         weiter.selectedProperty().addListener(changeListener as ChangeListener<? super Boolean>)
     }
 
@@ -93,8 +87,9 @@ class SerieSettingsController {
     }
 
     private Stelle getStelle() {
-        def umfang = weiter.selectedProperty().value ? umfangSeit.value : umfang.value
-        return Stelle.of(gruppe.value, stufe.value, umfang)
+        //issue #19 ignore the umfangSeit for the moment
+        //def umfang = weiter.selectedProperty().value ? umfangSeit.value : umfang.value
+        return Stelle.of(gruppe.value, stufe.value, umfang.value)
     }
 
     def saveSeries(File file) {

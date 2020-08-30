@@ -27,7 +27,8 @@ class SeriesModel {
                 umfang: ssc.umfang.getValue(),
                 isWeiter: ssc.weiter.isSelected(),
                 seit: ssc.seit.getValue(),
-                umfangSeit: ssc.umfangSeit.getValue())
+        //        umfangSeit: ssc.umfangSeit.getValue()
+        )
     }
 
 
@@ -40,7 +41,7 @@ class SeriesModel {
                 umfang: 100,
                 isWeiter: false,
                 seit: LocalDate.now().minusMonths(6),
-                umfangSeit: 100
+          //      umfangSeit: 100
         )
     }
 }
