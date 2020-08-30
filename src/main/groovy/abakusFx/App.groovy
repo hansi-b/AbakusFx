@@ -3,11 +3,6 @@ package abakusFx
 import abakus.Constants
 import groovy.util.logging.Log4j2
 import javafx.application.Application
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
@@ -56,37 +51,37 @@ class App extends Application {
     }
 }
 
+@Log4j2
 class AppTitle {
     private final Stage stage
 
-    SimpleStringProperty projectName
-    BooleanProperty isDirty
+    private String project
+    private boolean isDirty
 
     AppTitle(Stage stage) {
         this.stage = stage
-        this.projectName = new SimpleStringProperty("")
-        this.isDirty = new SimpleBooleanProperty(false)
+        this.project = null
+        this.isDirty = false
+    }
 
-        projectName.addListener(new ChangeListener<String>() {
-            @Override
-            void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                updateTitle()
-            }
-        })
-        isDirty.addListener(new ChangeListener<Boolean>() {
-            @Override
-            void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                updateTitle()
-            }
-        })
+    void updateProject(String newProject) {
+        log.debug "Updating title: project = '${newProject}'"
+        this.project = newProject
+        updateTitle()
+    }
+
+    void updateIsDirty(boolean newIsDirty) {
+        log.debug "Updating title: isDirty = '${newIsDirty}'"
+        this.isDirty = newIsDirty
+        updateTitle()
     }
 
     private void updateTitle() {
-        def pName = projectName.get()
+        def pName = project
         if (pName && pName.endsWith(".aba"))
             pName = pName.substring(0, pName.length() - 4)
         def projectPart = pName ? " [${pName}]" : ""
-        def dirtyPart = isDirty.get() ? "*" : ""
+        def dirtyPart = isDirty ? "*" : ""
         stage.setTitle("Abakus${projectPart}${dirtyPart}")
     }
 }

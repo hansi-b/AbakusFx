@@ -8,6 +8,8 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -53,7 +55,7 @@ class AppController {
         log.info "Tarif geladen"
 
         isProjectDirty = new SimpleBooleanProperty(false)
-        currentProjectName = new  SimpleStringProperty(null)
+        currentProjectName = new SimpleStringProperty("")
 
         calcKosten.setOnAction(a -> fillResult())
         serieSettingsController.addChangeListener((_a, _b, _c) -> {
@@ -71,8 +73,19 @@ class AppController {
      * (indirectly via the AppTitle)
      */
     void fill(AppTitle appTitle) {
-        appTitle.isDirty.bind(isProjectDirty)
-        appTitle.projectName.bind(currentProjectName)
+        currentProjectName.addListener(new ChangeListener<String>() {
+            @Override
+            void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                log.debug "project name change: $observable, $oldValue, $newValue'"
+                appTitle.updateProject(newValue)
+            }
+        })
+        isProjectDirty.addListener(new ChangeListener<Boolean>() {
+            @Override
+            void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                appTitle.updateIsDirty(newValue)
+            }
+        })
 
         prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile))
     }
@@ -80,7 +93,7 @@ class AppController {
     private loadAndShow(File projectFile) {
         try {
             serieSettingsController.loadSeries(projectFile)
-        } catch(IOException ioEx) {
+        } catch (IOException ioEx) {
             log.error "Could not load project file '$projectFile': $ioEx"
             setCurrentProject(null)
             return
@@ -123,8 +136,14 @@ class AppController {
     }
 
     def setCurrentProject(File file) {
-        currentProjectName.set(file ? file.getName() : null)
-        file ? prefs.setLastProject(file) : prefs.removeLastProject()
+        log.debug "Setting current project = $file"
+        if (file) {
+            currentProjectName.set(file.getName())
+            prefs.setLastProject(file)
+        } else {
+            currentProjectName.set(null)
+            prefs.removeLastProject()
+        }
         isProjectDirty.set(false)
     }
 
@@ -145,6 +164,7 @@ class AppController {
         }
         if (!file.getName().endsWith(".aba"))
             file = new File(file.getParentFile(), String.format("%s.aba", file.getName()))
+        log.debug "Saving project as $file"
         setCurrentProject(file)
         saveProject(actionEvent)
     }
