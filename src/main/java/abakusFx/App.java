@@ -15,15 +15,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-class App extends Application {
+public class App extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
 	private AppController mainController;
-
-	public App() {
-		// does nothing
-	}
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
@@ -74,13 +70,13 @@ class AppTitle {
 	}
 
 	void updateProject(final String newProject) {
-		log.debug("Updating title: project = '${newProject}'");
+		log.debug("Updating title: project = '{}'", newProject);
 		this.project = newProject;
 		updateTitle();
 	}
 
 	void updateIsDirty(final boolean newIsDirty) {
-		log.debug("Updating title: isDirty = '${newIsDirty}'");
+		log.debug("Updating title: isDirty = '{}'", newIsDirty);
 		this.isDirty = newIsDirty;
 		updateTitle();
 	}

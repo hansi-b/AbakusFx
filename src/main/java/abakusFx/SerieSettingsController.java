@@ -19,7 +19,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleGroup;
 
-class SerieSettingsController {
+public class SerieSettingsController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML

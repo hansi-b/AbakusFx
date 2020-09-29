@@ -29,7 +29,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
-class AppController {
+public class AppController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
@@ -133,12 +133,14 @@ class AppController {
 		result.setText("");
 	}
 
+	@FXML
 	void newProject(final ActionEvent actionEvent) {
 		log.trace("#newProject on {}", actionEvent);
 		serieSettingsController.reset();
 		setCurrentProject(null);
 	}
 
+	@FXML
 	void loadProject(final ActionEvent actionEvent) {
 		log.trace("#loadProject on {}", actionEvent);
 		final FileChooser fileChooser = createAbaChooser("Projekt laden");
@@ -162,12 +164,14 @@ class AppController {
 		isProjectDirty.set(false);
 	}
 
+	@FXML
 	void saveProject(final ActionEvent actionEvent) throws IOException {
 		log.trace("#saveProject on {}", actionEvent);
 		serieSettingsController.saveSeries(prefs.getLastProject().get());
 		isProjectDirty.set(false);
 	}
 
+	@FXML
 	void saveProjectAs(final ActionEvent actionEvent) throws IOException {
 		log.trace("#saveProjectAs on {}", actionEvent);
 
@@ -198,6 +202,7 @@ class AppController {
 		serieSettingsController.stop();
 	}
 
+	@FXML
 	void exit(final ActionEvent actionEvent) {
 		log.trace("#exit on {}", actionEvent);
 		Platform.exit();

@@ -11,6 +11,13 @@ plugins {
 group 'org.hansib'
 version gitVersion()
 
+sourceCompatibility=11
+plugins.withType(JavaPlugin).configureEach {
+        java {
+            modularity.inferModulePath = true
+        }
+    }
+	
 repositories {
 	jcenter()
 }
