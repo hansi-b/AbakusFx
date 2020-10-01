@@ -12,7 +12,5 @@ module hansi_abakusFx {
 
 	requires org.javamoney.moneta;
 
-	exports abakusFx to javafx.graphics;
-
 	opens abakusFx to javafx.graphics;
 }

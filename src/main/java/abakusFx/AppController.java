@@ -19,8 +19,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -81,21 +79,11 @@ public class AppController {
 	 * (indirectly via the AppTitle)
 	 */
 	void fill(final AppTitle appTitle) {
-		currentProjectName.addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-					final String newValue) {
-				log.debug("project name change: {}, {}, {}'", observable, oldValue, newValue);
-				appTitle.updateProject(newValue);
-			}
+		currentProjectName.addListener((observable, oldValue, newValue) -> {
+			log.debug("project name change: {}, {}, {}'", observable, oldValue, newValue);
+			appTitle.updateProject(newValue);
 		});
-		isProjectDirty.addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue,
-					final Boolean newValue) {
-				appTitle.updateIsDirty(newValue);
-			}
-		});
+		isProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile));
 	}
@@ -124,7 +112,7 @@ public class AppController {
 		final Money summe = moKosten.stream().map(moKo -> moKo.brutto.add(moKo.sonderzahlung))
 				.reduce(Constants.euros(0), Money::add);
 
-		String summeStr = new Converters.MoneyConverter().toString(summe);
+		final String summeStr = new Converters.MoneyConverter().toString(summe);
 		result.setText(String.format("Summe: %s", summeStr));
 	}
 

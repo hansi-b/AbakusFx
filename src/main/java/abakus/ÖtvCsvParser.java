@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class ÖtvCsvParser {
 						final Map<Integer, Gehälter> gruppeMap = gehälterMap.computeIfAbsent(gruppe,
 								g -> new HashMap<>());
 						if (gruppeMap.containsKey(jahr))
-							throw new IllegalArgumentException("Doppelte Daten für Gruppe ${gruppe} im Jahr ${jahr}");
+							throw Errors.illegalArgExc("Doppelte Daten für Gruppe %s im Jahr %d", gruppe, jahr);
 						gruppeMap.put(jahr, gehälter);
 					});
 		}
@@ -56,7 +57,7 @@ public class ÖtvCsvParser {
 	private static Line parseLine(final String csvLine) {
 		final String[] parts = csvLine.split("\t");
 		if (parts.length != 9)
-			throw new IllegalStateException("Expected 9 parts, but got ${parts.size()}: '$parts'");
+			throw Errors.illegalArgExc("Zeile enthält %d Felder (nicht 9): '%s'", parts.length, Arrays.toString(parts));
 		final Integer jahr = Integer.valueOf(parts[0]);
 		final Gruppe gruppe = Gruppe.valueOf(parts[1]);
 

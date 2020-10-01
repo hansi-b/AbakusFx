@@ -34,7 +34,7 @@ public class KostenRechner {
 	 */
 	public List<Monatskosten> monatsKosten(final Anstellung anstellung, final YearMonth von, final YearMonth bis) {
 		if (bis.isBefore(von))
-			throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}");
+			throw Errors.illegalArgExc("Enddatum %s liegt vor dem Anfang %s", bis, von);
 
 		return anstellung.monatsStellen(von, bis).entrySet().stream().map(e -> {
 			final YearMonth current = e.getKey();

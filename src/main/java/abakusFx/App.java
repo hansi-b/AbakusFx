@@ -42,13 +42,6 @@ public class App extends Application {
 		mainController.fill(new AppTitle(primaryStage));
 	}
 
-	public static void main(final String[] args) {
-		final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("org.javamoney.moneta");
-		logger.setLevel(Level.WARNING);
-
-		launch(args);
-	}
-
 	@Override
 	public void stop() {
 		mainController.stop();

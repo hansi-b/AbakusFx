@@ -35,7 +35,7 @@ public class Anstellung {
 
 	private void add(final YearMonth beginn, final Stelle antrittsStelle) {
 		if (beginn.isAfter(ende))
-			throw new IllegalArgumentException("Stellenbeginn ${beginn} liegt nach dem Anstellungsende ${ende}");
+			throw Errors.illegalArgExc("Stellenbeginn %s liegt nach dem Anstellungsende %s", beginn, ende);
 
 		assert !stelleByBeginn.containsKey(beginn);
 		stelleByBeginn.put(beginn, antrittsStelle);
@@ -44,21 +44,21 @@ public class Anstellung {
 	Stelle am(final YearMonth ym) {
 
 		if (ym.isAfter(ende))
-			throw new IllegalArgumentException("Argument ${ym} liegt nach dem Anstellungsende ${ende}");
+			throw Errors.illegalArgExc("Argument %s liegt nach dem Anstellungsende %s", ym, ende);
 
 		final Entry<YearMonth, Stelle> entry = stelleByBeginn.entrySet().stream().filter(e -> !e.getKey().isAfter(ym))
-				.findFirst().orElseThrow(() -> new IllegalArgumentException(
-						String.format("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn())));
+				.findFirst().orElseThrow(() -> Errors
+						.illegalArgExc("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn()));
 
 		final Stelle stelle = entry.getValue();
 		final Stufe neueStufe = stelle.stufe.stufeAm(entry.getKey(), ym);
-		return neueStufe == stelle.stufe ? stelle : new Stelle(stelle.gruppe, neueStufe, stelle.umfang);
+		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
 	}
 
 	SortedMap<YearMonth, Stelle> monatsStellen(final YearMonth von, final YearMonth bis) {
 
 		if (bis.isBefore(von))
-			throw new IllegalArgumentException("Enddatum ${bis} liegt vor dem Anfang ${von}");
+			throw Errors.illegalArgExc("Enddatum %s liegt vor dem Anfang %s", bis, von);
 
 		final SortedMap<YearMonth, Stelle> stellenByYm = new TreeMap<>();
 		YearMonth current = von;
