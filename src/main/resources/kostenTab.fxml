@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+    xmlns="http://javafx.com/javafx"
+    fx:controller="abakusFx.KostenTabController" stylesheets="app.css">
+
+    <fx:include fx:id="serieSettings"
+        source="serieSettings.fxml" />
+    <Button fx:id="calcKosten" text="Berechnen" />
+    <fx:include fx:id="serieTable" source="serieTable.fxml" />
+</VBox>

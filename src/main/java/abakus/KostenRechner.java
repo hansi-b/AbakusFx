@@ -45,6 +45,11 @@ public class KostenRechner {
 		}).collect(Collectors.toList());
 	}
 
+	public Money summe(List<Monatskosten> moKosten) {
+		return moKosten.stream().map(moKo -> moKo.brutto.add(moKo.sonderzahlung)).reduce(Constants.euros(0),
+				Money::add);
+	}
+
 	Money monatsBrutto(final Gruppe gruppe, final Stufe stufe, final int jahr, final BigDecimal umfang) {
 		return tarif.brutto(gruppe, stufe, jahr).multiply(zuschlagProzent).multiply(percent(umfang));
 	}

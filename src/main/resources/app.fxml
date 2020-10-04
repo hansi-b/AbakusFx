@@ -25,13 +25,7 @@
         </MenuBar>
     </top>
     <center>
-        <VBox>
-            <fx:include fx:id="serieSettings"
-                source="serieSettings.fxml" />
-            <Button fx:id="calcKosten" text="Berechnen" />
-            <fx:include fx:id="serieTable"
-                source="serieTable.fxml" />
-        </VBox>
+        <fx:include fx:id="kostenTab" source="kostenTab.fxml" />
     </center>
     <bottom>
         <VBox styleClass="text-pane">

@@ -2,26 +2,21 @@ package abakusFx;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.YearMonth;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 
-import abakus.Constants;
 import abakus.KostenRechner;
-import abakus.Monatskosten;
 import abakus.Tarif;
 import abakus.ÖtvCsvParser;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -37,13 +32,7 @@ public class AppController {
 	private MenuItem saveItem;
 
 	@FXML
-	private SerieSettingsController serieSettingsController;
-	@FXML
-	private Button calcKosten;
-	@FXML
-	private SerieTableController serieTableController;
-
-	private KostenRechner rechner;
+	private KostenTabController kostenTabController;
 
 	@FXML
 	private TextField result;
@@ -57,17 +46,19 @@ public class AppController {
 	@FXML
 	void initialize() throws IOException {
 		final Tarif tarif = new ÖtvCsvParser().parseTarif();
-		rechner = new KostenRechner(tarif);
+		final KostenRechner rechner = new KostenRechner(tarif);
 		log.info("Tarif geladen");
 
 		isProjectDirty = new SimpleBooleanProperty(false);
 		currentProjectName = new SimpleStringProperty("");
 
-		calcKosten.setOnAction(a -> fillResult());
-		serieSettingsController.addDirtyListener(() -> {
-			clearResult();
-			isProjectDirty.set(true);
-		});
+		kostenTabController.setKostenRechner(rechner);
+		kostenTabController.addDirtyListener(() -> isProjectDirty.set(true));
+		result.textProperty().bind(Bindings.createStringBinding(() -> {
+			final Money money = kostenTabController.summeProperty.get();
+			return money == null ? "" : new Converters.MoneyConverter().toString(money);
+		}, kostenTabController.summeProperty));
+
 		saveItem.disableProperty().bind(currentProjectName.isNull().or(isProjectDirty.not()));
 
 		// TODO: introduce model with properties
@@ -90,41 +81,24 @@ public class AppController {
 
 	private void loadAndShow(final File projectFile) {
 		try {
-			serieSettingsController.loadSeries(projectFile);
+			kostenTabController.loadSeries(projectFile);
 		} catch (final IOException ioEx) {
 			log.error("Could not load project file '$projectFile': {}", ioEx);
 			setCurrentProject(null);
 			return;
 		}
-		fillResult();
+		kostenTabController.fillResult();
 		setCurrentProject(projectFile);
 	}
 
-	void fillResult() {
-
-		final YearMonth von = serieSettingsController.getVon();
-		final YearMonth bis = serieSettingsController.getBis();
-
-		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
-		serieTableController.updateKosten(moKosten);
-
-		// TODO: extract MonatskostenCompound with methods
-		final Money summe = moKosten.stream().map(moKo -> moKo.brutto.add(moKo.sonderzahlung))
-				.reduce(Constants.euros(0), Money::add);
-
-		final String summeStr = new Converters.MoneyConverter().toString(summe);
-		result.setText(String.format("Summe: %s", summeStr));
-	}
-
 	void clearResult() {
-		serieTableController.clearKosten();
 		result.setText("");
 	}
 
 	@FXML
 	void newProject(final ActionEvent actionEvent) {
 		log.trace("#newProject on {}", actionEvent);
-		serieSettingsController.reset();
+		kostenTabController.reset();
 		setCurrentProject(null);
 	}
 
@@ -155,7 +129,7 @@ public class AppController {
 	@FXML
 	void saveProject(final ActionEvent actionEvent) throws IOException {
 		log.trace("#saveProject on {}", actionEvent);
-		serieSettingsController.saveSeries(prefs.getLastProject().get());
+		kostenTabController.saveSeries(prefs.getLastProject().get());
 		isProjectDirty.set(false);
 	}
 
@@ -187,7 +161,7 @@ public class AppController {
 	}
 
 	void stop() {
-		serieSettingsController.stop();
+		kostenTabController.stop();
 	}
 
 	@FXML
