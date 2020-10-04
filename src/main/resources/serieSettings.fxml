@@ -5,28 +5,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
-      fx:controller="abakusFx.SerieSettingsController"
-      stylesheets="app.css, serieSettings.css">
+<VBox xmlns:fx="http://javafx.com/fxml"
+    xmlns="http://javafx.com/javafx"
+    fx:controller="abakusFx.SerieSettingsController"
+    stylesheets="app.css, serieSettings.css">
 
     <!-- erste Zeile -->
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10"/>
+            <Insets top="10" left="10" bottom="2" right="10" />
         </padding>
-        <Label text="von"/>
-        <DatePicker fx:id="von"/>
-        <Label text="bis"/>
-        <DatePicker fx:id="bis"/>
+        <Label text="von" />
+        <DatePicker fx:id="von" />
+        <Label text="bis" />
+        <DatePicker fx:id="bis" />
 
-        <Label text="Entgeltgruppe"/>
-        <ComboBox fx:id="gruppe"/>
+        <Label text="Entgeltgruppe" />
+        <ComboBox fx:id="gruppe" />
 
-        <Label text="Umfang"/>
-        <Spinner fx:id="umfang" editable="true" styleClass="percent-spinner">
+        <Label text="Umfang" />
+        <Spinner fx:id="umfang" editable="true"
+            styleClass="percent-spinner">
             <valueFactory>
-                <Converters.PercentSpinnerFactory fx:id="umfangSpinnerFactory"/>
+                <Converters.PercentSpinnerFactory />
             </valueFactory>
         </Spinner>
     </HBox>
@@ -35,33 +37,32 @@
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10"/>
+            <Insets top="10" left="10" bottom="2" right="10" />
         </padding>
-        <RadioButton fx:id="neu" text="Neueinstellung">
+        <RadioButton text="Neueinstellung">
             <toggleGroup>
-                <ToggleGroup fx:id="neuOderWeiter"/>
+                <ToggleGroup fx:id="neuOderWeiter" />
             </toggleGroup>
         </RadioButton>
-        <RadioButton fx:id="weiter" text="WeiterBeschäftigung">
+        <RadioButton fx:id="weiter"
+            text="WeiterBeschäftigung">
             <toggleGroup>
-                <fx:reference source="neuOderWeiter"/>
+                <fx:reference source="neuOderWeiter" />
             </toggleGroup>
         </RadioButton>
 
-        <Label text="Stufe"/>
+        <Label text="Stufe" />
         <ComboBox fx:id="stufe">
             <converter>
-                <abakusFx.Converters fx:factory="createStufeConverter"/>
+                <abakusFx.Converters
+                    fx:factory="createStufeConverter" />
             </converter>
         </ComboBox>
 
-        <Label text="seit" fx:id="seitLabel"/>
-        <DatePicker fx:id="seit"/>
-        <!--<Label text="Umfang" fx:id="umfangSeitLabel"/>
-        <Spinner fx:id="umfangSeit" editable="true" styleClass="percent-spinner">
-            <valueFactory>
-                <Converters.PercentSpinnerFactory fx:id="umfangSeitSpinnerFactory"/>
-            </valueFactory>
-        </Spinner>-->
+        <Label text="seit" fx:id="seitLabel" />
+        <DatePicker fx:id="seit" />
+        <!--<Label text="Umfang" fx:id="umfangSeitLabel"/> <Spinner fx:id="umfangSeit" 
+            editable="true" styleClass="percent-spinner"> <valueFactory> <Converters.PercentSpinnerFactory 
+            fx:id="umfangSeitSpinnerFactory"/> </valueFactory> </Spinner> -->
     </HBox>
 </VBox>

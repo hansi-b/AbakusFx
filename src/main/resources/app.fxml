@@ -4,33 +4,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
-            fx:controller="abakusFx.AppController"
-            fx:id="topLevelPane"
-            stylesheets="app.css">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+    xmlns="http://javafx.com/javafx"
+    fx:controller="abakusFx.AppController" fx:id="topLevelPane"
+    stylesheets="app.css">
     <top>
         <MenuBar>
-            <Menu fx:id="menuMain" mnemonicParsing="true" text="Datei">
-                <MenuItem accelerator="CTRL+N" text="_Neu" onAction="#newProject"></MenuItem>
-                <MenuItem accelerator="CTRL+L" text="_Laden ..." onAction="#loadProject"></MenuItem>
-                <MenuItem fx:id="saveItem" accelerator="CTRL+S" text="_Speichern" onAction="#saveProject"></MenuItem>
-                <MenuItem accelerator="CTRL+SHIFT+S" text="_Speichern als ..." onAction="#saveProjectAs"></MenuItem>
-                <MenuItem accelerator="CTRL+Q" text="_Beenden" onAction="#exit"></MenuItem>
+            <Menu mnemonicParsing="true" text="Datei">
+                <MenuItem accelerator="CTRL+N" text="_Neu"
+                    onAction="#newProject"></MenuItem>
+                <MenuItem accelerator="CTRL+L"
+                    text="_Laden ..." onAction="#loadProject"></MenuItem>
+                <MenuItem fx:id="saveItem" accelerator="CTRL+S"
+                    text="_Speichern" onAction="#saveProject"></MenuItem>
+                <MenuItem accelerator="CTRL+SHIFT+S"
+                    text="_Speichern als ..." onAction="#saveProjectAs"></MenuItem>
+                <MenuItem accelerator="CTRL+Q" text="_Beenden"
+                    onAction="#exit"></MenuItem>
             </Menu>
         </MenuBar>
     </top>
     <center>
         <VBox>
-            <fx:include fx:id="serieSettings" source="serieSettings.fxml"/>
-            <Button fx:id="calcKosten" text="Berechnen"/>
-            <fx:include fx:id="serieTable" source="serieTable.fxml"/>
+            <fx:include fx:id="serieSettings"
+                source="serieSettings.fxml" />
+            <Button fx:id="calcKosten" text="Berechnen" />
+            <fx:include fx:id="serieTable"
+                source="serieTable.fxml" />
         </VBox>
     </center>
     <bottom>
         <VBox styleClass="text-pane">
             <TextField fx:id="result" editable="false">
                 <padding>
-                    <Insets top="2" left="2" bottom="2" right="2"/>
+                    <Insets top="2" left="2" bottom="2" right="2" />
                 </padding>
             </TextField>
         </VBox>
