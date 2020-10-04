@@ -13,11 +13,21 @@ version gitVersion()
 
 sourceCompatibility=11
 plugins.withType(JavaPlugin).configureEach {
-        java {
-            modularity.inferModulePath = true
-        }
-    }
-	
+	java {
+		modularity.inferModulePath = true
+	}
+
+	tasks.withType(JavaCompile) {
+		doFirst {
+			options.compilerArgs = [
+				'--module-path',
+				classpath.asPath,
+			]
+			classpath = files()
+		}
+	}
+}
+
 repositories {
 	jcenter()
 }
