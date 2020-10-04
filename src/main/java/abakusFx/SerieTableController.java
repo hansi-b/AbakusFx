@@ -3,6 +3,7 @@ package abakusFx;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
@@ -12,6 +13,7 @@ import abakus.Monatskosten;
 import abakus.Stufe;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,7 +21,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
@@ -32,6 +33,7 @@ public class SerieTableController {
 			KeyCombination.CONTROL_DOWN);
 
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
+	private static final Converters.YearMonthConverter ymConverter = new Converters.YearMonthConverter();
 
 	static class Kosten {
 		ObjectProperty<YearMonth> monat;
@@ -74,15 +76,11 @@ public class SerieTableController {
 
 	@FXML
 	void initialize() {
-		monatCol.setCellValueFactory(cellData -> cellData.getValue().monat);
-		monatCol.setCellFactory(TextFieldTableCell.forTableColumn(new Converters.YearMonthConverter()));
-
-		gruppeCol.setCellValueFactory(cellData -> cellData.getValue().gruppe);
-		stufeCol.setCellValueFactory(cellData -> cellData.getValue().stufe);
-		umfangCol.setCellValueFactory(cellData -> cellData.getValue().umfang);
-
-		kostenCol.setCellValueFactory(cellData -> cellData.getValue().kosten);
-		kostenCol.setCellFactory(TextFieldTableCell.forTableColumn(moneyConverter));
+		setFactories(monatCol, k -> k.monat, ym -> ymConverter.toString(ym));
+		setFactories(gruppeCol, k -> k.gruppe, null);
+		setFactories(stufeCol, k -> k.stufe, null);
+		setFactories(umfangCol, k -> k.umfang, null);
+		setFactories(kostenCol, k -> k.kosten, m -> moneyConverter.toString(m));
 
 		kostenTabelle.setPlaceholder(new Label("Keine Daten"));
 		kostenTabelle.setItems(kosten);
@@ -92,6 +90,12 @@ public class SerieTableController {
 			if (copyControlKey.match(e) && kostenTabelle == e.getSource())
 				copySelectionToClipboard();
 		});
+	}
+
+	private static <T> void setFactories(final TableColumn<Kosten, T> col,
+			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
+		col.setCellFactory(new DragSelectCellFactory<Kosten, T>(formatter));
 	}
 
 	/**
