@@ -2,22 +2,28 @@ package abakusFx;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import abakus.Gruppe;
 import abakus.Stufe;
 
 class SeriesModel {
 
-	final LocalDate von;
-	final LocalDate bis;
-	final Gruppe gruppe;
-	final Stufe stufe;
-	final Integer umfang;
-	final Boolean isWeiter;
-	final LocalDate seit;
-	final Integer umfangSeit = 100;
+	public final LocalDate von;
+	public final LocalDate bis;
+	public final Gruppe gruppe;
+	public final Stufe stufe;
+	public final int umfang;
+	public final boolean isWeiter;
+	public final LocalDate seit;
+	public final int umfangSeit = 100;
 
-	public SeriesModel(final LocalDate von, final LocalDate bis, final Gruppe gruppe, final Stufe stufe,
-			final Integer umfang, final Boolean isWeiter, final LocalDate seit) {
+	@JsonCreator
+	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
+			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
+			@JsonProperty("umfang") final Integer umfang, @JsonProperty("isWeiter") final Boolean isWeiter,
+			@JsonProperty("seit") final LocalDate seit) {
 		this.von = von;
 		this.bis = bis;
 		this.gruppe = gruppe;

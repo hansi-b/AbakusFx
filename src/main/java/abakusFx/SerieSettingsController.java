@@ -79,13 +79,13 @@ public class SerieSettingsController {
 	}
 
 	void addDirtyListener(final Runnable dirtyListener) {
-		von.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		bis.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		gruppe.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		stufe.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		umfang.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		seit.valueProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
-		weiter.selectedProperty().addListener((_ob, _ov, _nv) -> dirtyListener.run());
+		von.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		bis.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		gruppe.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		stufe.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		umfang.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		seit.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		weiter.selectedProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 	}
 
 	YearMonth getVon() {
@@ -98,7 +98,7 @@ public class SerieSettingsController {
 
 	Anstellung getAnstellung() {
 		final YearMonth beginn = YearMonth
-				.from(weiter.selectedProperty().getValue() ? seit.getValue() : von.getValue());
+				.from(weiter.selectedProperty().getValue().booleanValue() ? seit.getValue() : von.getValue());
 		return Anstellung.of(beginn, getStelle(), YearMonth.from(bis.getValue()));
 	}
 
@@ -110,13 +110,13 @@ public class SerieSettingsController {
 	}
 
 	void saveSeries(final File file) throws IOException {
-		log.info("Saving project to '$file' ...");
+		log.info("Saving project to '{}' ...", file);
 		final String modelYaml = new ModelMapper().asString(getState());
 		Files.writeString(file.toPath(), modelYaml);
 	}
 
 	void loadSeries(final File file) throws IOException {
-		log.info("Loading project from '$file' ...");
+		log.info("Loading project from '{}' ...", file);
 		final String modelYaml = Files.readString(file.toPath());
 		setState(new ModelMapper().fromString(modelYaml, SeriesModel.class));
 	}

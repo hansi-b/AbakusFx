@@ -2,6 +2,7 @@ package abakusFx;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
@@ -59,7 +60,7 @@ public class AppController {
 			return money == null ? "" : new Converters.MoneyConverter().toString(money);
 		}, kostenTabController.summeProperty));
 
-		saveItem.disableProperty().bind(currentProjectName.isNull().or(isProjectDirty.not()));
+		saveItem.disableProperty().bind(currentProjectName.isEmpty().or(isProjectDirty.not()));
 
 		// TODO: introduce model with properties
 		prefs = AppPrefs.create();
@@ -76,14 +77,14 @@ public class AppController {
 		});
 		isProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
-		prefs.getLastProject().ifPresent(pFile -> loadAndShow(pFile));
+		prefs.getLastProject().ifPresent(this::loadAndShow);
 	}
 
 	private void loadAndShow(final File projectFile) {
 		try {
 			kostenTabController.loadSeries(projectFile);
 		} catch (final IOException ioEx) {
-			log.error("Could not load project file '$projectFile': {}", ioEx);
+			log.error(String.format("Could not load project file '%s'", projectFile), ioEx);
 			setCurrentProject(null);
 			return;
 		}
@@ -129,7 +130,8 @@ public class AppController {
 	@FXML
 	void saveProject(final ActionEvent actionEvent) throws IOException {
 		log.trace("#saveProject on {}", actionEvent);
-		kostenTabController.saveSeries(prefs.getLastProject().get());
+		kostenTabController.saveSeries(
+				prefs.getLastProject().orElseThrow(() -> new IllegalStateException("No current project set")));
 		isProjectDirty.set(false);
 	}
 
