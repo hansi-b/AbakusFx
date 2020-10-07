@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
-    fx:controller="abakusFx.AppController" fx:id="topLevelPane"
+    fx:controller="abakusfx.AppController" fx:id="topLevelPane"
     stylesheets="app.css">
     <top>
         <MenuBar>

@@ -1,4 +1,4 @@
-package abakusFx;
+package abakusfx;
 
 import java.io.InputStream;
 import java.util.Locale;

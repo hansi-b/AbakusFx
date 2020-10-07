@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
-    fx:controller="abakusFx.SerieTableController"
+    fx:controller="abakusfx.SerieTableController"
     stylesheets="app.css, serieTable.css" VBox.vgrow="ALWAYS">
 
     <TableView fx:id="kostenTabelle" VBox.vgrow="ALWAYS">

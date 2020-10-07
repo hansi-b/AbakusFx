@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import abakusFx.*?>
+<?import abakusfx.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
-    fx:controller="abakusFx.SerieSettingsController"
+    fx:controller="abakusfx.SerieSettingsController"
     stylesheets="app.css, serieSettings.css">
 
     <!-- erste Zeile -->
@@ -54,7 +54,7 @@
         <Label text="Stufe" />
         <ComboBox fx:id="stufe">
             <converter>
-                <abakusFx.Converters
+                <abakusfx.Converters
                     fx:factory="createStufeConverter" />
             </converter>
         </ComboBox>

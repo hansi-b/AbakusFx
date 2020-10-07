@@ -1,4 +1,4 @@
-package abakusFx;
+package abakusfx;
 
 import java.io.File;
 import java.io.IOException;

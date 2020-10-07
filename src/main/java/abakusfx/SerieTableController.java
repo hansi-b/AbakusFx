@@ -1,4 +1,4 @@
-package abakusFx;
+package abakusfx;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
