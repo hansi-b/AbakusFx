@@ -17,6 +17,7 @@
     -fx-font-size: 9pt;
     -fx-text-fill: Grey;
 }
+
 .text-pane {
     -fx-border-color: #C8C8C8;
     -fx-border-width: 1 0 0 0;
@@ -25,4 +26,21 @@
 
 .split-pane > .split-pane-divider {
     -fx-padding: 0 0.1em 0 0.1em;
+}
+
+/* from https://stackoverflow.com/a/30883817/1016514 */
+.text-input.error {
+	 -fx-focus-color: #d35244;
+    -fx-faint-focus-color: #d3524422;
+
+    -fx-highlight-fill: -fx-accent;
+    -fx-highlight-text-fill: white;
+    -fx-background-color:
+        -fx-focus-color,
+        -fx-control-inner-background,
+        -fx-faint-focus-color,
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-background-insets: -0.2, 1, -1.4, 3;
+    -fx-background-radius: 3, 2, 4, 0;
+    -fx-prompt-text-fill: transparent;
 }

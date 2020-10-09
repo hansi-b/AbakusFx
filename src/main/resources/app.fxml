@@ -4,6 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TabPane?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
     fx:controller="abakusfx.AppController" fx:id="topLevelPane"
@@ -12,20 +14,25 @@
         <MenuBar>
             <Menu mnemonicParsing="true" text="Datei">
                 <MenuItem accelerator="CTRL+N" text="_Neu"
-                    onAction="#newProject"></MenuItem>
+                    onAction="#newProject" />
                 <MenuItem accelerator="CTRL+L"
-                    text="_Laden ..." onAction="#loadProject"></MenuItem>
+                    text="_Laden ..." onAction="#loadProject" />
                 <MenuItem fx:id="saveItem" accelerator="CTRL+S"
-                    text="_Speichern" onAction="#saveProject"></MenuItem>
+                    text="_Speichern" onAction="#saveProject" />
                 <MenuItem accelerator="CTRL+SHIFT+S"
-                    text="_Speichern als ..." onAction="#saveProjectAs"></MenuItem>
+                    text="_Speichern als ..." onAction="#saveProjectAs" />
                 <MenuItem accelerator="CTRL+Q" text="_Beenden"
-                    onAction="#exit"></MenuItem>
+                    onAction="#exit" />
             </Menu>
         </MenuBar>
     </top>
     <center>
-        <fx:include fx:id="kostenTab" source="kostenTab.fxml" />
+        <TabPane fx:id="tabs">
+            <Tab>
+                <fx:include fx:id="kostenTab"
+                    source="kostenTab.fxml" />
+            </Tab>
+        </TabPane>
     </center>
     <bottom>
         <VBox styleClass="text-pane">

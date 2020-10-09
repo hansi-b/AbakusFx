@@ -19,12 +19,13 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
 public class AppController {
-	private static final Logger log = LogManager.getLogger();
+	static final Logger log = LogManager.getLogger();
 
 	@FXML
 	private BorderPane topLevelPane;
@@ -34,6 +35,9 @@ public class AppController {
 
 	@FXML
 	private KostenTabController kostenTabController;
+
+	@FXML
+	private TabPane tabs;
 
 	@FXML
 	private TextField result;
@@ -78,6 +82,8 @@ public class AppController {
 		isProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(this::loadAndShow);
+
+		tabs.getTabs().forEach(t -> TabTool.initTab(t));
 	}
 
 	private void loadAndShow(final File projectFile) {
