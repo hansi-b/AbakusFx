@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 
+import abakus.Constants;
 import abakus.KostenRechner;
 import abakus.Monatskosten;
 import javafx.application.Platform;

@@ -19,7 +19,6 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -34,10 +33,7 @@ public class AppController {
 	private MenuItem saveItem;
 
 	@FXML
-	private KostenTabController kostenTabController;
-
-	@FXML
-	private TabPane tabs;
+	private ProjectTabsController projectTabsController;
 
 	@FXML
 	private TextField result;
@@ -57,12 +53,12 @@ public class AppController {
 		isProjectDirty = new SimpleBooleanProperty(false);
 		currentProjectName = new SimpleStringProperty("");
 
-		kostenTabController.setKostenRechner(rechner);
-		kostenTabController.addDirtyListener(() -> isProjectDirty.set(true));
+		projectTabsController.setKostenRechner(rechner);
+		projectTabsController.addDirtyListener(() -> isProjectDirty.set(true));
 		result.textProperty().bind(Bindings.createStringBinding(() -> {
-			final Money money = kostenTabController.summeProperty.get();
+			final Money money = projectTabsController.projektSummeProperty.get();
 			return money == null ? "" : new Converters.MoneyConverter().toString(money);
-		}, kostenTabController.summeProperty));
+		}, projectTabsController.projektSummeProperty));
 
 		saveItem.disableProperty().bind(currentProjectName.isEmpty().or(isProjectDirty.not()));
 
@@ -82,20 +78,11 @@ public class AppController {
 		isProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(this::loadAndShow);
-
-		tabs.getTabs().forEach(t -> TabTool.initTab(t));
 	}
 
 	private void loadAndShow(final File projectFile) {
-		try {
-			kostenTabController.loadSeries(projectFile);
-		} catch (final IOException ioEx) {
-			log.error(String.format("Could not load project file '%s'", projectFile), ioEx);
-			setCurrentProject(null);
-			return;
-		}
-		kostenTabController.fillResult();
-		setCurrentProject(projectFile);
+		final boolean couldLoad = projectTabsController.loadAndShow(projectFile);
+		setCurrentProject(couldLoad ? projectFile : null);
 	}
 
 	void clearResult() {
@@ -105,7 +92,7 @@ public class AppController {
 	@FXML
 	void newProject(final ActionEvent actionEvent) {
 		log.trace("#newProject on {}", actionEvent);
-		kostenTabController.reset();
+		projectTabsController.reset();
 		setCurrentProject(null);
 	}
 
@@ -136,8 +123,9 @@ public class AppController {
 	@FXML
 	void saveProject(final ActionEvent actionEvent) throws IOException {
 		log.trace("#saveProject on {}", actionEvent);
-		kostenTabController.saveSeries(
-				prefs.getLastProject().orElseThrow(() -> new IllegalStateException("No current project set")));
+		final File projectFile = prefs.getLastProject()
+				.orElseThrow(() -> new IllegalStateException("No current project set"));
+		projectTabsController.saveSeries(projectFile);
 		isProjectDirty.set(false);
 	}
 
@@ -169,7 +157,7 @@ public class AppController {
 	}
 
 	void stop() {
-		kostenTabController.stop();
+		projectTabsController.stop();
 	}
 
 	@FXML

@@ -27,12 +27,8 @@
         </MenuBar>
     </top>
     <center>
-        <TabPane fx:id="tabs">
-            <Tab>
-                <fx:include fx:id="kostenTab"
-                    source="kostenTab.fxml" />
-            </Tab>
-        </TabPane>
+        <fx:include fx:id="projectTabs"
+            source="projectTabs.fxml" />
     </center>
     <bottom>
         <VBox styleClass="text-pane">
