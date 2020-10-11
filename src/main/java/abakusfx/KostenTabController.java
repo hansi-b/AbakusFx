@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 
-import abakus.Constants;
 import abakus.KostenRechner;
 import abakus.Monatskosten;
 import javafx.application.Platform;
@@ -29,7 +28,7 @@ public class KostenTabController {
 	@FXML
 	private SerieTableController serieTableController;
 
-	private KostenRechner rechner;
+	private ReadOnlyObjectProperty<KostenRechner> kostenRechner;
 
 	private final ReadOnlyObjectWrapper<Money> summeInternalProperty = new ReadOnlyObjectWrapper<>(null);
 	public final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
@@ -41,8 +40,8 @@ public class KostenTabController {
 		serieSettingsController.addDirtyListener(() -> clearResult());
 	}
 
-	void setKostenRechner(final KostenRechner rechner) {
-		this.rechner = rechner;
+	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechner) {
+		this.kostenRechner = kostenRechner;
 	}
 
 	void fillResult() {
@@ -50,6 +49,7 @@ public class KostenTabController {
 		final YearMonth von = serieSettingsController.getVon();
 		final YearMonth bis = serieSettingsController.getBis();
 
+		KostenRechner rechner = kostenRechner.get();
 		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
 		serieTableController.updateKosten(moKosten);
 		summeInternalProperty.set(rechner.summe(moKosten));
@@ -74,10 +74,6 @@ public class KostenTabController {
 
 	public void reset() {
 		serieSettingsController.reset();
-	}
-
-	void stop() {
-		serieSettingsController.stop();
 	}
 
 	@FXML

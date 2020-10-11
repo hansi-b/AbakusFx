@@ -46,24 +46,27 @@ public class AppController {
 
 	@FXML
 	void initialize() throws IOException {
-		final Tarif tarif = new ÖtvCsvParser().parseTarif();
-		final KostenRechner rechner = new KostenRechner(tarif);
-		log.info("Tarif geladen");
+		projectTabsController.setKostenRechner(initKostenRechner());
+		projectTabsController.dirtyListener.set(() -> isProjectDirty.set(true));
 
-		isProjectDirty = new SimpleBooleanProperty(false);
-		currentProjectName = new SimpleStringProperty("");
-
-		projectTabsController.setKostenRechner(rechner);
-		projectTabsController.addDirtyListener(() -> isProjectDirty.set(true));
 		result.textProperty().bind(Bindings.createStringBinding(() -> {
 			final Money money = projectTabsController.projektSummeProperty.get();
 			return money == null ? "" : new Converters.MoneyConverter().toString(money);
 		}, projectTabsController.projektSummeProperty));
 
+		isProjectDirty = new SimpleBooleanProperty(false);
+		currentProjectName = new SimpleStringProperty("");
+
 		saveItem.disableProperty().bind(currentProjectName.isEmpty().or(isProjectDirty.not()));
 
 		// TODO: introduce model with properties
 		prefs = AppPrefs.create();
+	}
+
+	private static KostenRechner initKostenRechner() throws IOException {
+		final Tarif tarif = new ÖtvCsvParser().parseTarif();
+		log.debug("Tarif geladen");
+		return new KostenRechner(tarif);
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class AppController {
 	@FXML
 	void newProject(final ActionEvent actionEvent) {
 		log.trace("#newProject on {}", actionEvent);
-		projectTabsController.reset();
+		projectTabsController.newProject();
 		setCurrentProject(null);
 	}
 
@@ -154,10 +157,6 @@ public class AppController {
 				.orElse(new File(System.getProperty("user.home")));
 		fileChooser.setInitialDirectory(dir);
 		return fileChooser;
-	}
-
-	void stop() {
-		projectTabsController.stop();
 	}
 
 	@FXML

@@ -2,6 +2,8 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,43 +21,51 @@ import javafx.scene.control.TabPane;
 public class ProjectTabsController {
 	static final Logger log = LogManager.getLogger();
 
-	SimpleObjectProperty<KostenRechner> kostenRechner = new SimpleObjectProperty<>();
-
 	@FXML
 	private TabPane projectTabs;
 
-	private KostenTabController kostenTabController;
+	private final Map<Tab, KostenTabController> controllersByTab = new HashMap<>();
+
+	final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
+	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
 
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
 	public final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty
 			.getReadOnlyProperty();
 
 	@FXML
-	void initialize() throws IOException {
-		// projectTabs.getTabs().stream().map(t -> t.getContent().)
-//		Bindings.createObjectBinding(new Callable() {
-//
-//			@Override
-//			public Object call() throws Exception {
-//				// TODO Auto-generated method stub
-//				return null;
-//			}}, projectTabs.getTabs());
-
-		// projektSummeInternalProperty.bind(Bindings.binprojectTabs.getTabs());
-		projectTabs.getTabs().add(newTab());
-
-		projectTabs.getTabs().forEach(t -> TabTool.initTab(t));
+	void initialize() {
+		newTab();
+		// currently empty
 	}
 
-	private Tab newTab() throws IOException {
-		Tab t = new Tab();
-		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
-		t.setContent(loader.load());
-		kostenTabController = loader.getController();
-		return t;
+	public void setKostenRechner(final KostenRechner rechner) {
+		kostenRechner.setValue(rechner);
+	}
+
+	private Tab newTab() {
+		final Tab tab = new Tab();
+		projectTabs.getTabs().add(tab);
+		TabTool.initTab(tab);
+
+		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
+		try {
+			tab.setContent(loader.load());
+		} catch (final IOException ioEx) {
+			throw new IllegalStateException("Could not initialize tab", ioEx);
+		}
+
+		final KostenTabController kostenTabController = loader.getController();
+		kostenTabController.setKostenRechner(kostenRechner.getReadOnlyProperty());
+		kostenTabController.addDirtyListener(dirtyListener.get());
+		controllersByTab.put(tab, kostenTabController);
+		return tab;
 	}
 
 	boolean loadAndShow(final File projectFile) {
+		projectTabs.getTabs().clear();
+		newTab();
+		final KostenTabController kostenTabController = controllersByTab.get(projectTabs.getTabs().get(0));
 		try {
 			kostenTabController.loadSeries(projectFile);
 		} catch (final IOException ioEx) {
@@ -66,23 +76,11 @@ public class ProjectTabsController {
 		return true;
 	}
 
+	public void newProject() {
+		controllersByTab.get(projectTabs.getTabs().get(0)).reset();
+	}
+
 	public void saveSeries(final File targetFile) throws IOException {
-		kostenTabController.saveSeries(targetFile);
-	}
-
-	public void reset() {
-		kostenTabController.reset();
-	}
-
-	public void setKostenRechner(final KostenRechner rechner) {
-		kostenTabController.setKostenRechner(rechner);
-	}
-
-	public void addDirtyListener(final Runnable listener) {
-		kostenTabController.addDirtyListener(listener);
-	}
-
-	void stop() {
-		kostenTabController.stop();
+		controllersByTab.get(projectTabs.getTabs().get(0)).saveSeries(targetFile);
 	}
 }

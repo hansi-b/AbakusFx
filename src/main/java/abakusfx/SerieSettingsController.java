@@ -120,8 +120,4 @@ public class SerieSettingsController {
 		final String modelYaml = Files.readString(file.toPath());
 		setState(new ModelMapper().fromString(modelYaml, SeriesModel.class));
 	}
-
-	void stop() {
-		log.debug("Stopping ...");
-	}
 }
