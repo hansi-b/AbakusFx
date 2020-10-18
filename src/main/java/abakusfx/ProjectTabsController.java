@@ -35,8 +35,8 @@ public class ProjectTabsController {
 
 	@FXML
 	void initialize() {
+		// need an initial tab here for correct dimensions
 		newTab();
-		// currently empty
 	}
 
 	public void setKostenRechner(final KostenRechner rechner) {
@@ -57,7 +57,7 @@ public class ProjectTabsController {
 
 		final KostenTabController kostenTabController = loader.getController();
 		kostenTabController.setKostenRechner(kostenRechner.getReadOnlyProperty());
-		kostenTabController.addDirtyListener(dirtyListener.get());
+		kostenTabController.addDirtyListener(() -> dirtyListener.get().run());
 		controllersByTab.put(tab, kostenTabController);
 		return tab;
 	}

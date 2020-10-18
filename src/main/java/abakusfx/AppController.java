@@ -83,11 +83,6 @@ public class AppController {
 		prefs.getLastProject().ifPresent(this::loadAndShow);
 	}
 
-	private void loadAndShow(final File projectFile) {
-		final boolean couldLoad = projectTabsController.loadAndShow(projectFile);
-		setCurrentProject(couldLoad ? projectFile : null);
-	}
-
 	void clearResult() {
 		result.setText("");
 	}
@@ -109,6 +104,11 @@ public class AppController {
 			return;
 		}
 		loadAndShow(file);
+	}
+
+	private void loadAndShow(final File projectFile) {
+		final boolean couldLoad = projectTabsController.loadAndShow(projectFile);
+		setCurrentProject(couldLoad ? projectFile : null);
 	}
 
 	void setCurrentProject(final File file) {
