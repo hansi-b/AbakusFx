@@ -1,6 +1,8 @@
 package abakusfx;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -9,6 +11,56 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static abakus.Constants.eq;
 import abakus.Gruppe;
 import abakus.Stufe;
+
+class ProjectModel {
+	public final List<PersonModel> persons;
+
+	ProjectModel(@JsonProperty("persons") List<PersonModel> persons) {
+		this.persons = Collections.unmodifiableList(persons);
+	}
+
+	@Override
+	public int hashCode() {
+		return persons.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+
+		return eq(persons, ((ProjectModel) obj).persons);
+	}
+}
+
+class PersonModel {
+	public final String name;
+	public final SeriesModel series;
+
+	@JsonCreator
+	public PersonModel(@JsonProperty("name") String name, @JsonProperty("series") SeriesModel series) {
+		this.name = name;
+		this.series = series;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, series);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+
+		PersonModel other = (PersonModel) obj;
+		return eq(name, other.name) && eq(series, other.series);
+	}
+}
 
 class SeriesModel {
 
@@ -68,5 +120,4 @@ class SeriesModel {
 		// umfangSeit: 100
 		);
 	}
-
 }
