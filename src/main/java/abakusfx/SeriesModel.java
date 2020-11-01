@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static abakus.Constants.eq;
@@ -15,7 +14,7 @@ import abakus.Stufe;
 class ProjectModel {
 	public final List<PersonModel> persons;
 
-	ProjectModel(@JsonProperty("persons") List<PersonModel> persons) {
+	ProjectModel(@JsonProperty("persons") final List<PersonModel> persons) {
 		this.persons = Collections.unmodifiableList(persons);
 	}
 
@@ -25,7 +24,7 @@ class ProjectModel {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null || getClass() != obj.getClass())
@@ -39,8 +38,7 @@ class PersonModel {
 	public final String name;
 	public final SeriesModel series;
 
-	@JsonCreator
-	public PersonModel(@JsonProperty("name") String name, @JsonProperty("series") SeriesModel series) {
+	public PersonModel(@JsonProperty("name") final String name, @JsonProperty("series") final SeriesModel series) {
 		this.name = name;
 		this.series = series;
 	}
@@ -51,13 +49,13 @@ class PersonModel {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 
-		PersonModel other = (PersonModel) obj;
+		final PersonModel other = (PersonModel) obj;
 		return eq(name, other.name) && eq(series, other.series);
 	}
 }
@@ -73,7 +71,6 @@ class SeriesModel {
 	public final LocalDate seit;
 	public final int umfangSeit = 100;
 
-	@JsonCreator
 	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
 			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
 			@JsonProperty("umfang") final int umfang, @JsonProperty("isWeiter") final boolean isWeiter,
