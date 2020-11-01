@@ -107,7 +107,7 @@ public class AppController {
 	}
 
 	private void loadAndShow(final File projectFile) {
-		final boolean couldLoad = projectTabsController.loadAndShow(projectFile);
+		final boolean couldLoad = projectTabsController.loadProject(projectFile);
 		setCurrentProject(couldLoad ? projectFile : null);
 	}
 

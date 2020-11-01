@@ -41,7 +41,7 @@ public class ProjectTabsController {
 		kostenRechner.setValue(rechner);
 	}
 
-	boolean loadAndShow(final File projectFile) {
+	boolean loadProject(final File projectFile) {
 		tabPane.getTabs().clear();
 		newTab();
 		final KostenTabController kostenTabController = new KostenTabController(); // controllersByTab.get(0);
