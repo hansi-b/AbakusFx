@@ -1,11 +1,6 @@
 package abakusfx;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.YearMonth;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import abakus.Anstellung;
 import abakus.Gruppe;
@@ -20,8 +15,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleGroup;
 
 public class SerieSettingsController {
-	private static final Logger log = LogManager.getLogger();
-
 	@FXML
 	DatePicker von;
 	@FXML
@@ -107,17 +100,5 @@ public class SerieSettingsController {
 		// def umfang = weiter.selectedProperty().getValue() ? umfangSeit.getValue() :
 		// umfang.getValue()
 		return Stelle.of(gruppe.getValue(), stufe.getValue(), umfang.getValue());
-	}
-
-	void saveSeries(final File file) throws IOException {
-		log.info("Saving project to '{}' ...", file);
-		final String modelYaml = new ModelMapper().asString(getState());
-		Files.writeString(file.toPath(), modelYaml);
-	}
-
-	void loadSeries(final File file) throws IOException {
-		log.info("Loading project from '{}' ...", file);
-		final String modelYaml = Files.readString(file.toPath());
-		setState(new ModelMapper().fromString(modelYaml, SeriesModel.class));
 	}
 }

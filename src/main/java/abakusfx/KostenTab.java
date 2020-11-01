@@ -5,8 +5,8 @@ import java.io.IOException;
 import abakus.KostenRechner;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -14,16 +14,16 @@ import javafx.scene.control.Tab;
 class KostenTab {
 
 	private final Tab myTab;
-	private KostenTabController kostenTabController;
+	private final StringProperty tabLabel;
+	private final KostenTabController kostenTabController;
 
 	KostenTab() {
 		myTab = new Tab();
-		TabTool.initTab(myTab);
+		tabLabel = TabTool.initTab(myTab);
 
 		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
 		try {
-			final Node cont = loader.load();
-			myTab.setContent(cont);
+			myTab.setContent(loader.load());
 		} catch (final IOException ioEx) {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
@@ -53,5 +53,14 @@ class KostenTab {
 
 	void reset() {
 		kostenTabController.reset();
+	}
+
+	void setState(PersonModel person) {
+		tabLabel.set(person.name);
+		kostenTabController.setState(person.series);
+	}
+
+	PersonModel getState() {
+		return new PersonModel(tabLabel.getValue(), kostenTabController.getState());
 	}
 }

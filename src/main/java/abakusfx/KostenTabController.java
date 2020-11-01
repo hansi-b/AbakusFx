@@ -1,6 +1,5 @@
 package abakusfx;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.YearMonth;
 import java.util.List;
@@ -28,7 +27,7 @@ public class KostenTabController {
 	@FXML
 	private SerieTableController serieTableController;
 
-	private ReadOnlyObjectProperty<KostenRechner> kostenRechner;
+	private ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter;
 
 	private final ReadOnlyObjectWrapper<Money> summeInternalProperty = new ReadOnlyObjectWrapper<>(null);
 	public final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
@@ -40,8 +39,8 @@ public class KostenTabController {
 		serieSettingsController.addDirtyListener(() -> clearResult());
 	}
 
-	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechner) {
-		this.kostenRechner = kostenRechner;
+	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter) {
+		this.kostenRechnerGetter = kostenRechnerGetter;
 	}
 
 	void fillResult() {
@@ -49,7 +48,7 @@ public class KostenTabController {
 		final YearMonth von = serieSettingsController.getVon();
 		final YearMonth bis = serieSettingsController.getBis();
 
-		KostenRechner rechner = kostenRechner.get();
+		final KostenRechner rechner = kostenRechnerGetter.get();
 		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
 		serieTableController.updateKosten(moKosten);
 		summeInternalProperty.set(rechner.summe(moKosten));
@@ -64,12 +63,12 @@ public class KostenTabController {
 		serieSettingsController.addDirtyListener(listener);
 	}
 
-	public void saveSeries(final File file) throws IOException {
-		serieSettingsController.saveSeries(file);
+	SeriesModel getState() {
+		return serieSettingsController.getState();
 	}
 
-	public void loadSeries(final File projectFile) throws IOException {
-		serieSettingsController.loadSeries(projectFile);
+	void setState(final SeriesModel model) {
+		serieSettingsController.setState(model);
 	}
 
 	public void reset() {

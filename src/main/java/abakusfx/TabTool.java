@@ -14,7 +14,7 @@ import javafx.scene.input.KeyCode;
 public class TabTool {
 	static final Logger log = LogManager.getLogger();
 
-	static void initTab(final Tab tab) {
+	static StringProperty initTab(final Tab tab) {
 
 		log.debug("handling {}", tab);
 		tab.setClosable(false);
@@ -61,6 +61,8 @@ public class TabTool {
 			textField.selectAll();
 			textField.requestFocus();
 		});
+
+		return labelProp;
 	}
 
 	private static void updateOrLeave(final Tab tab, final StringProperty name, final Label label,

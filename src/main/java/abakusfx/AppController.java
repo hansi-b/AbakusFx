@@ -18,6 +18,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -107,7 +110,15 @@ public class AppController {
 	}
 
 	private void loadAndShow(final File projectFile) {
-		final boolean couldLoad = projectTabsController.loadProject(projectFile);
+		boolean couldLoad;
+		try {
+			couldLoad = projectTabsController.loadProject(projectFile);
+		} catch (final IOException ex) {
+			new Alert(AlertType.ERROR, String.format("Konnte '%s' nicht laden:\n%s", projectFile, ex.getMessage()),
+					ButtonType.OK).showAndWait();
+			projectTabsController.initialize();
+			couldLoad = false;
+		}
 		setCurrentProject(couldLoad ? projectFile : null);
 	}
 
@@ -128,7 +139,7 @@ public class AppController {
 		log.trace("#saveProject on {}", actionEvent);
 		final File projectFile = prefs.getLastProject()
 				.orElseThrow(() -> new IllegalStateException("No current project set"));
-		projectTabsController.saveSeries(projectFile);
+		projectTabsController.saveProject(projectFile);
 		isProjectDirty.set(false);
 	}
 

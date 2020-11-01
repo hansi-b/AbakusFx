@@ -2,8 +2,10 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +24,7 @@ public class ProjectTabsController {
 	@FXML
 	TabPane tabPane;
 
-	final List<KostenTab> controllersByTab = new ArrayList<>();
+	private final List<KostenTab> kostenTabs = new ArrayList<>();
 
 	final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
 	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
@@ -41,35 +43,46 @@ public class ProjectTabsController {
 		kostenRechner.setValue(rechner);
 	}
 
-	boolean loadProject(final File projectFile) {
-		tabPane.getTabs().clear();
-		newTab();
-		final KostenTabController kostenTabController = new KostenTabController(); // controllersByTab.get(0);
-		try {
-			kostenTabController.loadSeries(projectFile);
-		} catch (final IOException ioEx) {
-			log.error(String.format("Could not load project file '%s'", projectFile), ioEx);
-			return false;
-		}
-		kostenTabController.fillResult();
-		return true;
-	}
-
-	void newTab() {
+	KostenTab newTab() {
 		final KostenTab kostenTab = new KostenTab();
 		tabPane.getTabs().add(kostenTab.getTab());
 		kostenTab.initContextMenu();
 
 		kostenTab.setKostenRechner(kostenRechner.getReadOnlyProperty());
 		kostenTab.addDirtyListener(() -> dirtyListener.get().run());
-		controllersByTab.add(kostenTab);
+		kostenTabs.add(kostenTab);
+		return kostenTab;
 	}
 
 	public void newProject() {
-		controllersByTab.get(0).reset();
+		kostenTabs.get(0).reset();
 	}
 
-	public void saveSeries(final File targetFile) throws IOException {
-		controllersByTab.get(0); // .saveSeries(targetFile);
+	public void saveProject(final File targetFile) throws IOException {
+		log.info("Saving project to '{}' ...", targetFile);
+		String modelYaml = new ModelMapper().asString(getState());
+		Files.writeString(targetFile.toPath(), modelYaml);
+	}
+
+	private ProjectModel getState() {
+		return new ProjectModel(kostenTabs.stream().map(t -> t.getState()).collect(Collectors.toList()));
+	}
+
+	boolean loadProject(final File projectFile) throws IOException {
+		clear();
+		log.info("Loading project from '{}' ...", projectFile);
+
+		final String modelYaml = Files.readString(projectFile.toPath());
+		final ProjectModel project = new ModelMapper().fromString(modelYaml, ProjectModel.class);
+		project.persons.forEach(person -> {
+			final KostenTab newTab = newTab();
+			newTab.setState(person);
+		});
+		return true;
+	}
+
+	private void clear() {
+		tabPane.getTabs().clear();
+		kostenTabs.clear();
 	}
 }
