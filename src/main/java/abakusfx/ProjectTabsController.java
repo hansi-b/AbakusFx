@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
@@ -19,7 +20,7 @@ public class ProjectTabsController {
 	static final Logger log = LogManager.getLogger();
 
 	@FXML
-	TabPane projectTabs;
+	TabPane tabPane;
 
 	final List<KostenTab> controllersByTab = new ArrayList<>();
 
@@ -41,7 +42,7 @@ public class ProjectTabsController {
 	}
 
 	boolean loadAndShow(final File projectFile) {
-		projectTabs.getTabs().clear();
+		tabPane.getTabs().clear();
 		newTab();
 		final KostenTabController kostenTabController = new KostenTabController(); // controllersByTab.get(0);
 		try {
@@ -55,7 +56,10 @@ public class ProjectTabsController {
 	}
 
 	void newTab() {
-		final KostenTab kostenTab = new KostenTab(this);
+		final KostenTab kostenTab = new KostenTab();
+		tabPane.getTabs().add(kostenTab.getTab());
+		kostenTab.initContextMenu();
+
 		kostenTab.setKostenRechner(kostenRechner.getReadOnlyProperty());
 		kostenTab.addDirtyListener(() -> dirtyListener.get().run());
 		controllersByTab.add(kostenTab);

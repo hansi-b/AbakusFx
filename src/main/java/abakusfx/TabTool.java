@@ -3,13 +3,10 @@ package abakusfx;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -64,8 +61,6 @@ public class TabTool {
 			textField.selectAll();
 			textField.requestFocus();
 		});
-
-		tab.setContextMenu(initContextMenu(tab));
 	}
 
 	private static void updateOrLeave(final Tab tab, final StringProperty name, final Label label,
@@ -77,14 +72,5 @@ public class TabTool {
 			name.setValue(text);
 			tab.setGraphic(label);
 		}
-	}
-
-	private static ContextMenu initContextMenu(final Tab tab) {
-		final ContextMenu contextMenu = new ContextMenu();
-		final MenuItem item = new MenuItem("Schließen");
-		item.setOnAction(e -> tab.getTabPane().getTabs().remove(tab));
-		contextMenu.getItems().add(item);
-		item.disableProperty().bind(Bindings.size(tab.getTabPane().getTabs()).isEqualTo(1));
-		return contextMenu;
 	}
 }

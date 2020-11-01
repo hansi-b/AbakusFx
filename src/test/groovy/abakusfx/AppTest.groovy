@@ -39,7 +39,7 @@ public class AppSpec extends ApplicationSpec {
 
 	def "initial start shows empty table"() {
 		expect:
-		def tabPane = lookup("#projectTabs").query()
+		def tabPane = lookup("#tabPane").query()
 		verifyThat(tabPane, isEnabled())
 		tabPane.getTabs().size() == 1
 
