@@ -2,6 +2,7 @@ plugins {
 	id 'application'
 	id 'groovy'
 	id 'distribution'
+	id 'maven-publish'
 
 	id 'com.palantir.git-version' version '0.12.3'
 
@@ -32,6 +33,27 @@ repositories {
 	jcenter()
 }
 
+publishing {
+
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'abakusFx'
+			from components.java
+		}
+	}
+
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/hansi-b/abakusFx"
+			credentials {
+				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
+				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
+			}
+		}
+	}
+}
+
 dependencies {
 	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 
@@ -60,6 +82,5 @@ test {
 }
 
 application {
-	// Define the main class for the application.
 	mainClassName = 'abakusfx.App'
 }
