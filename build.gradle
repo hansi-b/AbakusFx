@@ -37,7 +37,7 @@ publishing {
 
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = 'abakusFx'
+			artifactId = 'abakusfx'
 			from components.java
 		}
 	}
@@ -45,7 +45,7 @@ publishing {
 	repositories {
 		maven {
 			name = "GitHubPackages"
-			url = "https://maven.pkg.github.com/hansi-b/abakusFx"
+			url = "https://maven.pkg.github.com/hansi-b/"
 			credentials {
 				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
 				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
