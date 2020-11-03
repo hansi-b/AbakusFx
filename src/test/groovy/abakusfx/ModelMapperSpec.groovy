@@ -16,6 +16,7 @@ public class ModelMapperSpec extends Specification {
 
 		when:
 		def modelYaml = new ModelMapper().asString(model)
+		println "$modelYaml"
 		def newModel = new ModelMapper().fromString(modelYaml, SeriesModel.class)
 
 		then:

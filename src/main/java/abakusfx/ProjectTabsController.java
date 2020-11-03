@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import abakus.KostenRechner;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -39,11 +42,16 @@ public class ProjectTabsController {
 		newTab();
 	}
 
-	public void setKostenRechner(final KostenRechner rechner) {
+	private void clear() {
+		tabPane.getTabs().clear();
+		kostenTabs.clear();
+	}
+
+	void setKostenRechner(final KostenRechner rechner) {
 		kostenRechner.setValue(rechner);
 	}
 
-	KostenTab newTab() {
+	private KostenTab newTab() {
 		final KostenTab kostenTab = new KostenTab();
 		tabPane.getTabs().add(kostenTab.getTab());
 		kostenTab.initContextMenu();
@@ -54,35 +62,40 @@ public class ProjectTabsController {
 		return kostenTab;
 	}
 
-	public void newProject() {
-		kostenTabs.get(0).reset();
+	void newProject() {
+		clear();
+		initialize();
 	}
 
-	public void saveProject(final File targetFile) throws IOException {
+	void saveProject(final File targetFile) throws IOException {
 		log.info("Saving project to '{}' ...", targetFile);
-		String modelYaml = new ModelMapper().asString(getState());
+		final String modelYaml = new ModelMapper()
+				.asString(new ProjectModel(kostenTabs.stream().map(t -> t.getState()).collect(Collectors.toList())));
 		Files.writeString(targetFile.toPath(), modelYaml);
 	}
 
-	private ProjectModel getState() {
-		return new ProjectModel(kostenTabs.stream().map(t -> t.getState()).collect(Collectors.toList()));
-	}
-
-	boolean loadProject(final File projectFile) throws IOException {
+	void loadProject(final File projectFile) throws IOException {
 		clear();
 		log.info("Loading project from '{}' ...", projectFile);
 
 		final String modelYaml = Files.readString(projectFile.toPath());
-		final ProjectModel project = new ModelMapper().fromString(modelYaml, ProjectModel.class);
+		final ProjectModel project = loadModel(modelYaml);
 		project.persons.forEach(person -> {
 			final KostenTab newTab = newTab();
 			newTab.setState(person);
 		});
-		return true;
 	}
 
-	private void clear() {
-		tabPane.getTabs().clear();
-		kostenTabs.clear();
+	// @VisibleForTesting
+	static ProjectModel loadModel(final String modelYaml) throws JsonProcessingException {
+		try {
+			return new ModelMapper().fromString(modelYaml, ProjectModel.class);
+		} catch (JsonProcessingException ex) {
+			log.debug("Could not deserialize project: {}", ex.getMessage());
+			log.trace(() -> ex);
+			log.debug("Trying fallback to old format ...");
+			SeriesModel fromString = new ModelMapper().fromString(modelYaml, SeriesModel.class);
+			return new ProjectModel(Collections.singletonList(new PersonModel("NN", fromString)));
+		}
 	}
 }

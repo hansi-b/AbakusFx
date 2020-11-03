@@ -110,16 +110,15 @@ public class AppController {
 	}
 
 	private void loadAndShow(final File projectFile) {
-		boolean couldLoad;
 		try {
-			couldLoad = projectTabsController.loadProject(projectFile);
+			projectTabsController.loadProject(projectFile);
+			setCurrentProject(projectFile);
 		} catch (final IOException ex) {
 			new Alert(AlertType.ERROR, String.format("Konnte '%s' nicht laden:\n%s", projectFile, ex.getMessage()),
 					ButtonType.OK).showAndWait();
 			projectTabsController.initialize();
-			couldLoad = false;
+			setCurrentProject(null);
 		}
-		setCurrentProject(couldLoad ? projectFile : null);
 	}
 
 	void setCurrentProject(final File file) {

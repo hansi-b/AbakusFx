@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static abakus.Constants.eq;
@@ -14,6 +15,7 @@ import abakus.Stufe;
 class ProjectModel {
 	public final List<PersonModel> persons;
 
+	@JsonCreator
 	ProjectModel(@JsonProperty("persons") final List<PersonModel> persons) {
 		this.persons = Collections.unmodifiableList(persons);
 	}
@@ -60,7 +62,7 @@ class PersonModel {
 	}
 }
 
-class SeriesModel {
+public class SeriesModel {
 
 	public final LocalDate von;
 	public final LocalDate bis;
@@ -71,6 +73,7 @@ class SeriesModel {
 	public final LocalDate seit;
 	public final int umfangSeit = 100;
 
+	@JsonCreator
 	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
 			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
 			@JsonProperty("umfang") final int umfang, @JsonProperty("isWeiter") final boolean isWeiter,
