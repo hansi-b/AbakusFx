@@ -17,7 +17,7 @@ class KostenTab {
 	private final StringProperty tabLabel;
 	private final KostenTabController kostenTabController;
 
-	KostenTab() {
+	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler) {
 		myTab = new Tab();
 		tabLabel = TabTool.initTab(myTab);
 
@@ -28,6 +28,8 @@ class KostenTab {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
 		kostenTabController = loader.getController();
+		kostenTabController.setKostenRechner(kostenRechnerProp);
+		kostenTabController.addDirtyListener(dirtyHandler);
 	}
 
 	void initContextMenu() {
@@ -43,15 +45,7 @@ class KostenTab {
 		return myTab;
 	}
 
-	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechner) {
-		kostenTabController.setKostenRechner(kostenRechner);
-	}
-
-	void addDirtyListener(final Runnable listener) {
-		kostenTabController.addDirtyListener(listener);
-	}
-
-	void setState(PersonModel person) {
+	void setState(final PersonModel person) {
 		tabLabel.set(person.name);
 		kostenTabController.setState(person.series);
 	}

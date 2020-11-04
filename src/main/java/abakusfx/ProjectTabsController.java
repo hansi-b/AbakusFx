@@ -39,7 +39,7 @@ public class ProjectTabsController {
 	@FXML
 	void initialize() {
 		// need an initial tab here for correct dimensions
-		newTab();
+		addTab(null);
 	}
 
 	private void clear() {
@@ -51,15 +51,15 @@ public class ProjectTabsController {
 		kostenRechner.setValue(rechner);
 	}
 
-	private KostenTab newTab() {
-		final KostenTab kostenTab = new KostenTab();
+	private void addTab(PersonModel person) {
+		final KostenTab kostenTab = new KostenTab(kostenRechner.getReadOnlyProperty(), () -> dirtyListener.get().run());
+
+		kostenTabs.add(kostenTab);
 		tabPane.getTabs().add(kostenTab.getTab());
 		kostenTab.initContextMenu();
 
-		kostenTab.setKostenRechner(kostenRechner.getReadOnlyProperty());
-		kostenTab.addDirtyListener(() -> dirtyListener.get().run());
-		kostenTabs.add(kostenTab);
-		return kostenTab;
+		if (person != null)
+			kostenTab.setState(person);
 	}
 
 	void newProject() {
@@ -80,10 +80,7 @@ public class ProjectTabsController {
 
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
-		project.persons.forEach(person -> {
-			final KostenTab newTab = newTab();
-			newTab.setState(person);
-		});
+		project.persons.forEach(person -> addTab(person));
 	}
 
 	// @VisibleForTesting
