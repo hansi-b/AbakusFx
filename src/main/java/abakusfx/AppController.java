@@ -114,14 +114,15 @@ public class AppController {
 			projectTabsController.loadProject(projectFile);
 			setCurrentProject(projectFile);
 		} catch (final IOException ex) {
-			new Alert(AlertType.ERROR, String.format("Konnte '%s' nicht laden:\n%s", projectFile, ex.getMessage()),
-					ButtonType.OK).showAndWait();
+			final String msg = String.format("Konnte '%s' nicht laden:\n%s", projectFile, ex.getMessage());
+			log.error(msg, ex);
+			new Alert(AlertType.ERROR, msg, ButtonType.OK).showAndWait();
 			projectTabsController.initialize();
 			setCurrentProject(null);
 		}
 	}
 
-	void setCurrentProject(final File file) {
+	private void setCurrentProject(final File file) {
 		log.debug("Setting current project = {}", file);
 		if (file != null) {
 			currentProjectName.set(file.getName());
