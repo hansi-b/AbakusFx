@@ -71,10 +71,6 @@ public class KostenTabController {
 		serieSettingsController.setState(model);
 	}
 
-	public void reset() {
-		serieSettingsController.reset();
-	}
-
 	@FXML
 	void exit(final ActionEvent actionEvent) {
 		log.trace("#exit on {}", actionEvent);

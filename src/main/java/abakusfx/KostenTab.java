@@ -51,10 +51,6 @@ class KostenTab {
 		kostenTabController.addDirtyListener(listener);
 	}
 
-	void reset() {
-		kostenTabController.reset();
-	}
-
 	void setState(PersonModel person) {
 		tabLabel.set(person.name);
 		kostenTabController.setState(person.series);

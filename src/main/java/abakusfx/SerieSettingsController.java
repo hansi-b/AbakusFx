@@ -50,10 +50,6 @@ public class SerieSettingsController {
 		seit.disableProperty().bind(weiter.selectedProperty().not());
 		seitLabel.disableProperty().bind(weiter.selectedProperty().not());
 
-		reset();
-	}
-
-	void reset() {
 		setState(SeriesModel.fallback());
 	}
 
