@@ -45,11 +45,8 @@ public class TabTool {
 		});
 
 		textField.setOnKeyPressed(e -> {
-			log.debug("setOnKeyPressed {}", textField.getText());
-			if (e.getCode().equals(KeyCode.ENTER)) {
-				if (textField.getText().isEmpty())
-					textField.requestFocus();
-			}
+			if (e.getCode().equals(KeyCode.ENTER) && textField.getText().isEmpty())
+				textField.requestFocus();
 		});
 
 		label.setOnMouseClicked(event -> {

@@ -9,7 +9,7 @@ plugins {
 	id "com.github.ben-manes.versions" version "0.33.0"
 }
 
-group 'org.hansib'
+group 'org.hansi-b'
 version gitVersion()
 
 sourceCompatibility=11
@@ -44,8 +44,8 @@ publishing {
 
 	repositories {
 		maven {
-			name = "GitHubPackages"
-			url = "https://maven.pkg.github.com/hansi-b/"
+			name = 'GitHubPackages'
+			url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
 			credentials {
 				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
 				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
