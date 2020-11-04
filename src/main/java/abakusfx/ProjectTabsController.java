@@ -18,18 +18,21 @@ import abakus.KostenRechner;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
 public class ProjectTabsController {
-	static final Logger log = LogManager.getLogger();
+	private static final Logger log = LogManager.getLogger();
 
 	@FXML
 	TabPane tabPane;
 
 	private final List<KostenTab> kostenTabs = new ArrayList<>();
 
-	final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
 	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
 
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
@@ -40,6 +43,7 @@ public class ProjectTabsController {
 	void initialize() {
 		// need an initial tab here for correct dimensions
 		addTab(null);
+		newAdderTab();
 	}
 
 	private void clear() {
@@ -51,7 +55,7 @@ public class ProjectTabsController {
 		kostenRechner.setValue(rechner);
 	}
 
-	private void addTab(PersonModel person) {
+	private void addTab(final PersonModel person) {
 		final KostenTab kostenTab = new KostenTab(kostenRechner.getReadOnlyProperty(), () -> dirtyListener.get().run());
 
 		kostenTabs.add(kostenTab);
@@ -81,17 +85,43 @@ public class ProjectTabsController {
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
 		project.persons.forEach(person -> addTab(person));
+		newAdderTab();
+	}
+
+	void newAdderTab() {
+
+		final Tab adderTab = new Tab();
+		adderTab.setClosable(false);
+
+		final Label label = new Label("+");
+		adderTab.setGraphic(label);
+
+		tabPane.getTabs().add(adderTab);
+		tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+			if (newVal != adderTab)
+				return;
+
+			addTab(null);
+			final ObservableList<Tab> tabs = tabPane.getTabs();
+			log.info("tabs size={}", tabs.size());
+			final Tab newTab = tabs.get(tabs.size() - 1);
+			final Tab addTab = tabs.get(tabs.size() - 2);
+			tabs.remove(tabs.size() - 2, tabs.size());
+			tabs.add(newTab);
+			tabs.add(addTab);
+			tabPane.getSelectionModel().select(newTab);
+		});
 	}
 
 	// @VisibleForTesting
 	static ProjectModel loadModel(final String modelYaml) throws JsonProcessingException {
 		try {
 			return new ModelMapper().fromString(modelYaml, ProjectModel.class);
-		} catch (JsonProcessingException ex) {
+		} catch (final JsonProcessingException ex) {
 			log.debug("Could not deserialize project: {}", ex.getMessage());
 			log.trace(() -> ex);
 			log.debug("Trying fallback to old format ...");
-			SeriesModel fromString = new ModelMapper().fromString(modelYaml, SeriesModel.class);
+			final SeriesModel fromString = new ModelMapper().fromString(modelYaml, SeriesModel.class);
 			return new ProjectModel(Collections.singletonList(new PersonModel("NN", fromString)));
 		}
 	}

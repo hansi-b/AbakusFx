@@ -19,7 +19,7 @@ class KostenTab {
 
 	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler) {
 		myTab = new Tab();
-		tabLabel = TabTool.initTab(myTab);
+		tabLabel = TabTool.initTab(myTab, "NN");
 
 		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
 		try {

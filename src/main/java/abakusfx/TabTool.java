@@ -14,12 +14,12 @@ import javafx.scene.input.KeyCode;
 public class TabTool {
 	static final Logger log = LogManager.getLogger();
 
-	static StringProperty initTab(final Tab tab) {
+	static StringProperty initTab(final Tab tab, String initialLabel) {
 
 		log.debug("handling {}", tab);
 		tab.setClosable(false);
 		final StringProperty labelProp = new SimpleStringProperty();
-		labelProp.set("NN");
+		labelProp.set(initialLabel);
 
 		final Label label = new Label();
 		label.textProperty().bind(labelProp);
