@@ -5,7 +5,6 @@ import java.io.IOException;
 import abakus.KostenRechner;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -13,17 +12,16 @@ import javafx.scene.control.Tab;
 
 class KostenTab {
 
-	private final Tab myTab;
-	private final StringProperty tabLabel;
+	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
 	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler) {
-		myTab = new Tab();
-		tabLabel = TabTool.initTab(myTab, "NN");
+		renamableTab = new RenamableTab("NN");
+		renamableTab.tab.setClosable(false);
 
 		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
 		try {
-			myTab.setContent(loader.load());
+			renamableTab.tab.setContent(loader.load());
 		} catch (final IOException ioEx) {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
@@ -34,23 +32,28 @@ class KostenTab {
 
 	void initContextMenu() {
 		final ContextMenu contextMenu = new ContextMenu();
-		final MenuItem item = new MenuItem("Schließen");
-		item.setOnAction(e -> myTab.getTabPane().getTabs().remove(myTab));
-		contextMenu.getItems().add(item);
-		item.disableProperty().bind(Bindings.size(myTab.getTabPane().getTabs()).isEqualTo(1));
-		myTab.setContextMenu(contextMenu);
+
+		final MenuItem renameItem = new MenuItem("Umbenennen");
+		contextMenu.getItems().add(renameItem);
+
+		final MenuItem closeItem = new MenuItem("Schließen");
+		closeItem.setOnAction(e -> renamableTab.tab.getTabPane().getTabs().remove(renamableTab.tab));
+		contextMenu.getItems().add(closeItem);
+		closeItem.disableProperty().bind(Bindings.size(renamableTab.tab.getTabPane().getTabs()).isEqualTo(1));
+
+		renamableTab.tab.setContextMenu(contextMenu);
 	}
 
 	Tab getTab() {
-		return myTab;
+		return renamableTab.tab;
 	}
 
 	void setState(final PersonModel person) {
-		tabLabel.set(person.name);
+		renamableTab.labelProp.set(person.name);
 		kostenTabController.setState(person.series);
 	}
 
 	PersonModel getState() {
-		return new PersonModel(tabLabel.getValue(), kostenTabController.getState());
+		return new PersonModel(renamableTab.labelProp.getValue(), kostenTabController.getState());
 	}
 }

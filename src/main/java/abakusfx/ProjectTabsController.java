@@ -103,6 +103,9 @@ public class ProjectTabsController {
 
 			addTab(null);
 			final ObservableList<Tab> tabs = tabPane.getTabs();
+			/**
+			 * TODO: this puts the tab pane and kostentabs list out of sync
+			 */
 			log.info("tabs size={}", tabs.size());
 			final Tab newTab = tabs.get(tabs.size() - 1);
 			final Tab addTab = tabs.get(tabs.size() - 2);
@@ -110,6 +113,8 @@ public class ProjectTabsController {
 			tabs.add(newTab);
 			tabs.add(addTab);
 			tabPane.getSelectionModel().select(newTab);
+			// TODO: focus on label und select all text "NN"
+			// TODO: add "Umbenennen" in context menu for Kostentab
 		});
 	}
 

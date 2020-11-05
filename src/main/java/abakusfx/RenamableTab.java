@@ -1,8 +1,5 @@
 package abakusfx;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -11,22 +8,24 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-public class TabTool {
-	static final Logger log = LogManager.getLogger();
+class RenamableTab {
 
-	static StringProperty initTab(final Tab tab, String initialLabel) {
+	final Tab tab;
+	final TextField textField;
+	final Label label;
+	final StringProperty labelProp;
 
-		log.debug("handling {}", tab);
-		tab.setClosable(false);
-		final StringProperty labelProp = new SimpleStringProperty();
+	public RenamableTab(final String initialLabel) {
+		tab = new Tab();
+
+		labelProp = new SimpleStringProperty();
 		labelProp.set(initialLabel);
 
-		final Label label = new Label();
+		label = new Label();
 		label.textProperty().bind(labelProp);
-
 		tab.setGraphic(label);
 
-		final TextField textField = new TextField();
+		textField = new TextField();
 
 		textField.textProperty().isEmpty().addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();
@@ -39,7 +38,8 @@ public class TabTool {
 		textField.setOnAction(event -> updateOrLeave(tab, labelProp, label, textField));
 
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			log.debug("focusedProperty {} {} {}", observable, oldValue, newValue);
+			// TabTool.log.debug("focusedProperty {} {} {}", observable, oldValue,
+			// newValue);
 			if (!newValue)
 				updateOrLeave(tab, labelProp, label, textField);
 		});
@@ -58,8 +58,6 @@ public class TabTool {
 			textField.selectAll();
 			textField.requestFocus();
 		});
-
-		return labelProp;
 	}
 
 	private static void updateOrLeave(final Tab tab, final StringProperty name, final Label label,
