@@ -34,6 +34,7 @@ class KostenTab {
 		final ContextMenu contextMenu = new ContextMenu();
 
 		final MenuItem renameItem = new MenuItem("Umbenennen");
+		renameItem.setOnAction(e -> renamableTab.editLabel());
 		contextMenu.getItems().add(renameItem);
 
 		final MenuItem closeItem = new MenuItem("Schließen");
@@ -49,11 +50,11 @@ class KostenTab {
 	}
 
 	void setState(final PersonModel person) {
-		renamableTab.labelProp.set(person.name);
+		renamableTab.setLabel(person.name);
 		kostenTabController.setState(person.series);
 	}
 
 	PersonModel getState() {
-		return new PersonModel(renamableTab.labelProp.getValue(), kostenTabController.getState());
+		return new PersonModel(renamableTab.getLabel(), kostenTabController.getState());
 	}
 }

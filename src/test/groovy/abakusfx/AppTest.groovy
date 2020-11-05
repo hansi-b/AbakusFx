@@ -41,7 +41,8 @@ public class AppSpec extends ApplicationSpec {
 		expect:
 		def tabPane = lookup("#tabPane").query()
 		verifyThat(tabPane, isEnabled())
-		tabPane.getTabs().size() == 1
+		// expect one tab + adder tab
+		tabPane.getTabs().size() == 2
 
 		verifyThat('#serieSettings', isEnabled())
 		verifyThat('#calcKosten', isEnabled())

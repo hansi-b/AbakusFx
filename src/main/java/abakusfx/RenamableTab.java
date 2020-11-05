@@ -1,5 +1,8 @@
 package abakusfx;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -9,11 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
 class RenamableTab {
+	private static final Logger log = LogManager.getLogger();
 
 	final Tab tab;
-	final TextField textField;
-	final Label label;
-	final StringProperty labelProp;
+	private final TextField textField;
+	private final Label label;
+	private final StringProperty labelProp;
 
 	public RenamableTab(final String initialLabel) {
 		tab = new Tab();
@@ -38,8 +42,7 @@ class RenamableTab {
 		textField.setOnAction(event -> updateOrLeave(tab, labelProp, label, textField));
 
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			// TabTool.log.debug("focusedProperty {} {} {}", observable, oldValue,
-			// newValue);
+			log.debug("focusedProperty {} {} {}", observable, oldValue, newValue);
 			if (!newValue)
 				updateOrLeave(tab, labelProp, label, textField);
 		});
@@ -52,12 +55,23 @@ class RenamableTab {
 		label.setOnMouseClicked(event -> {
 			if (event.getClickCount() < 2)
 				return;
-
-			textField.setText(label.getText());
-			tab.setGraphic(textField);
-			textField.selectAll();
-			textField.requestFocus();
+			editLabel();
 		});
+	}
+
+	void editLabel() {
+		textField.setText(label.getText());
+		tab.setGraphic(textField);
+		textField.selectAll();
+		textField.requestFocus();
+	}
+
+	void setLabel(String name) {
+		labelProp.set(name);
+	}
+
+	String getLabel() {
+		return labelProp.getValue();
 	}
 
 	private static void updateOrLeave(final Tab tab, final StringProperty name, final Label label,
