@@ -10,8 +10,6 @@
     fx:controller="abakusfx.SerieSettingsController"
     stylesheets="app.css, serieSettings.css">
 
-    <!-- erste Zeile -->
-
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" left="10" bottom="2" right="10" />
@@ -20,7 +18,12 @@
         <DatePicker fx:id="von" />
         <Label text="bis" />
         <DatePicker fx:id="bis" />
+    </HBox>
 
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10" left="10" bottom="2" right="10" />
+        </padding>
         <Label text="Entgeltgruppe" />
         <ComboBox fx:id="gruppe" />
 
@@ -32,8 +35,6 @@
             </valueFactory>
         </Spinner>
     </HBox>
-
-    <!-- zweite Zeile -->
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <padding>
@@ -50,6 +51,13 @@
                 <fx:reference source="neuOderWeiter" />
             </toggleGroup>
         </RadioButton>
+
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10" left="10" bottom="2" right="10" />
+        </padding>
 
         <Label text="Stufe" />
         <ComboBox fx:id="stufe">

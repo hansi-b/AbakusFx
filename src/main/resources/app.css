@@ -1,11 +1,11 @@
 .root{
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
 }
 
 .menu-bar {
   -fx-padding: 0 1 0 1;
   -fx-spacing: 1;
-};
+}
 
 .menu { -fx-padding: 2 5 2 5; }
 .menu-item {
