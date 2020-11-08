@@ -7,9 +7,13 @@ import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 import org.testfx.matcher.control.TableViewMatchers
 
+import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
+import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 
 public class AppSpec extends ApplicationSpec {
@@ -31,7 +35,6 @@ public class AppSpec extends ApplicationSpec {
 		stage.show()
 	}
 
-
 	@Override
 	void stop() throws Exception {
 		FxToolkit.hideStage()
@@ -39,11 +42,7 @@ public class AppSpec extends ApplicationSpec {
 
 	def "initial start shows empty table"() {
 		expect:
-		def tabPane = lookup("#tabPane").query()
-		verifyThat(tabPane, isEnabled())
-		// expect one tab + adder tab
-		tabPane.getTabs().size() == 2
-
+		verifyThat(lookup("#tabPane").query(), isEnabled())
 		verifyThat('#serieSettings', isEnabled())
 		verifyThat('#calcKosten', isEnabled())
 		verifyThat('#serieTable', isEnabled())
