@@ -40,9 +40,13 @@ class KostenTab {
 		final MenuItem closeItem = new MenuItem("Schließen");
 		closeItem.setOnAction(e -> renamableTab.tab.getTabPane().getTabs().remove(renamableTab.tab));
 		contextMenu.getItems().add(closeItem);
-		closeItem.disableProperty().bind(Bindings.size(renamableTab.tab.getTabPane().getTabs()).isEqualTo(1));
+		closeItem.disableProperty().bind(Bindings.size(renamableTab.tab.getTabPane().getTabs()).isEqualTo(2));
 
 		renamableTab.tab.setContextMenu(contextMenu);
+	}
+
+	void edit() {
+		renamableTab.editLabel();
 	}
 
 	Tab getTab() {

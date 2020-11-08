@@ -18,7 +18,7 @@ import abakus.KostenRechner;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -28,47 +28,40 @@ public class ProjectTabsController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	TabPane tabPane;
-
+	private TabPane tabPane;
 	private final List<KostenTab> kostenTabs = new ArrayList<>();
 
 	private final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
 	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
 
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
-	public final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty
-			.getReadOnlyProperty();
+	final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty.getReadOnlyProperty();
 
 	@FXML
 	void initialize() {
-		// need an initial tab here for correct dimensions
-		addTab(null);
-		newAdderTab();
-	}
-
-	private void clear() {
-		tabPane.getTabs().clear();
-		kostenTabs.clear();
+		newProject();
 	}
 
 	void setKostenRechner(final KostenRechner rechner) {
 		kostenRechner.setValue(rechner);
 	}
 
-	private void addTab(final PersonModel person) {
+	private KostenTab newKostenTab(final PersonModel person) {
 		final KostenTab kostenTab = new KostenTab(kostenRechner.getReadOnlyProperty(), () -> dirtyListener.get().run());
-
-		kostenTabs.add(kostenTab);
-		tabPane.getTabs().add(kostenTab.getTab());
-		kostenTab.initContextMenu();
-
 		if (person != null)
 			kostenTab.setState(person);
+
+		kostenTabs.add(kostenTab);
+		tabPane.getTabs().add(tabPane.getTabs().size() - 1, kostenTab.getTab());
+		kostenTab.initContextMenu();
+		return kostenTab;
 	}
 
 	void newProject() {
-		clear();
-		initialize();
+		reset();
+		// need an initial tab here for correct dimensions
+		newKostenTab(null);
+		tabPane.getSelectionModel().select(0);
 	}
 
 	void saveProject(final File targetFile) throws IOException {
@@ -79,16 +72,26 @@ public class ProjectTabsController {
 	}
 
 	void loadProject(final File projectFile) throws IOException {
-		clear();
+		reset();
 		log.info("Loading project from '{}' ...", projectFile);
 
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
-		project.persons.forEach(person -> addTab(person));
-		newAdderTab();
+		project.persons.forEach(person -> newKostenTab(person));
+		tabPane.getSelectionModel().select(0);
 	}
 
-	void newAdderTab() {
+	private void reset() {
+		tabPane.getTabs().clear();
+		kostenTabs.clear();
+		initAdderTab();
+	}
+
+	private ChangeListener<Tab> adderListener = null;
+
+	private void initAdderTab() {
+		if (adderListener != null)
+			tabPane.getSelectionModel().selectedItemProperty().removeListener(adderListener);
 
 		final Tab adderTab = new Tab();
 		adderTab.setClosable(false);
@@ -96,26 +99,21 @@ public class ProjectTabsController {
 		final Label label = new Label("+");
 		adderTab.setGraphic(label);
 
-		tabPane.getTabs().add(adderTab);
-		tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+		adderListener = (obs, oldVal, newVal) -> {
 			if (newVal != adderTab)
 				return;
 
-			addTab(null);
-			final ObservableList<Tab> tabs = tabPane.getTabs();
-			/**
-			 * TODO: this puts the tab pane and kostentabs list out of sync
-			 */
-			log.info("tabs size={}", tabs.size());
-			final Tab newTab = tabs.get(tabs.size() - 1);
-			final Tab addTab = tabs.get(tabs.size() - 2);
-			tabs.remove(tabs.size() - 2, tabs.size());
-			tabs.add(newTab);
-			tabs.add(addTab);
-			tabPane.getSelectionModel().select(newTab);
-			// TODO: focus on label und select all text "NN"
-			// TODO: add "Umbenennen" in context menu for Kostentab
-		});
+			final KostenTab newKostenTab = newKostenTab(null);
+
+			tabPane.getSelectionModel().select(newKostenTab.getTab());
+			newKostenTab.edit();
+		};
+		/*
+		 * Must add the tab before the listener, otherwise the listener is triggered
+		 * immediately by the tab insertion.
+		 */
+		tabPane.getTabs().add(adderTab);
+		tabPane.getSelectionModel().selectedItemProperty().addListener(adderListener);
 	}
 
 	// @VisibleForTesting
