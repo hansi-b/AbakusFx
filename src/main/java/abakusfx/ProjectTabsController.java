@@ -47,13 +47,19 @@ public class ProjectTabsController {
 	}
 
 	private KostenTab newKostenTab(final PersonModel person) {
-		final KostenTab kostenTab = new KostenTab(kostenRechner.getReadOnlyProperty(), () -> dirtyListener.get().run());
+		final KostenTab kostenTab = new KostenTab(//
+				kostenRechner.getReadOnlyProperty(), //
+				() -> dirtyListener.get().run());
+
 		if (person != null)
 			kostenTab.setState(person);
 
 		kostenTabs.add(kostenTab);
 		tabPane.getTabs().add(tabPane.getTabs().size() - 1, kostenTab.getTab());
-		kostenTab.initContextMenu();
+		kostenTab.initContextMenu(kt -> {
+			kostenTabs.remove(kt);
+			tabPane.getTabs().remove(kt.getTab());
+		});
 		return kostenTab;
 	}
 

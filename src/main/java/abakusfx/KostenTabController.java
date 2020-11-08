@@ -30,7 +30,7 @@ public class KostenTabController {
 	private ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter;
 
 	private final ReadOnlyObjectWrapper<Money> summeInternalProperty = new ReadOnlyObjectWrapper<>(null);
-	public final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
+	final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
 
 	@FXML
 	void initialize() throws IOException {
@@ -51,15 +51,18 @@ public class KostenTabController {
 		final KostenRechner rechner = kostenRechnerGetter.get();
 		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
 		serieTableController.updateKosten(moKosten);
-		summeInternalProperty.set(rechner.summe(moKosten));
+		Money summe = rechner.summe(moKosten);
+		log.debug("Result = {}", summe);
+		summeInternalProperty.set(summe);
 	}
 
-	void clearResult() {
+	private void clearResult() {
 		serieTableController.clearKosten();
 		summeInternalProperty.set(null);
+		log.debug("Cleared result");
 	}
 
-	public void addDirtyListener(final Runnable listener) {
+	void addDirtyListener(final Runnable listener) {
 		serieSettingsController.addDirtyListener(listener);
 	}
 

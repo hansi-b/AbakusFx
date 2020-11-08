@@ -1,6 +1,7 @@
 package abakusfx;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import abakus.KostenRechner;
 import javafx.beans.binding.Bindings;
@@ -30,7 +31,10 @@ class KostenTab {
 		kostenTabController.addDirtyListener(dirtyHandler);
 	}
 
-	void initContextMenu() {
+	/**
+	 * Has to be done after tab has been added to a pane.
+	 */
+	void initContextMenu(Consumer<KostenTab> closeHandler) {
 		final ContextMenu contextMenu = new ContextMenu();
 
 		final MenuItem renameItem = new MenuItem("Umbenennen");
@@ -38,7 +42,7 @@ class KostenTab {
 		contextMenu.getItems().add(renameItem);
 
 		final MenuItem closeItem = new MenuItem("Schließen");
-		closeItem.setOnAction(e -> renamableTab.tab.getTabPane().getTabs().remove(renamableTab.tab));
+		closeItem.setOnAction(e -> closeHandler.accept(this));
 		contextMenu.getItems().add(closeItem);
 		closeItem.disableProperty().bind(Bindings.size(renamableTab.tab.getTabPane().getTabs()).isEqualTo(2));
 
