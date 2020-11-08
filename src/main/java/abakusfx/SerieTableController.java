@@ -72,7 +72,7 @@ public class SerieTableController {
 	@FXML
 	private TableColumn<Kosten, Money> kostenCol;
 
-	ObservableList<Kosten> kosten = FXCollections.observableArrayList();
+	private final ObservableList<Kosten> kosten = FXCollections.observableArrayList();
 
 	@FXML
 	void initialize() {
@@ -109,7 +109,7 @@ public class SerieTableController {
 		kosten.clear();
 	}
 
-	void copySelectionToClipboard() {
+	private void copySelectionToClipboard() {
 		final ObservableList<Kosten> selectedItems = kostenTabelle.getSelectionModel().getSelectedItems();
 		final String csv = selectedItems.stream().map(i -> i.asCsv())
 				.collect(Collectors.joining(System.lineSeparator()));

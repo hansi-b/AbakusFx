@@ -39,6 +39,9 @@ public class AppController {
 	private ProjectTabsController projectTabsController;
 
 	@FXML
+	private TextField stats;
+
+	@FXML
 	private TextField result;
 
 	private AppPrefs prefs;

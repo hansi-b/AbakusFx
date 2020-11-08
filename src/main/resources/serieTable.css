@@ -3,19 +3,19 @@
     -fx-alignment: CENTER;
 }
 
-#colMonat {
+#monatCol {
    -fx-pref-width: 7em;
    -fx-alignment: CENTER-RIGHT;
 }
-#colGruppe {
+#gruppeCol {
    -fx-pref-width: 4em;
 }
-#colStufe {
+#stufeCol {
    -fx-pref-width: 6em;
 }
-#colUmfang {
+#umfangCol {
    -fx-pref-width: 4em;
 }
-#colKosten {
+#kostenCol {
    -fx-pref-width: 8em;
 }
