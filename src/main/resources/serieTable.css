@@ -2,20 +2,3 @@
 .table-cell {
     -fx-alignment: CENTER;
 }
-
-#monatCol {
-   -fx-pref-width: 7em;
-   -fx-alignment: CENTER-RIGHT;
-}
-#gruppeCol {
-   -fx-pref-width: 4em;
-}
-#stufeCol {
-   -fx-pref-width: 6em;
-}
-#umfangCol {
-   -fx-pref-width: 4em;
-}
-#kostenCol {
-   -fx-pref-width: 8em;
-}
