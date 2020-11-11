@@ -22,11 +22,11 @@ class KostenTab {
 			final Runnable summeUpdater) {
 
 		renamableTab = new RenamableTab("NN");
-		renamableTab.tab.setClosable(false);
+		getTab().setClosable(false);
 
 		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
 		try {
-			renamableTab.tab.setContent(loader.load());
+			getTab().setContent(loader.load());
 		} catch (final IOException ioEx) {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
@@ -49,9 +49,9 @@ class KostenTab {
 		final MenuItem closeItem = new MenuItem("Schließen");
 		closeItem.setOnAction(e -> closeHandler.accept(this));
 		contextMenu.getItems().add(closeItem);
-		closeItem.disableProperty().bind(Bindings.size(renamableTab.tab.getTabPane().getTabs()).isEqualTo(2));
+		closeItem.disableProperty().bind(Bindings.size(getTab().getTabPane().getTabs()).isEqualTo(2));
 
-		renamableTab.tab.setContextMenu(contextMenu);
+		getTab().setContextMenu(contextMenu);
 	}
 
 	void edit() {

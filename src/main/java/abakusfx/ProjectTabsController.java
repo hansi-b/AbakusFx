@@ -114,7 +114,11 @@ public class ProjectTabsController {
 			final KostenTab newKostenTab = newKostenTab(null);
 
 			tabPane.getSelectionModel().select(newKostenTab.getTab());
-			newKostenTab.edit();
+			/*
+			 * this does not select the tab text in the expected way (strangely, right-click
+			 * in the context menu uses this and works
+			 */
+			// newKostenTab.edit();
 		};
 		/*
 		 * Must add the tab before the listener, otherwise the listener is triggered
