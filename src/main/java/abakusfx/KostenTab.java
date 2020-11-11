@@ -3,6 +3,8 @@ package abakusfx;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.javamoney.moneta.Money;
+
 import abakus.KostenRechner;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -16,7 +18,9 @@ class KostenTab {
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
-	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler) {
+	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler,
+			final Runnable summeUpdater) {
+
 		renamableTab = new RenamableTab("NN");
 		renamableTab.tab.setClosable(false);
 
@@ -29,12 +33,13 @@ class KostenTab {
 		kostenTabController = loader.getController();
 		kostenTabController.setKostenRechner(kostenRechnerProp);
 		kostenTabController.addDirtyListener(dirtyHandler);
+		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeUpdater.run());
 	}
 
 	/**
 	 * Has to be done after tab has been added to a pane.
 	 */
-	void initContextMenu(Consumer<KostenTab> closeHandler) {
+	void initContextMenu(final Consumer<KostenTab> closeHandler) {
 		final ContextMenu contextMenu = new ContextMenu();
 
 		final MenuItem renameItem = new MenuItem("Umbenennen");
@@ -55,6 +60,10 @@ class KostenTab {
 
 	Tab getTab() {
 		return renamableTab.tab;
+	}
+
+	ReadOnlyObjectProperty<Money> summe() {
+		return kostenTabController.summeProperty;
 	}
 
 	void setState(final PersonModel person) {
