@@ -2,13 +2,18 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
     fx:controller="abakusfx.KostenTabController" stylesheets="app.css">
 
     <fx:include fx:id="serieSettings"
         source="serieSettings.fxml" />
-    <Button fx:id="calcKosten" text="Berechnen" />
+    <HBox alignment="CENTER_RIGHT">
+        <padding>
+            <Insets top="6" left="6" bottom="6" right="6" />
+        </padding>
+        <Button fx:id="calcKosten" text="Berechnen" />
+    </HBox>
     <fx:include fx:id="serieTable" source="serieTable.fxml" />
 </VBox>

@@ -14,6 +14,7 @@ import org.javamoney.moneta.Money;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import abakus.Constants;
 import abakus.KostenRechner;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -49,7 +50,8 @@ public class ProjectTabsController {
 	private KostenTab newKostenTab(final PersonModel person) {
 		final KostenTab kostenTab = new KostenTab(//
 				kostenRechner.getReadOnlyProperty(), //
-				() -> dirtyListener.get().run());
+				() -> dirtyListener.get().run(), //
+				() -> updateSumme());
 
 		if (person != null)
 			kostenTab.setState(person);
@@ -133,5 +135,11 @@ public class ProjectTabsController {
 			final SeriesModel fromString = new ModelMapper().fromString(modelYaml, SeriesModel.class);
 			return new ProjectModel(Collections.singletonList(new PersonModel("NN", fromString)));
 		}
+	}
+
+	private void updateSumme() {
+		Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(i -> i != null).reduce((a, b) -> a.add(b))
+				.orElseGet(() -> Constants.euros(0));
+		projektSummeInternalProperty.set(summe);
 	}
 }
