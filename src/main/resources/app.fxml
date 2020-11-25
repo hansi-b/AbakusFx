@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.TabPane?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
@@ -27,14 +26,17 @@
         </MenuBar>
     </top>
     <center>
-        <fx:include fx:id="projectTabs"
-            source="projectTabs.fxml" />
+        <HBox>
+            <fx:include fx:id="projectTabs"
+                source="projectTabs.fxml" />
+            <fx:include source="übersichtTable.fxml" />
+        </HBox>
     </center>
     <bottom>
         <VBox styleClass="text-pane">
             <TextField fx:id="result" editable="false">
                 <padding>
-                    <Insets top="2" left="2" bottom="2" right="2" />
+                    <Insets top="1" left="1" bottom="1" right="1" />
                 </padding>
             </TextField>
         </VBox>

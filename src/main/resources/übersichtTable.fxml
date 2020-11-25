@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+
+<TableView xmlns:fx="http://javafx.com/fxml"
+    xmlns="http://javafx.com/javafx"
+    fx:id="übersichtTabelle"
+    fx:controller="abakusfx.ÜbersichtTableController"
+    stylesheets="app.css, serieTable.css" HBox.hgrow="ALWAYS">
+    <columns>
+        <TableColumn fx:id="nameCol" text="Name" />
+        <TableColumn fx:id="kostenCol" text="Kosten" />
+    </columns>
+</TableView>

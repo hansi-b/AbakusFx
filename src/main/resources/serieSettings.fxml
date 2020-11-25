@@ -10,9 +10,9 @@
     fx:controller="abakusfx.SerieSettingsController"
     stylesheets="app.css, serieSettings.css">
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
+    <HBox spacing="6" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10" />
+            <Insets top="3" left="3" bottom="2" right="3" />
         </padding>
         <Label text="von" />
         <DatePicker fx:id="von" />
@@ -20,9 +20,9 @@
         <DatePicker fx:id="bis" />
     </HBox>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
+    <HBox spacing="6" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10" />
+            <Insets top="3" left="3" bottom="2" right="3" />
         </padding>
         <Label text="Entgeltgruppe" />
         <ComboBox fx:id="gruppe" />
@@ -36,9 +36,9 @@
         </Spinner>
     </HBox>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
+    <HBox spacing="6" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10" />
+            <Insets top="3" left="3" bottom="2" right="3" />
         </padding>
         <RadioButton text="Neueinstellung">
             <toggleGroup>
@@ -51,12 +51,11 @@
                 <fx:reference source="neuOderWeiter" />
             </toggleGroup>
         </RadioButton>
-
     </HBox>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
+    <HBox spacing="6" alignment="CENTER_LEFT">
         <padding>
-            <Insets top="10" left="10" bottom="2" right="10" />
+            <Insets top="3" left="3" bottom="2" right="3" />
         </padding>
 
         <Label text="Stufe" />

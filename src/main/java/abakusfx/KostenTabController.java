@@ -34,7 +34,7 @@ public class KostenTabController {
 
 	@FXML
 	void initialize() throws IOException {
-
+		log.trace("KostenTabController.initialize");
 		calcKosten.setOnAction(a -> fillResult());
 		serieSettingsController.addDirtyListener(() -> clearResult());
 	}
@@ -57,8 +57,10 @@ public class KostenTabController {
 	}
 
 	private void clearResult() {
-		serieTableController.clearKosten();
+		if (summeInternalProperty.get() == null)
+			return;
 		summeInternalProperty.set(null);
+		serieTableController.clearKosten();
 		log.debug("Cleared result");
 	}
 
