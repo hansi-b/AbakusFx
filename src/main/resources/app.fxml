@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.TabPane?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
@@ -25,12 +24,13 @@
             </Menu>
         </MenuBar>
     </top>
+    <left>
+        <fx:include fx:id="übersichtTable"
+            source="übersichtTable.fxml" />
+    </left>
     <center>
-        <HBox>
-            <fx:include fx:id="projectTabs"
-                source="projectTabs.fxml" />
-            <fx:include source="übersichtTable.fxml" />
-        </HBox>
+        <fx:include fx:id="projectTabs"
+            source="projectTabs.fxml" />
     </center>
     <bottom>
         <VBox styleClass="text-pane">
