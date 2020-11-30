@@ -2,6 +2,7 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +40,9 @@ public class AppController {
 	private ProjectTabsController projectTabsController;
 
 	@FXML
+	private ÜbersichtTableController übersichtTableController;
+
+	@FXML
 	private TextField stats;
 
 	@FXML
@@ -66,7 +70,13 @@ public class AppController {
 		saveItem.disableProperty().bind(currentProjectName.isEmpty().or(isProjectDirty.not()));
 
 		// TODO: introduce model with properties
+		// e.g., store selected tab
 		prefs = AppPrefs.create();
+
+		projectTabsController.update(tabs -> {
+			log.debug(">>> Tabs Changed: {}", () -> String.join(",",
+					tabs.stream().map(t -> t.tabLabelProperty().get()).collect(Collectors.toList())));
+		});
 	}
 
 	private static KostenRechner initKostenRechner() throws IOException {

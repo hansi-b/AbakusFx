@@ -8,6 +8,7 @@ import org.javamoney.moneta.Money;
 import abakus.KostenRechner;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -54,12 +55,12 @@ class KostenTab {
 		getTab().setContextMenu(contextMenu);
 	}
 
-	void edit() {
-		renamableTab.editLabel();
-	}
-
 	Tab getTab() {
 		return renamableTab.tab;
+	}
+
+	StringProperty tabLabelProperty() {
+		return renamableTab.labelProperty();
 	}
 
 	ReadOnlyObjectProperty<Money> summe() {

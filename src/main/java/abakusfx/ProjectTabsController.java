@@ -3,9 +3,13 @@ package abakusfx;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +24,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -30,7 +37,49 @@ public class ProjectTabsController {
 
 	@FXML
 	private TabPane tabPane;
-	private final List<KostenTab> kostenTabs = new ArrayList<>();
+	private final ObservableList<KostenTab> kostenTabs = FXCollections.observableArrayList();
+
+	private ChangeListener<Tab> adderListener = null;
+
+	private KostenTabsChanges kostenTabChange;
+
+	private static class KostenTabsChanges {
+		private final ObservableList<KostenTab> kostenTabs;
+		private final Map<KostenTab, ChangeListener<String>> tabListeners;
+
+		private final Set<Consumer<List<KostenTab>>> handlers;
+
+		private KostenTabsChanges(final ObservableList<KostenTab> kostenTabs) {
+
+			this.kostenTabs = kostenTabs;
+			this.tabListeners = new HashMap<>();
+
+			this.handlers = new LinkedHashSet<>();
+
+			kostenTabs.addListener((ListChangeListener<KostenTab>) c -> triggerUpdate());
+			syncHandlers();
+		}
+
+		private void triggerUpdate() {
+			syncHandlers();
+			handlers.forEach(h -> h.accept(Collections.unmodifiableList(kostenTabs)));
+		}
+
+		private void syncHandlers() {
+			tabListeners.forEach((tab, listener) -> tab.tabLabelProperty().removeListener(listener));
+			tabListeners.clear();
+
+			kostenTabs.forEach(t -> {
+				final ChangeListener<String> labelListener = (obs, oldVal, newVal) -> triggerUpdate();
+				t.tabLabelProperty().addListener(labelListener);
+				tabListeners.put(t, labelListener);
+			});
+		}
+
+		private void addHandler(final Consumer<List<KostenTab>> handler) {
+			handlers.add(handler);
+		}
+	}
 
 	private final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
 	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
@@ -41,28 +90,15 @@ public class ProjectTabsController {
 	@FXML
 	void initialize() {
 		newProject();
+		kostenTabChange = new KostenTabsChanges(kostenTabs);
+	}
+
+	void update(final Consumer<List<KostenTab>> updateHandler) {
+		kostenTabChange.addHandler(updateHandler);
 	}
 
 	void setKostenRechner(final KostenRechner rechner) {
 		kostenRechner.setValue(rechner);
-	}
-
-	private KostenTab newKostenTab(final PersonModel person) {
-		final KostenTab kostenTab = new KostenTab(//
-				kostenRechner.getReadOnlyProperty(), //
-				() -> dirtyListener.get().run(), //
-				() -> updateSumme());
-
-		if (person != null)
-			kostenTab.setState(person);
-
-		kostenTabs.add(kostenTab);
-		tabPane.getTabs().add(tabPane.getTabs().size() - 1, kostenTab.getTab());
-		kostenTab.initContextMenu(kt -> {
-			kostenTabs.remove(kt);
-			tabPane.getTabs().remove(kt.getTab());
-		});
-		return kostenTab;
 	}
 
 	void newProject() {
@@ -95,8 +131,6 @@ public class ProjectTabsController {
 		initAdderTab();
 	}
 
-	private ChangeListener<Tab> adderListener = null;
-
 	private void initAdderTab() {
 		if (adderListener != null)
 			tabPane.getSelectionModel().selectedItemProperty().removeListener(adderListener);
@@ -128,6 +162,24 @@ public class ProjectTabsController {
 		tabPane.getSelectionModel().selectedItemProperty().addListener(adderListener);
 	}
 
+	private KostenTab newKostenTab(final PersonModel person) {
+		final KostenTab kostenTab = new KostenTab(//
+				kostenRechner.getReadOnlyProperty(), //
+				() -> dirtyListener.get().run(), //
+				() -> updateSumme());
+
+		if (person != null)
+			kostenTab.setState(person);
+
+		kostenTabs.add(kostenTab);
+		tabPane.getTabs().add(tabPane.getTabs().size() - 1, kostenTab.getTab());
+		kostenTab.initContextMenu(kt -> {
+			kostenTabs.remove(kt);
+			tabPane.getTabs().remove(kt.getTab());
+		});
+		return kostenTab;
+	}
+
 	// @VisibleForTesting
 	static ProjectModel loadModel(final String modelYaml) throws JsonProcessingException {
 		try {
@@ -142,8 +194,8 @@ public class ProjectTabsController {
 	}
 
 	private void updateSumme() {
-		Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(i -> i != null).reduce((a, b) -> a.add(b))
-				.orElseGet(() -> Constants.euros(0));
+		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(i -> i != null)
+				.reduce((a, b) -> a.add(b)).orElseGet(() -> Constants.euros(0));
 		projektSummeInternalProperty.set(summe);
 	}
 }

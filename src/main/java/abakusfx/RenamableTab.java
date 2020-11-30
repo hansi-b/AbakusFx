@@ -17,13 +17,13 @@ class RenamableTab {
 	final Tab tab;
 	private final TextField textField;
 	private final Label label;
+
 	private final StringProperty labelProp;
 
-	public RenamableTab(final String initialLabel) {
+	RenamableTab(final String initialLabel) {
 		tab = new Tab();
 
-		labelProp = new SimpleStringProperty();
-		labelProp.set(initialLabel);
+		labelProp = new SimpleStringProperty(initialLabel);
 
 		label = new Label();
 		label.textProperty().bind(labelProp);
@@ -42,7 +42,7 @@ class RenamableTab {
 		textField.setOnAction(event -> updateOrLeave(tab, labelProp, label, textField));
 
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			log.debug("focusedProperty {} {} {}", observable, oldValue, newValue);
+			log.trace("focusedProperty {} {} {}", observable, oldValue, newValue);
 			if (!newValue)
 				updateOrLeave(tab, labelProp, label, textField);
 		});
@@ -59,6 +59,10 @@ class RenamableTab {
 		});
 	}
 
+	StringProperty labelProperty() {
+		return labelProp;
+	}
+
 	void editLabel() {
 		textField.setText(label.getText());
 		tab.setGraphic(textField);
@@ -66,7 +70,7 @@ class RenamableTab {
 		textField.requestFocus();
 	}
 
-	void setLabel(String name) {
+	void setLabel(final String name) {
 		labelProp.set(name);
 	}
 

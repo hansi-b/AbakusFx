@@ -4,12 +4,10 @@ import java.util.function.Function;
 
 import org.javamoney.moneta.Money;
 
-import abakus.Monatskosten;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -20,47 +18,47 @@ public class ÜbersichtTableController {
 
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 
-	static class Kosten {
+	static class KostenÜbersicht {
 		ObjectProperty<String> name;
-		ObjectProperty<Money> kosten;
+		ObjectProperty<Money> betrag;
 
-		static Kosten of(final Monatskosten mKosten, final String name) {
-			final Kosten k = new Kosten();
+		static KostenÜbersicht of(final String name, final Money betrag) {
+			final KostenÜbersicht k = new KostenÜbersicht();
 			k.name = new SimpleObjectProperty<>(name);
-			k.kosten = new SimpleObjectProperty<>(mKosten.brutto.add(mKosten.sonderzahlung));
+			k.betrag = new SimpleObjectProperty<>(betrag);
 			return k;
 		}
 
 		String asCsv() {
-			return String.join("\t", name.get(), moneyConverter.toString(kosten.get()));
+			return String.join("\t", name.get(), moneyConverter.toString(betrag.get()));
 		}
 	}
 
 	@FXML
-	private TableView<Kosten> übersichtTabelle;
+	private TableView<KostenÜbersicht> übersichtTabelle;
 
 	@FXML
-	private TableColumn<Kosten, String> nameCol;
+	private TableColumn<KostenÜbersicht, String> nameCol;
 	@FXML
-	private TableColumn<Kosten, Money> kostenCol;
-
-	private final ObservableList<Kosten> kosten = FXCollections.observableArrayList();
+	private TableColumn<KostenÜbersicht, Money> kostenCol;
 
 	@FXML
 	void initialize() {
 
 		setFactories(nameCol, k -> k.name, null);
-		setFactories(kostenCol, k -> k.kosten, m -> moneyConverter.toString(m));
+
+		setFactories(kostenCol, k -> k.betrag, m -> moneyConverter.toString(m));
 
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
-		übersichtTabelle.setItems(kosten);
 
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+		übersichtTabelle.setItems(FXCollections.observableArrayList());
 	}
 
-	private static <T> void setFactories(final TableColumn<Kosten, T> col,
-			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+	private static <T> void setFactories(final TableColumn<KostenÜbersicht, T> col,
+			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
-		col.setCellFactory(new DragSelectCellFactory<Kosten, T>(formatter));
+		col.setCellFactory(new DragSelectCellFactory<KostenÜbersicht, T>(formatter));
 	}
 }
