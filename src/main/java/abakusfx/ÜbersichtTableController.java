@@ -35,6 +35,7 @@ public class ÜbersichtTableController {
 			return k;
 		}
 
+		@Override
 		public String asCsv() {
 			final Money money = betrag.get();
 			return String.join("\t", name.get(), money == null ? "" : moneyConverter.toString(money));
@@ -55,6 +56,8 @@ public class ÜbersichtTableController {
 		initCol(nameCol, k -> k.name, null);
 		initCol(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
 
+		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.7));
+
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		übersichtTabelle.setItems(FXCollections.observableArrayList());
@@ -66,7 +69,7 @@ public class ÜbersichtTableController {
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
 		if (tabs.size() > 1) {
-			Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
+			final Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
 					(a, b) -> a.add(b));
 			if (summe.isGreaterThan(euros(0)))
 				übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));

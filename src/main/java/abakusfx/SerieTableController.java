@@ -77,6 +77,12 @@ public class SerieTableController {
 		setFactories(umfangCol, k -> k.umfang, null);
 		setFactories(kostenCol, k -> k.kosten, m -> moneyConverter.toString(m));
 
+		gruppeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
+		stufeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
+
+		umfangCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.6));
+		kostenCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(1.2));
+
 		kostenTabelle.setPlaceholder(new Label("Keine Daten"));
 		kostenTabelle.setItems(kosten);
 
