@@ -53,9 +53,8 @@ class RenamableTab {
 		});
 
 		label.setOnMouseClicked(event -> {
-			if (event.getClickCount() < 2)
-				return;
-			editLabel();
+			if (event.getClickCount() == 2)
+				editLabel();
 		});
 	}
 
