@@ -1,5 +1,7 @@
 package abakusfx;
 
+import static abakus.Constants.euros;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,6 +65,10 @@ public class ÜbersichtTableController {
 		übersichtTabelle.getItems()
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
+		Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
+				(a, b) -> a.add(b));
+		if (summe.isGreaterThan(euros(0)))
+			übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
 	}
 
 	private static <T> void setFactories(final TableColumn<KostenÜbersicht, T> col,
