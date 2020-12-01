@@ -1,6 +1,8 @@
 package abakusfx;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
 
@@ -30,7 +32,8 @@ public class ÜbersichtTableController {
 		}
 
 		String asCsv() {
-			return String.join("\t", name.get(), moneyConverter.toString(betrag.get()));
+			final Money money = betrag.get();
+			return String.join("\t", name.get(), money == null ? "" : moneyConverter.toString(money));
 		}
 	}
 
@@ -47,13 +50,19 @@ public class ÜbersichtTableController {
 
 		setFactories(nameCol, k -> k.name, null);
 
-		setFactories(kostenCol, k -> k.betrag, m -> moneyConverter.toString(m));
+		setFactories(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
 
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		übersichtTabelle.setItems(FXCollections.observableArrayList());
+	}
+
+	void setItems(final List<KostenTab> tabs) {
+		übersichtTabelle.getItems()
+				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
+						.collect(Collectors.toList()));
 	}
 
 	private static <T> void setFactories(final TableColumn<KostenÜbersicht, T> col,

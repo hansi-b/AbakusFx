@@ -43,6 +43,11 @@ public class ProjectTabsController {
 
 	private KostenTabsChanges kostenTabChange;
 
+	/**
+	 * Keeps listeners for 1. the list of tabs and 2. the tabs' labels to allow
+	 * handling on both a) list element changes (add/remove tab) and b) tab
+	 * renaming.
+	 */
 	private static class KostenTabsChanges {
 		private final ObservableList<KostenTab> kostenTabs;
 		private final Map<KostenTab, ChangeListener<String>> tabListeners;
@@ -56,21 +61,27 @@ public class ProjectTabsController {
 
 			this.handlers = new LinkedHashSet<>();
 
-			kostenTabs.addListener((ListChangeListener<KostenTab>) c -> triggerUpdate());
+			kostenTabs.addListener((ListChangeListener<KostenTab>) c -> triggerHandlers());
 			syncHandlers();
 		}
 
-		private void triggerUpdate() {
+		private void triggerHandlers() {
 			syncHandlers();
 			handlers.forEach(h -> h.accept(Collections.unmodifiableList(kostenTabs)));
 		}
 
+		/**
+		 * Keep our local handlers in sync with the actual kostenTabs: Remove the
+		 * complete current (potentially outdated) set, add listeners for new set.
+		 * Overhead of removing and re-adding is acceptable as long as we are dealing
+		 * with only a handful of elements.
+		 */
 		private void syncHandlers() {
 			tabListeners.forEach((tab, listener) -> tab.tabLabelProperty().removeListener(listener));
 			tabListeners.clear();
 
 			kostenTabs.forEach(t -> {
-				final ChangeListener<String> labelListener = (obs, oldVal, newVal) -> triggerUpdate();
+				final ChangeListener<String> labelListener = (obs, oldVal, newVal) -> triggerHandlers();
 				t.tabLabelProperty().addListener(labelListener);
 				tabListeners.put(t, labelListener);
 			});

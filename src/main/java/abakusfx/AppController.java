@@ -76,6 +76,7 @@ public class AppController {
 		projectTabsController.update(tabs -> {
 			log.debug(">>> Tabs Changed: {}", () -> String.join(",",
 					tabs.stream().map(t -> t.tabLabelProperty().get()).collect(Collectors.toList())));
+			übersichtTableController.setItems(tabs);
 		});
 	}
 
