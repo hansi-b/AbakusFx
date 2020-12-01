@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
 
+import fxTools.CsvCopyTable;
 import fxTools.DragSelectCellFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -23,7 +24,7 @@ public class ÜbersichtTableController {
 
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 
-	static class KostenÜbersicht {
+	static class KostenÜbersicht implements CsvCopyTable.CsvRow {
 		ObjectProperty<String> name;
 		ObjectProperty<Money> betrag;
 
@@ -34,7 +35,7 @@ public class ÜbersichtTableController {
 			return k;
 		}
 
-		String asCsv() {
+		public String asCsv() {
 			final Money money = betrag.get();
 			return String.join("\t", name.get(), money == null ? "" : moneyConverter.toString(money));
 		}
@@ -57,6 +58,7 @@ public class ÜbersichtTableController {
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		übersichtTabelle.setItems(FXCollections.observableArrayList());
+		CsvCopyTable.setCsvCopy(übersichtTabelle);
 	}
 
 	void setItems(final List<KostenTab> tabs) {
