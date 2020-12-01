@@ -50,14 +50,11 @@ public class ÜbersichtTableController {
 	@FXML
 	void initialize() {
 
-		setFactories(nameCol, k -> k.name, null);
-
-		setFactories(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
+		initCol(nameCol, k -> k.name, null);
+		initCol(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
 
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
-
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
 		übersichtTabelle.setItems(FXCollections.observableArrayList());
 	}
 
@@ -65,15 +62,18 @@ public class ÜbersichtTableController {
 		übersichtTabelle.getItems()
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
-		Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
-				(a, b) -> a.add(b));
-		if (summe.isGreaterThan(euros(0)))
-			übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
+		if (tabs.size() > 1) {
+			Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
+					(a, b) -> a.add(b));
+			if (summe.isGreaterThan(euros(0)))
+				übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
+		}
 	}
 
-	private static <T> void setFactories(final TableColumn<KostenÜbersicht, T> col,
+	private static <T> void initCol(final TableColumn<KostenÜbersicht, T> col,
 			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<KostenÜbersicht, T>(formatter));
+		col.setSortable(false);
 	}
 }
