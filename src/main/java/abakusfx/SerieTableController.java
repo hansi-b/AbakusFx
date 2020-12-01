@@ -11,6 +11,8 @@ import org.javamoney.moneta.Money;
 import abakus.Gruppe;
 import abakus.Monatskosten;
 import abakus.Stufe;
+import fxTools.DragSelectCellFactory;
+import fxTools.CsvCopyTable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -21,21 +23,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 
 public class SerieTableController {
-
-	private static final KeyCodeCombination copyControlKey = new KeyCodeCombination(KeyCode.C,
-			KeyCombination.CONTROL_DOWN);
 
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 	private static final Converters.YearMonthConverter ymConverter = new Converters.YearMonthConverter();
 
-	static class Kosten {
+	static class Kosten implements CsvCopyTable.CsvRow {
 		ObjectProperty<YearMonth> monat;
 		ObjectProperty<Gruppe> gruppe;
 		ObjectProperty<Stufe> stufe;
@@ -52,7 +46,8 @@ public class SerieTableController {
 			return k;
 		}
 
-		String asCsv() {
+		@Override
+		public String asCsv() {
 			return String.join("\t", monat.get().toString(), gruppe.get().toString(), stufe.get().toString(),
 					umfang.get().toString(), moneyConverter.toString(kosten.get()));
 		}
@@ -86,10 +81,7 @@ public class SerieTableController {
 		kostenTabelle.setItems(kosten);
 
 		kostenTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		kostenTabelle.setOnKeyReleased(e -> {
-			if (copyControlKey.match(e) && kostenTabelle == e.getSource())
-				copySelectionToClipboard();
-		});
+		CsvCopyTable.setCsvCopy(kostenTabelle);
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
@@ -107,16 +99,5 @@ public class SerieTableController {
 
 	void clearKosten() {
 		kosten.clear();
-	}
-
-	private void copySelectionToClipboard() {
-		final ObservableList<Kosten> selectedItems = kostenTabelle.getSelectionModel().getSelectedItems();
-		final String csv = selectedItems.stream().map(i -> i.asCsv())
-				.collect(Collectors.joining(System.lineSeparator()));
-
-		final ClipboardContent clipboardContent = new ClipboardContent();
-		clipboardContent.putString(csv);
-
-		Clipboard.getSystemClipboard().setContent(clipboardContent);
 	}
 }

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.javamoney.moneta.Money;
 
 import abakus.KostenRechner;
+import fxTools.RenamableTab;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -56,7 +57,7 @@ class KostenTab {
 	}
 
 	Tab getTab() {
-		return renamableTab.tab;
+		return renamableTab.getTab();
 	}
 
 	StringProperty tabLabelProperty() {
@@ -68,11 +69,11 @@ class KostenTab {
 	}
 
 	void setState(final PersonModel person) {
-		renamableTab.setLabel(person.name);
+		tabLabelProperty().set(person.name);
 		kostenTabController.setState(person.series);
 	}
 
 	PersonModel getState() {
-		return new PersonModel(renamableTab.getLabel(), kostenTabController.getState());
+		return new PersonModel(tabLabelProperty().get(), kostenTabController.getState());
 	}
 }

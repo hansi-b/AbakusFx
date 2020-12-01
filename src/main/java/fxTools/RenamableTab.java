@@ -1,4 +1,4 @@
-package abakusfx;
+package fxTools;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +11,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-class RenamableTab {
+public class RenamableTab {
 	private static final Logger log = LogManager.getLogger();
 
 	final Tab tab;
@@ -20,7 +20,7 @@ class RenamableTab {
 
 	private final StringProperty labelProp;
 
-	RenamableTab(final String initialLabel) {
+	public RenamableTab(final String initialLabel) {
 		tab = new Tab();
 
 		labelProp = new SimpleStringProperty(initialLabel);
@@ -58,23 +58,19 @@ class RenamableTab {
 		});
 	}
 
-	StringProperty labelProperty() {
+	public Tab getTab() {
+		return tab;
+	}
+
+	public StringProperty labelProperty() {
 		return labelProp;
 	}
 
-	void editLabel() {
+	public void editLabel() {
 		textField.setText(label.getText());
 		tab.setGraphic(textField);
 		textField.selectAll();
 		textField.requestFocus();
-	}
-
-	void setLabel(final String name) {
-		labelProp.set(name);
-	}
-
-	String getLabel() {
-		return labelProp.getValue();
 	}
 
 	private static void updateOrLeave(final Tab tab, final StringProperty name, final Label label,

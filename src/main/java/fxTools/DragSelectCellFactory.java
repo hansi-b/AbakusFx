@@ -1,4 +1,4 @@
-package abakusfx;
+package fxTools;
 
 import java.util.function.Function;
 

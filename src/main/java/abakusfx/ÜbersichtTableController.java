@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
 
+import fxTools.DragSelectCellFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
