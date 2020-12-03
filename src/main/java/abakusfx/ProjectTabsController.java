@@ -116,7 +116,7 @@ public class ProjectTabsController {
 		reset();
 		// need an initial tab here for correct dimensions
 		newKostenTab(null);
-		tabPane.getSelectionModel().select(0);
+		focusFirstTab();
 	}
 
 	void saveProject(final File targetFile) throws IOException {
@@ -133,7 +133,12 @@ public class ProjectTabsController {
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
 		project.persons.forEach(person -> newKostenTab(person));
+		focusFirstTab();
+	}
+
+	void focusFirstTab() {
 		tabPane.getSelectionModel().select(0);
+		tabPane.getTabs().get(0).getContent().requestFocus();
 	}
 
 	private void reset() {
