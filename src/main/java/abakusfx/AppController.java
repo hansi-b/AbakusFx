@@ -2,7 +2,6 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,11 +72,8 @@ public class AppController {
 		// e.g., store selected tab
 		prefs = AppPrefs.create();
 
-		projectTabsController.update(tabs -> {
-			log.debug(">>> Tabs Changed: {}", () -> String.join(",",
-					tabs.stream().map(t -> t.tabLabelProperty().get()).collect(Collectors.toList())));
-			übersichtTableController.setItems(tabs);
-		});
+		projectTabsController.update(tabs -> übersichtTableController.setItems(tabs));
+		Platform.runLater(() -> projectTabsController.focusFirstTab());
 	}
 
 	private static KostenRechner initKostenRechner() throws IOException {
