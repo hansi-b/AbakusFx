@@ -98,13 +98,16 @@ public class ProjectTabsController {
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
 	final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty.getReadOnlyProperty();
 
+	private Consumer<List<KostenTab>> updateHandler;
+
 	@FXML
 	void initialize() {
 		newProject();
 		kostenTabChange = new KostenTabsChanges(kostenTabs);
 	}
 
-	void update(final Consumer<List<KostenTab>> updateHandler) {
+	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
+		this.updateHandler = updateHandler;
 		kostenTabChange.addHandler(updateHandler);
 	}
 
@@ -182,7 +185,7 @@ public class ProjectTabsController {
 		final KostenTab kostenTab = new KostenTab(//
 				kostenRechner.getReadOnlyProperty(), //
 				() -> dirtyListener.get().run(), //
-				() -> updateSumme());
+				() -> updateSummen());
 
 		if (person != null)
 			kostenTab.setState(person);
@@ -209,9 +212,11 @@ public class ProjectTabsController {
 		}
 	}
 
-	private void updateSumme() {
+	private void updateSummen() {
+		kostenTabs.forEach(k -> k.updateSumme());
 		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(i -> i != null)
 				.reduce((a, b) -> a.add(b)).orElseGet(() -> Constants.euros(0));
 		projektSummeInternalProperty.set(summe);
+		updateHandler.accept(kostenTabs);
 	}
 }
