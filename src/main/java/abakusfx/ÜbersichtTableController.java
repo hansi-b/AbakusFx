@@ -56,7 +56,7 @@ public class ÜbersichtTableController {
 		initCol(nameCol, k -> k.name, null);
 		initCol(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
 
-		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.7));
+		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.6));
 
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
