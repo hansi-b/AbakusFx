@@ -45,7 +45,7 @@ public class ÖtvCsvParser {
 						final Map<Integer, Gehälter> gruppeMap = gehälterMap.computeIfAbsent(gruppe,
 								g -> new HashMap<>());
 						if (gruppeMap.containsKey(jahr))
-							throw Errors.illegalArgExc("Doppelte Daten für Gruppe %s im Jahr %d", gruppe, jahr);
+							throw Errors.illegalArg("Doppelte Daten für Gruppe %s im Jahr %d", gruppe, jahr);
 						gruppeMap.put(jahr, gehälter);
 					});
 		}
@@ -55,7 +55,7 @@ public class ÖtvCsvParser {
 	private static Line parseLine(final String csvLine) {
 		final String[] parts = csvLine.split("\t");
 		if (parts.length != 9)
-			throw Errors.illegalArgExc("Zeile enthält %d Felder (nicht 9): '%s'", parts.length, Arrays.toString(parts));
+			throw Errors.illegalArg("Zeile enthält %d Felder (nicht 9): '%s'", parts.length, Arrays.toString(parts));
 		final Integer jahr = Integer.valueOf(parts[0]);
 		final Gruppe gruppe = Gruppe.valueOf(parts[1]);
 
