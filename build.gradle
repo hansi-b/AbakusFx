@@ -6,26 +6,18 @@ plugins {
 
 	id 'com.palantir.git-version' version '0.12.3'
 
-	id "com.github.ben-manes.versions" version "0.34.0"
+	id 'com.github.ben-manes.versions' version '0.34.0'
 }
 
 group 'org.hansi-b'
 version gitVersion()
 
 sourceCompatibility=11
+wrapper.gradleVersion='6.8.3'
+
 plugins.withType(JavaPlugin).configureEach {
 	java {
 		modularity.inferModulePath = true
-	}
-
-	tasks.withType(JavaCompile) {
-		doFirst {
-			options.compilerArgs = [
-				'--module-path',
-				classpath.asPath,
-			]
-			classpath = files()
-		}
 	}
 }
 
