@@ -6,6 +6,7 @@ import abakus.Anstellung;
 import abakus.Gruppe;
 import abakus.Stelle;
 import abakus.Stufe;
+import abakusfx.models.SeriesModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -16,9 +17,9 @@ import javafx.scene.control.ToggleGroup;
 
 public class SerieSettingsController {
 	@FXML
-	DatePicker von;
+	public DatePicker von;
 	@FXML
-	DatePicker bis;
+	public DatePicker bis;
 
 	@FXML
 	ComboBox<Gruppe> gruppe;
@@ -64,7 +65,10 @@ public class SerieSettingsController {
 	}
 
 	SeriesModel getState() {
-		return SeriesModel.of(this);
+		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
+				weiter.isSelected(), seit.getValue()
+		// umfangSeit: ssc.umfangSeit.getValue()
+		);
 	}
 
 	void addDirtyListener(final Runnable dirtyListener) {

@@ -19,8 +19,6 @@ public class App extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private AppController mainController;
-
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
 		Locale.setDefault(Constants.locale);
@@ -33,7 +31,7 @@ public class App extends Application {
 
 		final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"));
 		final Parent root = fxmlLoader.load();
-		mainController = fxmlLoader.getController();
+		final AppController mainController = fxmlLoader.getController();
 
 		primaryStage.setTitle("Abakus");
 		primaryStage.setScene(new Scene(root));

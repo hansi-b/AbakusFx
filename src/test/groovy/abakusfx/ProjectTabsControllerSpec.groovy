@@ -1,5 +1,6 @@
 package abakusfx
 
+import abakusfx.models.ProjectModel
 import spock.lang.Specification
 
 public class ProjectTabsControllerSpec extends Specification {

@@ -4,6 +4,9 @@ import java.time.LocalDate
 
 import abakus.Gruppe
 import abakus.Stufe
+import abakusfx.models.PersonModel
+import abakusfx.models.ProjectModel
+import abakusfx.models.SeriesModel
 import spock.lang.Specification
 
 public class ModelMapperSpec extends Specification {

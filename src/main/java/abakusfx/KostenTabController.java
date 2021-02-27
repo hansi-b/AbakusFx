@@ -10,6 +10,7 @@ import org.javamoney.moneta.Money;
 
 import abakus.KostenRechner;
 import abakus.Monatskosten;
+import abakusfx.models.SeriesModel;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;

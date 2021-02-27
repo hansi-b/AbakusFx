@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.javamoney.moneta.Money;
 
 import abakus.KostenRechner;
+import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;

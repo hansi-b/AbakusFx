@@ -13,4 +13,7 @@ module hansi_abakusFx {
 	requires org.javamoney.moneta;
 
 	opens abakusfx to javafx.graphics, javafx.fxml;
+
+	exports abakus to com.fasterxml.jackson.databind;
+	exports abakusfx.models to com.fasterxml.jackson.databind;
 }

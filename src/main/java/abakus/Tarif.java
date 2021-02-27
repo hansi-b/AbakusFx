@@ -21,7 +21,7 @@ public class Tarif {
 
 	private final Map<Gruppe, Map<Integer, Gehälter>> gehälter;
 
-	public Tarif(final Map<Gruppe, Map<Integer, Gehälter>> parseGehälter) {
+	Tarif(final Map<Gruppe, Map<Integer, Gehälter>> parseGehälter) {
 		this.gehälter = parseGehälter;
 	}
 

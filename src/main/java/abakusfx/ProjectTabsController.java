@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -20,6 +21,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import abakus.Constants;
 import abakus.KostenRechner;
+import abakusfx.models.PersonModel;
+import abakusfx.models.ProjectModel;
+import abakusfx.models.SeriesModel;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -125,7 +129,7 @@ public class ProjectTabsController {
 	void saveProject(final File targetFile) throws IOException {
 		log.info("Saving project to '{}' ...", targetFile);
 		final String modelYaml = new ModelMapper()
-				.asString(new ProjectModel(kostenTabs.stream().map(t -> t.getState()).collect(Collectors.toList())));
+				.asString(new ProjectModel(kostenTabs.stream().map(KostenTab::getState).collect(Collectors.toList())));
 		Files.writeString(targetFile.toPath(), modelYaml);
 	}
 
@@ -135,7 +139,7 @@ public class ProjectTabsController {
 
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
-		project.persons.forEach(person -> newKostenTab(person));
+		project.persons.forEach(this::newKostenTab);
 		focusFirstTab();
 	}
 
@@ -185,7 +189,7 @@ public class ProjectTabsController {
 		final KostenTab kostenTab = new KostenTab(//
 				kostenRechner.getReadOnlyProperty(), //
 				() -> dirtyListener.get().run(), //
-				() -> updateSummen());
+				this::updateSummen);
 
 		if (person != null)
 			kostenTab.setState(person);
@@ -213,8 +217,8 @@ public class ProjectTabsController {
 	}
 
 	private void updateSummen() {
-		kostenTabs.forEach(k -> k.updateSumme());
-		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(i -> i != null)
+		kostenTabs.forEach(KostenTab::updateSumme);
+		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull)
 				.reduce((a, b) -> a.add(b)).orElseGet(() -> Constants.euros(0));
 		projektSummeInternalProperty.set(summe);
 		updateHandler.accept(kostenTabs);
