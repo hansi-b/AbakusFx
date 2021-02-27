@@ -71,7 +71,7 @@ public class Anstellung {
 	}
 
 	List<YearMonth> monthsInYear(final int year) {
-		return IntStream.rangeClosed(1, 12).mapToObj(m -> YearMonth.of(year, m)).filter(ym -> isInAnstellung(ym))
+		return IntStream.rangeClosed(1, 12).mapToObj(m -> YearMonth.of(year, m)).filter(this::isInAnstellung)
 				.collect(Collectors.toList());
 	}
 
@@ -85,9 +85,9 @@ public class Anstellung {
 	List<Stelle> calcBaseStellen(final int year) {
 
 		final List<YearMonth> yms = Arrays.asList(Month.JULY, Month.AUGUST, Month.SEPTEMBER).stream()
-				.map(m -> YearMonth.of(year, m)).filter(ym -> isInAnstellung(ym)).collect(Collectors.toList());
+				.map(m -> YearMonth.of(year, m)).filter(this::isInAnstellung).collect(Collectors.toList());
 		if (yms.isEmpty())
 			yms.add(YearMonth.of(year, getBeginn().getMonth().getValue()));
-		return yms.stream().map(ym -> am(ym)).collect(Collectors.toList());
+		return yms.stream().map(this::am).collect(Collectors.toList());
 	}
 }

@@ -14,7 +14,7 @@ import javafx.scene.input.KeyCode;
 public class RenamableTab {
 	private static final Logger log = LogManager.getLogger();
 
-	final Tab tab;
+	private final Tab tab;
 	private final TextField textField;
 	private final Label label;
 
@@ -33,7 +33,7 @@ public class RenamableTab {
 
 		textField.textProperty().isEmpty().addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();
-			if (newVal)
+			if (Boolean.TRUE.equals(newVal))
 				styleClass.add("error");
 			else
 				styleClass.remove("error");
@@ -43,7 +43,7 @@ public class RenamableTab {
 
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			log.trace("focusedProperty {} {} {}", observable, oldValue, newValue);
-			if (!newValue)
+			if (Boolean.FALSE.equals(newValue))
 				updateOrLeave(tab, labelProp, label, textField);
 		});
 

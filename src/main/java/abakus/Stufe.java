@@ -18,7 +18,7 @@ public enum Stufe {
 	}
 
 	YearMonth nächsterAufstieg(final YearMonth seit) {
-		return seit.plusYears(ordinal() + 1);
+		return seit.plusYears(ordinal() + 1L);
 	}
 
 	Stufe stufeAm(final YearMonth seit, final YearMonth am) {

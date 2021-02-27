@@ -34,7 +34,7 @@ public class SerieTableController {
 		ObjectProperty<Gruppe> gruppe;
 		ObjectProperty<Stufe> stufe;
 		ObjectProperty<BigDecimal> umfang;
-		ObjectProperty<Money> kosten;
+		ObjectProperty<Money> betrag;
 
 		static Kosten of(final Monatskosten mKosten) {
 			final Kosten k = new Kosten();
@@ -42,14 +42,14 @@ public class SerieTableController {
 			k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe);
 			k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe);
 			k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfang);
-			k.kosten = new SimpleObjectProperty<>(mKosten.brutto.add(mKosten.sonderzahlung));
+			k.betrag = new SimpleObjectProperty<>(mKosten.brutto.add(mKosten.sonderzahlung));
 			return k;
 		}
 
 		@Override
 		public String asCsv() {
 			return String.join("\t", monat.get().toString(), gruppe.get().toString(), stufe.get().toString(),
-					umfang.get().toString(), moneyConverter.toString(kosten.get()));
+					umfang.get().toString(), moneyConverter.toString(betrag.get()));
 		}
 	}
 
@@ -71,11 +71,11 @@ public class SerieTableController {
 
 	@FXML
 	void initialize() {
-		setFactories(monatCol, k -> k.monat, ym -> ymConverter.toString(ym));
+		setFactories(monatCol, k -> k.monat, ymConverter::toString);
 		setFactories(gruppeCol, k -> k.gruppe, null);
 		setFactories(stufeCol, k -> k.stufe, null);
 		setFactories(umfangCol, k -> k.umfang, null);
-		setFactories(kostenCol, k -> k.kosten, m -> moneyConverter.toString(m));
+		setFactories(kostenCol, k -> k.betrag, moneyConverter::toString);
 
 		gruppeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
 		stufeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
@@ -93,7 +93,7 @@ public class SerieTableController {
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
 			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
-		col.setCellFactory(new DragSelectCellFactory<Kosten, T>(formatter));
+		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}
 
 	/**

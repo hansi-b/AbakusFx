@@ -30,7 +30,7 @@ public class CsvCopyTable {
 
 	private static <T extends CsvRow> void copyCsvToClipboard(final TableView<T> table) {
 		final ObservableList<T> selectedItems = table.getSelectionModel().getSelectedItems();
-		final String csv = selectedItems.stream().map(i -> i.asCsv())
+		final String csv = selectedItems.stream().map(T::asCsv)
 				.collect(Collectors.joining(System.lineSeparator()));
 
 		final ClipboardContent clipboardContent = new ClipboardContent();

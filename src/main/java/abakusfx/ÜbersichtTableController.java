@@ -3,6 +3,7 @@ package abakusfx;
 import static abakus.Constants.euros;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,7 +70,7 @@ public class ÜbersichtTableController {
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
 		if (tabs.size() > 1) {
-			final Money summe = tabs.stream().map(k -> k.summe().get()).filter(o -> o != null).reduce(euros(0),
+			final Money summe = tabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull).reduce(euros(0),
 					(a, b) -> a.add(b));
 			if (summe.isGreaterThan(euros(0)))
 				übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
@@ -79,7 +80,7 @@ public class ÜbersichtTableController {
 	private static <T> void initCol(final TableColumn<KostenÜbersicht, T> col,
 			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
-		col.setCellFactory(new DragSelectCellFactory<KostenÜbersicht, T>(formatter));
+		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 		col.setSortable(false);
 	}
 }

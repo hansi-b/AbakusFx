@@ -1,6 +1,5 @@
 package abakusfx;
 
-import java.io.IOException;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -34,10 +33,10 @@ public class KostenTabController {
 	final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
 
 	@FXML
-	void initialize() throws IOException {
+	void initialize() {
 		log.trace("KostenTabController.initialize");
 		calcKosten.setOnAction(a -> fillResult());
-		serieSettingsController.addDirtyListener(() -> clearResult());
+		serieSettingsController.addDirtyListener(this::clearResult);
 	}
 
 	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter) {
@@ -52,7 +51,7 @@ public class KostenTabController {
 		final KostenRechner rechner = kostenRechnerGetter.get();
 		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
 		serieTableController.updateKosten(moKosten);
-		Money summe = rechner.summe(moKosten);
+		final Money summe = rechner.summe(moKosten);
 		log.debug("Result = {}", summe);
 		summeInternalProperty.set(summe);
 	}

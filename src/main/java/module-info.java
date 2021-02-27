@@ -10,7 +10,7 @@ module hansi_abakusFx {
 	requires com.fasterxml.jackson.dataformat.yaml;
 	requires org.apache.logging.log4j;
 
-	requires org.javamoney.moneta;
+	requires transitive org.javamoney.moneta;
 
 	opens abakusfx to javafx.graphics, javafx.fxml;
 

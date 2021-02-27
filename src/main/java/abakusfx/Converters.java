@@ -73,7 +73,7 @@ public class Converters {
 
 			@Override
 			public Integer fromString(final String string) {
-				final String numStr = string.replaceAll("%", "");
+				final String numStr = string.replace("%", "");
 				return numStr.isEmpty() ? 0 : Integer.parseInt(numStr);
 			}
 		}

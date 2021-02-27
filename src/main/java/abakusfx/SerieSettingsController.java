@@ -17,9 +17,9 @@ import javafx.scene.control.ToggleGroup;
 
 public class SerieSettingsController {
 	@FXML
-	public DatePicker von;
+	DatePicker von;
 	@FXML
-	public DatePicker bis;
+	DatePicker bis;
 
 	@FXML
 	ComboBox<Gruppe> gruppe;

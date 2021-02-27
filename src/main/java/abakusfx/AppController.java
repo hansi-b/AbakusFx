@@ -124,7 +124,7 @@ public class AppController {
 			projectTabsController.loadProject(projectFile);
 			setCurrentProject(projectFile);
 		} catch (final IOException ex) {
-			final String msg = String.format("Konnte '%s' nicht laden:\n%s", projectFile, ex.getMessage());
+			final String msg = String.format("Konnte '%s' nicht laden:%n%s", projectFile, ex.getMessage());
 			log.error(msg, ex);
 			new Alert(AlertType.ERROR, msg, ButtonType.OK).showAndWait();
 			projectTabsController.initialize();

@@ -13,7 +13,7 @@ class AppPrefs {
 		v1
 	}
 
-	private final PrefVersion currentVersion = PrefVersion.v1;
+	private static final PrefVersion currentVersion = PrefVersion.v1;
 
 	private final PrefsAdapter<App, PrefKeys> prefs = new PrefsAdapter<>(App.class);
 
