@@ -3,20 +3,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml"
-    xmlns="http://javafx.com/javafx"
+<?import javafx.scene.layout.HBox?>
+<TableView fx:id="kostenTabelle"
+    xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
     fx:controller="abakusfx.SerieTableController"
-    stylesheets="app.css, serieTable.css" VBox.vgrow="ALWAYS">
-    <TableView fx:id="kostenTabelle" VBox.vgrow="ALWAYS">
-        <padding>
-            <Insets top="2" left="2" bottom="2" right="2" />
-        </padding>
-        <columns>
-            <TableColumn fx:id="monatCol" text="Monat" />
-            <TableColumn fx:id="gruppeCol" text="Gruppe" />
-            <TableColumn fx:id="stufeCol" text="Stufe" />
-            <TableColumn fx:id="umfangCol" text="\%" />
-            <TableColumn fx:id="kostenCol" text="Kosten" />
-        </columns>
-    </TableView>
-</VBox>
+    stylesheets="app.css, serieTable.css" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+    <padding>
+        <Insets top="2" left="2" bottom="2" right="2" />
+    </padding>
+    <columns>
+        <TableColumn fx:id="monatCol" text="Monat" />
+        <TableColumn fx:id="gruppeCol" text="Gruppe" />
+        <TableColumn fx:id="stufeCol" text="Stufe" />
+        <TableColumn fx:id="umfangCol" text="\%" />
+        <TableColumn fx:id="kostenCol" text="Kosten" />
+    </columns>
+</TableView>
