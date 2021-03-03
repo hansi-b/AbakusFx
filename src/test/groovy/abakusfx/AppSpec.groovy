@@ -16,29 +16,7 @@ import javafx.scene.control.TabPane
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 
-public class AppSpec extends ApplicationSpec {
-
-	Parent root
-
-	@Override
-	void init() throws Exception {
-		FxToolkit.registerStage { new Stage() }
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = new FXMLLoader(App.class.getClassLoader().getResource("app.fxml"))
-		root = fxmlLoader.load()
-
-		Scene scene = new Scene(root)
-		stage.setScene(scene)
-		stage.show()
-	}
-
-	@Override
-	void stop() throws Exception {
-		FxToolkit.hideStage()
-	}
+public class AppSpec extends AbstractAbakusSpec {
 
 	def "initial start shows empty table"() {
 		expect:

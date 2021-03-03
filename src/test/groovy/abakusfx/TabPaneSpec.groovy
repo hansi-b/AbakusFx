@@ -16,29 +16,7 @@ import javafx.scene.control.TabPane
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 
-public class TabPaneSpec extends ApplicationSpec {
-
-	Parent root
-	TabPane tabPane
-	ObservableList<Tab> tabs
-
-	@Override
-	void init() throws Exception {
-		FxToolkit.registerStage { new Stage() }
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = new FXMLLoader(App.class.getClassLoader().getResource("app.fxml"))
-		root = fxmlLoader.load()
-
-		Scene scene = new Scene(root)
-		stage.setScene(scene)
-		stage.show()
-
-		tabPane = lookup("#tabPane").query()
-		tabs = tabPane.getTabs()
-	}
+public class TabPaneSpec extends AbstractAbakusSpec {
 
 	def "first tab is selected in initial setup"() {
 		expect:
@@ -73,14 +51,5 @@ public class TabPaneSpec extends ApplicationSpec {
 		then:
 		tabs[0].graphic.text == 'NN'
 		tabs[1].graphic.text == 'second'
-	}
-
-	def queryNthTab(idx) {
-		lookup(".tab-pane > .tab-header-area > .headers-region > .tab").nth(idx).query()
-	}
-
-	@Override
-	void stop() throws Exception {
-		FxToolkit.hideStage()
 	}
 }
