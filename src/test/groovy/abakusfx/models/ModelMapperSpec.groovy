@@ -1,9 +1,10 @@
-package abakusfx
+package abakusfx.models
 
 import java.time.LocalDate
 
 import abakus.Gruppe
 import abakus.Stufe
+import abakusfx.ModelMapper
 import abakusfx.models.PersonModel
 import abakusfx.models.ProjectModel
 import abakusfx.models.SeriesModel

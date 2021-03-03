@@ -11,6 +11,7 @@ import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.MenuItem
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.input.KeyCode
@@ -52,6 +53,12 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	def queryNthTab( idx) {
 		lookup(".tab-pane > .tab-header-area > .headers-region > .tab").nth(idx).query()
 	}
+
+	MenuItem getItemFromMenu(menuQuery, itemQuery) {
+		clickOn(lookup(menuQuery).query())
+		lookup(itemQuery).query().getItem()
+	}
+
 
 	@Override
 	void stop() throws Exception {
