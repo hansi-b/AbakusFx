@@ -24,8 +24,8 @@ import javafx.stage.Stage
 public class AbstractAbakusSpec extends ApplicationSpec {
 
 	Parent root
-	TabPane tabPane
-	ObservableList<Tab> tabs
+	TabPane projectTabsPane
+	ObservableList<Tab> projectTabs
 
 	@Override
 	void init() throws Exception {
@@ -41,8 +41,8 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage.setScene(scene)
 		stage.show()
 
-		tabPane = lookup("#tabPane").query()
-		tabs = tabPane.getTabs()
+		projectTabsPane = lookup("#tabPane").query()
+		projectTabs = projectTabsPane.getTabs()
 	}
 
 	/**

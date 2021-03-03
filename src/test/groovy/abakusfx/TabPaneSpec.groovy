@@ -20,10 +20,10 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 
 	def "first tab is selected in initial setup"() {
 		expect:
-		verifyThat(tabPane, isEnabled())
-		tabPane.getTabs().size() == 2
-		tabs[0].isSelected()
-		tabs[0].graphic.text == 'NN'
+		verifyThat(projectTabsPane, isEnabled())
+		projectTabsPane.getTabs().size() == 2
+		projectTabs[0].isSelected()
+		projectTabs[0].graphic.text == 'NN'
 	}
 
 	def "can rename initial tab"() {
@@ -32,7 +32,7 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 		write('Scooby Doo').type(KeyCode.ENTER)
 
 		then:
-		tabs[0].graphic.text == 'Scooby Doo'
+		projectTabs[0].graphic.text == 'Scooby Doo'
 	}
 
 	def "can add and rename tab"() {
@@ -40,16 +40,16 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 		clickOn(queryNthTab(1))
 
 		then:
-		tabs.size() == 3
-		tabs[1].isSelected()
-		tabs[1].graphic.text == 'NN'
+		projectTabs.size() == 3
+		projectTabs[1].isSelected()
+		projectTabs[1].graphic.text == 'NN'
 
 		when:
 		doubleClickOn(queryNthTab(1))
 		write('second').type(KeyCode.ENTER)
 
 		then:
-		tabs[0].graphic.text == 'NN'
-		tabs[1].graphic.text == 'second'
+		projectTabs[0].graphic.text == 'NN'
+		projectTabs[1].graphic.text == 'second'
 	}
 }
