@@ -11,8 +11,9 @@ import org.javamoney.moneta.Money;
 import abakus.Gruppe;
 import abakus.Monatskosten;
 import abakus.Stufe;
-import fxTools.DragSelectCellFactory;
 import fxTools.CsvCopyTable;
+import fxTools.DragSelectCellFactory;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -25,7 +26,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class SerieTableController {
-
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 	private static final Converters.YearMonthConverter ymConverter = new Converters.YearMonthConverter();
 
@@ -77,11 +77,15 @@ public class SerieTableController {
 		setFactories(umfangCol, k -> k.umfang, null);
 		setFactories(kostenCol, k -> k.betrag, moneyConverter::toString);
 
-		gruppeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
-		stufeCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.8));
+		monatCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.2));
+		gruppeCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.18));
+		stufeCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.15));
+		umfangCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.15));
 
-		umfangCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(.6));
-		kostenCol.prefWidthProperty().bind(monatCol.widthProperty().multiply(1.2));
+		final DoubleBinding colsWidth = monatCol.widthProperty().add(gruppeCol.widthProperty())//
+				.add(stufeCol.widthProperty())//
+				.add(umfangCol.widthProperty()).multiply(1.1);
+		kostenCol.prefWidthProperty().bind(kostenTabelle.widthProperty().subtract(colsWidth));
 
 		kostenTabelle.setPlaceholder(new Label("Keine Daten"));
 		kostenTabelle.setItems(kosten);
