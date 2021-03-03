@@ -23,7 +23,7 @@ public class AppSpec extends AbstractAbakusSpec {
 		verifyThat(lookup("#tabPane").query(), isEnabled())
 		verifyThat('#serieSettings', isEnabled())
 		verifyThat('#calcKosten', isEnabled())
-		verifyThat('#serieTable', isEnabled())
+		verifyThat('#kostenTabelle', isEnabled())
 		verifyThat('#kostenTabelle', TableViewMatchers.hasNumRows(0))
 	}
 }
