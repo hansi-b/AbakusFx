@@ -11,6 +11,7 @@ import org.javamoney.moneta.Money;
 
 import fxTools.CsvCopyTable;
 import fxTools.DragSelectCellFactory;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -57,7 +58,10 @@ public class ÜbersichtTableController {
 		initCol(nameCol, k -> k.name, null);
 		initCol(kostenCol, k -> k.betrag, m -> m == null ? "" : moneyConverter.toString(m));
 
-		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.6));
+		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.5));
+
+		final DoubleBinding colsWidth = nameCol.widthProperty().multiply(1.05);
+		kostenCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().subtract(colsWidth));
 
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
