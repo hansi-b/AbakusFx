@@ -12,6 +12,7 @@ import abakus.Tarif;
 import abakus.ÖtvCsvParser;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -49,30 +50,36 @@ public class AppController {
 
 	private AppPrefs prefs;
 
-	private BooleanProperty isProjectDirty;
+	private BooleanProperty wasProjectChanged;
 
 	private StringProperty currentProjectName;
+
+	BooleanBinding isCurrentProjectDirty;
 
 	@FXML
 	void initialize() throws IOException {
 		projectTabsController.setKostenRechner(initKostenRechner());
-		projectTabsController.dirtyListener.set(() -> isProjectDirty.set(true));
+		projectTabsController.setChangedHandler(() -> wasProjectChanged.set(true));
 
 		result.textProperty().bind(Bindings.createStringBinding(() -> {
 			final Money money = projectTabsController.projektSummeProperty.get();
 			return money == null ? "" : new Converters.MoneyConverter().toString(money);
 		}, projectTabsController.projektSummeProperty));
 
-		isProjectDirty = new SimpleBooleanProperty(false);
+		wasProjectChanged = new SimpleBooleanProperty(false);
 		currentProjectName = new SimpleStringProperty("");
+		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(wasProjectChanged);
 
-		saveItem.disableProperty().bind(currentProjectName.isEmpty().or(isProjectDirty.not()));
+		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
 		// TODO: introduce model with properties
 		// e.g., store selected tab
 		prefs = AppPrefs.create();
 
-		projectTabsController.setUpdateHandler(tabs -> übersichtTableController.setItems(tabs));
+		projectTabsController.setUpdateHandler(tabs -> {
+			übersichtTableController.setItems(tabs);
+			wasProjectChanged.set(true);
+		});
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
 	}
 
@@ -91,7 +98,7 @@ public class AppController {
 			log.debug("project name change: {}, {}, {}'", observable, oldValue, newValue);
 			appTitle.updateProject(newValue);
 		});
-		isProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
+		isCurrentProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(this::loadAndShow);
 	}
@@ -132,7 +139,7 @@ public class AppController {
 		}
 	}
 
-	private void setCurrentProject(final File file) {
+	void setCurrentProject(final File file) {
 		log.debug("Setting current project = {}", file);
 		if (file != null) {
 			currentProjectName.set(file.getName());
@@ -141,7 +148,7 @@ public class AppController {
 			currentProjectName.set(null);
 			prefs.removeLastProject();
 		}
-		isProjectDirty.set(false);
+		wasProjectChanged.set(false);
 	}
 
 	@FXML
@@ -150,7 +157,7 @@ public class AppController {
 		final File projectFile = prefs.getLastProject()
 				.orElseThrow(() -> new IllegalStateException("No current project set"));
 		projectTabsController.saveProject(projectFile);
-		isProjectDirty.set(false);
+		wasProjectChanged.set(false);
 	}
 
 	@FXML

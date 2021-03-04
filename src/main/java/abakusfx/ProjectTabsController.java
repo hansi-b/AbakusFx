@@ -26,7 +26,6 @@ import abakusfx.models.ProjectModel;
 import abakusfx.models.SeriesModel;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -97,7 +96,7 @@ public class ProjectTabsController {
 	}
 
 	private final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
-	final SimpleObjectProperty<Runnable> dirtyListener = new SimpleObjectProperty<>();
+	private Runnable dirtyHandler;
 
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
 	final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty.getReadOnlyProperty();
@@ -108,6 +107,12 @@ public class ProjectTabsController {
 	void initialize() {
 		newProject();
 		kostenTabChange = new KostenTabsChanges(kostenTabs);
+	}
+
+	void setChangedHandler(final Runnable dirtyHandler) {
+		if (this.dirtyHandler != null)
+			throw new IllegalStateException("Dirty-handler in ProjecTabsController was reset");
+		this.dirtyHandler = dirtyHandler;
 	}
 
 	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
@@ -169,6 +174,7 @@ public class ProjectTabsController {
 				return;
 
 			final KostenTab newKostenTab = newKostenTab(null);
+			setToDirty();
 
 			tabPane.getSelectionModel().select(newKostenTab.getTab());
 		};
@@ -183,7 +189,7 @@ public class ProjectTabsController {
 	private KostenTab newKostenTab(final PersonModel person) {
 		final KostenTab kostenTab = new KostenTab(//
 				kostenRechner.getReadOnlyProperty(), //
-				() -> dirtyListener.get().run(), //
+				this::setToDirty, //
 				this::updateSummen);
 
 		if (person != null)
@@ -194,8 +200,13 @@ public class ProjectTabsController {
 		kostenTab.initContextMenu(kt -> {
 			kostenTabs.remove(kt);
 			tabPane.getTabs().remove(kt.getTab());
+			setToDirty();
 		});
 		return kostenTab;
+	}
+
+	void setToDirty() {
+		dirtyHandler.run();
 	}
 
 	// @VisibleForTesting

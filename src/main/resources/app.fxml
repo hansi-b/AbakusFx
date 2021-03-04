@@ -20,8 +20,9 @@
                     text="_Laden ..." onAction="#loadProject" />
                 <MenuItem fx:id="saveItem" accelerator="CTRL+S"
                     text="_Speichern" onAction="#saveProject" />
-                <MenuItem accelerator="CTRL+SHIFT+S"
-                    text="_Speichern als ..." onAction="#saveProjectAs" />
+                <MenuItem id="saveAsItem"
+                    accelerator="CTRL+SHIFT+S" text="_Speichern als ..."
+                    onAction="#saveProjectAs" />
                 <MenuItem accelerator="CTRL+Q" text="_Beenden"
                     onAction="#exit" />
             </Menu>
