@@ -56,10 +56,13 @@ public class ProjectTabsController {
 		private final Map<KostenTab, ChangeListener<String>> tabListeners;
 
 		private final Set<Consumer<List<KostenTab>>> handlers;
+		private final Runnable dirtyHandler;
 
-		private KostenTabsChanges(final ObservableList<KostenTab> kostenTabs) {
+		private KostenTabsChanges(final ObservableList<KostenTab> kostenTabs, final Runnable dirtyHandler) {
 
 			this.kostenTabs = kostenTabs;
+			this.dirtyHandler = dirtyHandler;
+
 			this.tabListeners = new HashMap<>();
 
 			this.handlers = new LinkedHashSet<>();
@@ -71,6 +74,7 @@ public class ProjectTabsController {
 		private void triggerHandlers() {
 			syncHandlers();
 			handlers.forEach(h -> h.accept(Collections.unmodifiableList(kostenTabs)));
+			dirtyHandler.run();
 		}
 
 		/**
@@ -106,7 +110,7 @@ public class ProjectTabsController {
 	@FXML
 	void initialize() {
 		newProject();
-		kostenTabChange = new KostenTabsChanges(kostenTabs);
+		kostenTabChange = new KostenTabsChanges(kostenTabs, this::setToDirty);
 	}
 
 	void setChangedHandler(final Runnable dirtyHandler) {
@@ -115,6 +119,11 @@ public class ProjectTabsController {
 		this.dirtyHandler = dirtyHandler;
 	}
 
+	/**
+	 * TODO: clarify usage - this is only for result updates
+	 *
+	 * @param updateHandler
+	 */
 	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
 		this.updateHandler = updateHandler;
 		kostenTabChange.addHandler(updateHandler);

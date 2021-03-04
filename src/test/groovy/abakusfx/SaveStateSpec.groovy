@@ -46,6 +46,19 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		appController.isCurrentProjectDirty.get() == false
 	}
 
+	def "Berechnen does not enable dirty"() {
+
+		given:
+		def pFile = tempDir.resolve('p1').toFile()
+		appController.setCurrentProject(pFile)
+
+		when:
+		clickOn("Berechnen")
+
+		then:
+		appController.isCurrentProjectDirty.get() == false
+	}
+
 	def "save after modifying setting is enabled"() {
 
 		given:

@@ -76,10 +76,7 @@ public class AppController {
 		// e.g., store selected tab
 		prefs = AppPrefs.create();
 
-		projectTabsController.setUpdateHandler(tabs -> {
-			übersichtTableController.setItems(tabs);
-			wasProjectChanged.set(true);
-		});
+		projectTabsController.setUpdateHandler(tabs -> übersichtTableController.setItems(tabs));
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
 	}
 
