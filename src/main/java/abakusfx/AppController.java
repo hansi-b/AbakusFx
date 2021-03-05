@@ -2,6 +2,7 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -128,7 +129,12 @@ public class AppController {
 			projectTabsController.loadProject(projectFile);
 			setCurrentProject(projectFile);
 		} catch (final IOException ex) {
-			final String msg = String.format("Konnte '%s' nicht laden:%n%s", projectFile, ex.getMessage());
+
+			final String msg;
+			if (ex instanceof NoSuchFileException)
+				msg = String.format("Konnte Projektdatei '%s' nicht finden.", projectFile);
+			else
+				msg = String.format("Konnte Projektdatei '%s' nicht laden:%n%s", projectFile, ex.getMessage());
 			log.error(msg, ex);
 			new Alert(AlertType.ERROR, msg, ButtonType.OK).showAndWait();
 			projectTabsController.initialize();
