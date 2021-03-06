@@ -75,7 +75,7 @@ public class AppController {
 
 		// TODO: introduce model with properties
 		// e.g., store selected tab
-		prefs = AppPrefs.create();
+		prefs = AppPrefs.Factory.create();
 
 		projectTabsController.setUpdateHandler(tabs -> übersichtTableController.setItems(tabs));
 		Platform.runLater(() -> projectTabsController.focusFirstTab());

@@ -5,6 +5,27 @@ import java.util.Optional;
 
 class AppPrefs {
 
+	/**
+	 * poor person's dependency injection for preferences to use mocked prefs in
+	 * tests
+	 */
+	static class Factory {
+		private static AppPrefs fixedPrefs = null;
+
+		static void fixed(AppPrefs appPrefs) {
+			fixedPrefs = appPrefs;
+		}
+
+		static AppPrefs create() {
+			if (fixedPrefs != null)
+				return fixedPrefs;
+
+			AppPrefs prefs = new AppPrefs();
+			prefs.initialize();
+			return prefs;
+		}
+	}
+
 	enum PrefKeys {
 		_version, lastProject
 	}
@@ -16,12 +37,6 @@ class AppPrefs {
 	private static final PrefVersion currentVersion = PrefVersion.v1;
 
 	private final PrefsAdapter<App, PrefKeys> prefs = new PrefsAdapter<>(App.class);
-
-	static AppPrefs create() {
-		AppPrefs prefs = new AppPrefs();
-		prefs.initialize();
-		return prefs;
-	}
 
 	/**
 	 * check our prefs for version information and update if necessary

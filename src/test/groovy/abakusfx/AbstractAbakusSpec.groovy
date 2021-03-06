@@ -22,6 +22,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	Parent root
 
 	AppController appController
+	AppPrefs appPrefs = Mock()
 
 	TabPane projectTabsPane
 	ObservableList<Tab> projectTabs
@@ -29,6 +30,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	@Override
 	void init() throws Exception {
 		FxToolkit.registerStage { new Stage() }
+		AppPrefs.Factory.fixed(appPrefs)
 	}
 
 	@Override

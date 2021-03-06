@@ -93,6 +93,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		given:
 		def pFile = tempDir.resolve('p1').toFile()
 		appController.setCurrentProject(pFile)
+		appPrefs.getLastProject() >> Optional.of(pFile)
 
 		when:
 		click("+")
