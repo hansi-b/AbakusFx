@@ -51,26 +51,32 @@ public class AppController {
 
 	private AppPrefs prefs;
 
-	private BooleanProperty wasProjectChanged;
+	/**
+	 * whether we would want to alert the user to unsaved changes
+	 */
+	private BooleanProperty isSettingsChanged;
 
 	private StringProperty currentProjectName;
-
+	/**
+	 * whether we have a project with unsaved changes
+	 */
 	BooleanBinding isCurrentProjectDirty;
 
 	@FXML
 	void initialize() throws IOException {
+
+		isSettingsChanged = new SimpleBooleanProperty(false);
+		currentProjectName = new SimpleStringProperty("");
+
 		projectTabsController.setKostenRechner(initKostenRechner());
-		projectTabsController.setChangedHandler(() -> wasProjectChanged.set(true));
+		projectTabsController.setChangedHandler(() -> isSettingsChanged.set(true));
 
 		result.textProperty().bind(Bindings.createStringBinding(() -> {
 			final Money money = projectTabsController.projektSummeProperty.get();
 			return money == null ? "" : new Converters.MoneyConverter().toString(money);
 		}, projectTabsController.projektSummeProperty));
 
-		wasProjectChanged = new SimpleBooleanProperty(false);
-		currentProjectName = new SimpleStringProperty("");
-		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(wasProjectChanged);
-
+		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(isSettingsChanged);
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
 		// TODO: introduce model with properties
@@ -92,11 +98,8 @@ public class AppController {
 	 * (indirectly via the AppTitle)
 	 */
 	void fill(final AppTitle appTitle) {
-		currentProjectName.addListener((observable, oldValue, newValue) -> {
-			log.debug("project name change: {}, {}, {}'", observable, oldValue, newValue);
-			appTitle.updateProject(newValue);
-		});
-		isCurrentProjectDirty.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
+		currentProjectName.addListener((observable, oldValue, newValue) -> appTitle.updateProject(newValue));
+		isSettingsChanged.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(this::loadAndShow);
 	}
@@ -151,7 +154,7 @@ public class AppController {
 			currentProjectName.set(null);
 			prefs.removeLastProject();
 		}
-		wasProjectChanged.set(false);
+		isSettingsChanged.set(false);
 	}
 
 	@FXML
@@ -160,7 +163,7 @@ public class AppController {
 		final File projectFile = prefs.getLastProject()
 				.orElseThrow(() -> new IllegalStateException("No current project set"));
 		projectTabsController.saveProject(projectFile);
-		wasProjectChanged.set(false);
+		isSettingsChanged.set(false);
 	}
 
 	@FXML

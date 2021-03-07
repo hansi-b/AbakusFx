@@ -74,7 +74,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		appController.isCurrentProjectDirty.get() == true
 	}
 
-	def "save after renaming tab enables dirty"() {
+	def "renaming tab enables dirty"() {
 
 		given:
 		def pFile = tempDir.resolve('p1').toFile()

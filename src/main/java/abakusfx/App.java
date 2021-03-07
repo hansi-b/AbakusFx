@@ -83,7 +83,7 @@ class AppTitle {
 		String pName = project;
 		if (pName != null && pName.endsWith(".aba"))
 			pName = pName.substring(0, pName.length() - 4);
-		final String projectPart = pName != null ? String.format(" [%s]", pName) : "";
+		final String projectPart = pName != null ? String.format(": %s", pName) : "";
 		final String dirtyPart = isDirty ? "*" : "";
 		stage.setTitle(String.format("Abakus%s%s", projectPart, dirtyPart));
 	}
