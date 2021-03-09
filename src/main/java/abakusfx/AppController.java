@@ -140,9 +140,9 @@ public class AppController {
 
 			final String msg;
 			if (ex instanceof NoSuchFileException)
-				msg = String.format("Konnte Projektdatei '%s' nicht finden.", projectFile);
+				msg = String.format("Konnte Projektdatei \"%s\" nicht finden.", projectFile);
 			else
-				msg = String.format("Konnte Projektdatei '%s' nicht laden:%n%s", projectFile, ex.getMessage());
+				msg = String.format("Konnte Projektdatei \"%s\" nicht laden:%n%s", projectFile, ex.getMessage());
 			log.error(msg, ex);
 			new Alert(AlertType.ERROR, msg, ButtonType.OK).showAndWait();
 			projectTabsController.initialize();
@@ -163,16 +163,22 @@ public class AppController {
 	}
 
 	@FXML
-	void saveProject(final ActionEvent actionEvent) throws IOException {
+	void saveProject(final ActionEvent actionEvent) {
 		log.trace("#saveProject on {}", actionEvent);
 		final File projectFile = prefs.getLastProject()
 				.orElseThrow(() -> new IllegalStateException("No current project set"));
-		projectTabsController.saveProject(projectFile);
-		isSettingsChanged.set(false);
+		try {
+			projectTabsController.saveProject(projectFile);
+			isSettingsChanged.set(false);
+		} catch (final IOException ioEx) {
+			log.error("Could not save project file '{}'", projectFile, ioEx);
+			new Alert(AlertType.ERROR, String.format("Fehler beim Speichern von Projektdatei \"%s\"", projectFile),
+					ButtonType.OK).showAndWait();
+		}
 	}
 
 	@FXML
-	void saveProjectAs(final ActionEvent actionEvent) throws IOException {
+	void saveProjectAs(final ActionEvent actionEvent) {
 		log.trace("#saveProjectAs on {}", actionEvent);
 
 		final FileChooser fileChooser = createAbaChooser("Projekt speichern");
@@ -183,7 +189,7 @@ public class AppController {
 		}
 		if (!file.getName().endsWith(".aba"))
 			file = new File(file.getParentFile(), String.format("%s.aba", file.getName()));
-		log.debug("Saving project as {}", file);
+		log.debug("Saving project as '{}'", file);
 		setCurrentProject(file);
 		saveProject(actionEvent);
 	}
