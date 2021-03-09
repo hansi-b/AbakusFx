@@ -25,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -212,16 +213,29 @@ public class AppController {
 		if (!isSettingsChanged.get())
 			return;
 
+		final boolean haveCurrentProject = prefs.getLastProject().isPresent();
+
+		final ButtonType save = new ButtonType(haveCurrentProject ? "Speichern" : "Speichern...", ButtonData.YES);
+		final ButtonType dontSave = new ButtonType("Nicht speichern", ButtonData.NO);
+		final ButtonType cancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
+
 		final Alert alert = new Alert(AlertType.CONFIRMATION,
-				"Änderungen wurden nicht gespeichert. Möchten Sie das Programm trotzdem schließen?", ButtonType.CANCEL,
-				ButtonType.OK);
+				"Änderungen wurden nicht gespeichert. Möchten Sie die Änderungen speichern?", save, dontSave, cancel);
 		alert.setTitle("Ungespeicherte Änderungen");
-		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setDefaultButton(false);
-		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setDefaultButton(true);
+		((Button) alert.getDialogPane().lookupButton(save)).setDefaultButton(true);
+		((Button) alert.getDialogPane().lookupButton(dontSave)).setDefaultButton(false);
+		((Button) alert.getDialogPane().lookupButton(cancel)).setDefaultButton(false);
+
 		final Optional<ButtonType> answer = alert.showAndWait();
 
-		if (answer.isPresent() && answer.get().equals(ButtonType.CANCEL))
+		if (answer.isEmpty() || answer.get().equals(cancel))
 			someEvent.consume();
+		else if (answer.get().equals(save)) {
+			if (haveCurrentProject)
+				saveProject(null);
+			else
+				saveProjectAs(null);
+		}
 	}
 
 	@FXML
