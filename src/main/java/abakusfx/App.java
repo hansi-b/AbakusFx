@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class App extends Application {
 
@@ -31,13 +32,16 @@ public class App extends Application {
 
 		final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"));
 		final Parent root = fxmlLoader.load();
-		final AppController mainController = fxmlLoader.getController();
+		final AppController appController = fxmlLoader.getController();
 
 		primaryStage.setTitle("Abakus");
 		primaryStage.setScene(new Scene(root));
+		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST,
+				appController::conditionalExit);
+
 		primaryStage.show();
 
-		mainController.fill(new AppTitle(primaryStage));
+		appController.fill(new AppTitle(primaryStage));
 	}
 
 	public static void main(final String[] args) {

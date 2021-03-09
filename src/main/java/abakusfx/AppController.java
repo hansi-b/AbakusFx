@@ -3,6 +3,7 @@ package abakusfx;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,14 +20,18 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class AppController {
 	static final Logger log = LogManager.getLogger();
@@ -119,7 +124,7 @@ public class AppController {
 	void loadProject(final ActionEvent actionEvent) {
 		log.trace("#loadProject on {}", actionEvent);
 		final FileChooser fileChooser = createAbaChooser("Projekt laden");
-		final File file = fileChooser.showOpenDialog(topLevelPane.getScene().getWindow());
+		final File file = fileChooser.showOpenDialog(getWindow());
 		if (file == null) {
 			log.debug("No project source file for loading selected");
 			return;
@@ -171,7 +176,7 @@ public class AppController {
 		log.trace("#saveProjectAs on {}", actionEvent);
 
 		final FileChooser fileChooser = createAbaChooser("Projekt speichern");
-		File file = fileChooser.showSaveDialog(topLevelPane.getScene().getWindow());
+		File file = fileChooser.showSaveDialog(getWindow());
 		if (file == null) {
 			log.debug("No file for saving selected");
 			return;
@@ -181,6 +186,10 @@ public class AppController {
 		log.debug("Saving project as {}", file);
 		setCurrentProject(file);
 		saveProject(actionEvent);
+	}
+
+	private Window getWindow() {
+		return topLevelPane.getScene().getWindow();
 	}
 
 	private FileChooser createAbaChooser(final String title) {
@@ -193,9 +202,26 @@ public class AppController {
 		return fileChooser;
 	}
 
+	void conditionalExit(final Event someEvent) {
+		if (!isSettingsChanged.get())
+			return;
+
+		final Alert alert = new Alert(AlertType.CONFIRMATION,
+				"Änderungen wurden nicht gespeichert. Möchten Sie das Programm trotzdem schließen?", ButtonType.CANCEL,
+				ButtonType.OK);
+		alert.setTitle("Ungespeicherte Änderungen");
+		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setDefaultButton(false);
+		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setDefaultButton(true);
+		final Optional<ButtonType> answer = alert.showAndWait();
+
+		if (answer.isPresent() && answer.get().equals(ButtonType.CANCEL))
+			someEvent.consume();
+	}
+
 	@FXML
-	void exit(final ActionEvent actionEvent) {
+	void exitApp(final ActionEvent actionEvent) {
 		log.trace("#exit on {}", actionEvent);
-		Platform.exit();
+		final Window window = getWindow();
+		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 }

@@ -24,7 +24,7 @@
                     accelerator="CTRL+SHIFT+S" text="_Speichern als ..."
                     onAction="#saveProjectAs" />
                 <MenuItem accelerator="CTRL+Q" text="_Beenden"
-                    onAction="#exit" />
+                    onAction="#exitApp" />
             </Menu>
         </MenuBar>
     </top>
