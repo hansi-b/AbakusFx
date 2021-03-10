@@ -121,8 +121,6 @@ public class ProjectTabsController {
 
 	/**
 	 * TODO: clarify usage - this is only for result updates
-	 *
-	 * @param updateHandler
 	 */
 	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
 		this.updateHandler = updateHandler;
@@ -154,6 +152,7 @@ public class ProjectTabsController {
 		final String modelYaml = Files.readString(projectFile.toPath());
 		final ProjectModel project = loadModel(modelYaml);
 		project.persons.forEach(this::newKostenTab);
+		updateSummen();
 		focusFirstTab();
 	}
 
@@ -234,7 +233,7 @@ public class ProjectTabsController {
 	private void updateSummen() {
 		kostenTabs.forEach(KostenTab::updateSumme);
 		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull)
-				.reduce((a, b) -> a.add(b)).orElseGet(() -> Constants.euros(0));
+				.reduce(Money::add).orElseGet(() -> Constants.euros(0));
 		projektSummeInternalProperty.set(summe);
 		updateHandler.accept(kostenTabs);
 	}
