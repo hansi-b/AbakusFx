@@ -69,20 +69,21 @@ public class ÜbersichtTableController {
 		CsvCopyTable.setCsvCopy(übersichtTabelle);
 	}
 
-	void setItems(final List<KostenTab> tabs) {
+	void updateItems(final List<KostenTab> tabs) {
 		übersichtTabelle.getItems()
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
-		if (tabs.size() > 1) {
-			final Money summe = tabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull).reduce(euros(0),
-					(a, b) -> a.add(b));
+		boolean isDirty = tabs.stream().anyMatch(t -> t.summe().get() == null);
+		if (!isDirty && tabs.size() > 1) {
+			final Money summe = tabs.stream().map(k -> k.summe().get()).reduce(euros(0),
+					Money::add);
 			if (summe.isGreaterThan(euros(0)))
 				übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
 		}
 	}
 
 	private static <T> void initCol(final TableColumn<KostenÜbersicht, T> col,
-			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+									final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 		col.setSortable(false);
