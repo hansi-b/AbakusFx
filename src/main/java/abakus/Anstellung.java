@@ -2,13 +2,13 @@ package abakus;
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Represents a series and projection of Stellen
@@ -84,7 +84,7 @@ public class Anstellung {
 	 */
 	List<Stelle> calcBaseStellen(final int year) {
 
-		final List<YearMonth> yms = Arrays.asList(Month.JULY, Month.AUGUST, Month.SEPTEMBER).stream()
+		final List<YearMonth> yms = Stream.of(Month.JULY, Month.AUGUST, Month.SEPTEMBER)
 				.map(m -> YearMonth.of(year, m)).filter(this::isInAnstellung).collect(Collectors.toList());
 		if (yms.isEmpty())
 			yms.add(YearMonth.of(year, getBeginn().getMonth().getValue()));

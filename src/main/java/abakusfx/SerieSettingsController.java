@@ -9,7 +9,13 @@ import abakus.Stelle;
 import abakus.Stufe;
 import abakusfx.models.SeriesModel;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.ToggleGroup;
 
 public class SerieSettingsController {
 	@FXML
@@ -43,7 +49,8 @@ public class SerieSettingsController {
 				von.valueProperty().setValue(newValue.withDayOfMonth(1));
 		});
 		von.setDayCellFactory(datePicker -> new DateCell() {
-			public void updateItem(LocalDate item, boolean empty) {
+			@Override
+			public void updateItem(final LocalDate item, final boolean empty) {
 				super.updateItem(item, empty);
 				if (item.isAfter(bis.valueProperty().get())) {
 					setDisable(true);
@@ -53,12 +60,13 @@ public class SerieSettingsController {
 		});
 
 		bis.valueProperty().addListener((observable, oldValue, newValue) -> {
-			int lastDay = newValue.lengthOfMonth();
+			final int lastDay = newValue.lengthOfMonth();
 			if (newValue.getDayOfMonth() != lastDay)
 				bis.valueProperty().setValue(newValue.withDayOfMonth(lastDay));
 		});
 		bis.setDayCellFactory(datePicker -> new DateCell() {
-			public void updateItem(LocalDate item, boolean empty) {
+			@Override
+			public void updateItem(final LocalDate item, final boolean empty) {
 				super.updateItem(item, empty);
 				if (item.isBefore(von.valueProperty().get())) {
 					setDisable(true);
@@ -91,7 +99,7 @@ public class SerieSettingsController {
 	SeriesModel getState() {
 		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
 				weiter.isSelected(), seit.getValue()
-				// umfangSeit: ssc.umfangSeit.getValue()
+		// umfangSeit: ssc.umfangSeit.getValue()
 		);
 	}
 
