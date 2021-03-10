@@ -3,7 +3,6 @@ package abakusfx;
 import static abakus.Constants.euros;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -73,17 +72,16 @@ public class ÜbersichtTableController {
 		übersichtTabelle.getItems()
 				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
 						.collect(Collectors.toList()));
-		boolean isDirty = tabs.stream().anyMatch(t -> t.summe().get() == null);
+		final boolean isDirty = tabs.stream().anyMatch(t -> t.summe().get() == null);
 		if (!isDirty && tabs.size() > 1) {
-			final Money summe = tabs.stream().map(k -> k.summe().get()).reduce(euros(0),
-					Money::add);
+			final Money summe = tabs.stream().map(k -> k.summe().get()).reduce(euros(0), Money::add);
 			if (summe.isGreaterThan(euros(0)))
 				übersichtTabelle.getItems().add(KostenÜbersicht.of("∑", summe));
 		}
 	}
 
 	private static <T> void initCol(final TableColumn<KostenÜbersicht, T> col,
-									final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 		col.setSortable(false);

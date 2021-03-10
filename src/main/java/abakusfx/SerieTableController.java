@@ -95,7 +95,7 @@ public class SerieTableController {
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
-			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+										 final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}
@@ -103,8 +103,8 @@ public class SerieTableController {
 	/**
 	 * @param kostenListe the Monatskosten which to display
 	 */
-	boolean updateKosten(final List<Monatskosten> kostenListe) {
-		return monatsKostenListe.setAll(kostenListe.stream().map(it -> Kosten.of(it)).collect(Collectors.toList()));
+	void updateKosten(final List<Monatskosten> kostenListe) {
+		monatsKostenListe.setAll(kostenListe.stream().map(Kosten::of).collect(Collectors.toList()));
 	}
 
 	void clearKosten() {

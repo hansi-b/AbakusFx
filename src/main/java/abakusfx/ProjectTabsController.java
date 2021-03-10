@@ -68,11 +68,11 @@ public class ProjectTabsController {
 			this.handlers = new LinkedHashSet<>();
 
 			kostenTabs.addListener((ListChangeListener<KostenTab>) c -> triggerHandlers());
-			syncHandlers();
+			syncHandlersToTabs();
 		}
 
 		private void triggerHandlers() {
-			syncHandlers();
+			syncHandlersToTabs();
 			handlers.forEach(h -> h.accept(Collections.unmodifiableList(kostenTabs)));
 			dirtyHandler.run();
 		}
@@ -83,7 +83,7 @@ public class ProjectTabsController {
 		 * Overhead of removing and re-adding is acceptable as long as we are dealing
 		 * with only a handful of elements.
 		 */
-		private void syncHandlers() {
+		private void syncHandlersToTabs() {
 			tabListeners.forEach((tab, listener) -> tab.tabLabelProperty().removeListener(listener));
 			tabListeners.clear();
 
