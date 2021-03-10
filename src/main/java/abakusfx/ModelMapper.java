@@ -20,32 +20,33 @@ public class ModelMapper {
 	}
 
 	private static ObjectMapper createObjectMapper() {
-		ObjectMapper om = new ObjectMapper(new YAMLFactory());
-		SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, "", "", ""));
+		final ObjectMapper om = new ObjectMapper(new YAMLFactory());
+		final SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, "", "", ""));
 		testModule.addSerializer(LocalDate.class, new LocalDateSerializer());
 		testModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
 		om.registerModule(testModule);
 		return om;
 	}
 
-	public <T> T fromString(String yaml, Class<T> clazz) throws JsonProcessingException {
+	public <T> T fromString(final String yaml, final Class<T> clazz) throws JsonProcessingException {
 		return objectMapper.readValue(yaml, clazz);
 	}
 
-	public <T> String asString(T model) throws JsonProcessingException {
+	public <T> String asString(final T model) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(model);
 	}
 
 	private static class LocalDateSerializer extends JsonSerializer<LocalDate> {
 		@Override
-		public void serialize(LocalDate value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+		public void serialize(final LocalDate value, final JsonGenerator gen, final SerializerProvider serializers)
+				throws IOException {
 			gen.writeString(value.toString());
 		}
 	}
 
 	private static class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
 		@Override
-		public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+		public LocalDate deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			return LocalDate.parse(p.getValueAsString());
 		}
 	}

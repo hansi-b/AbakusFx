@@ -45,7 +45,7 @@ public class KostenRechner {
 		}).collect(Collectors.toList());
 	}
 
-	public Money summe(List<Monatskosten> moKosten) {
+	public Money summe(final List<Monatskosten> moKosten) {
 		return moKosten.stream().map(moKo -> moKo.brutto.add(moKo.sonderzahlung)).reduce(Constants.euros(0),
 				Money::add);
 	}

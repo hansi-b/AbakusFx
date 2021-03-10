@@ -68,7 +68,7 @@ class KostenTab {
 	ReadOnlyObjectProperty<Money> summe() {
 		return kostenTabController.summeProperty;
 	}
-	
+
 	void updateSumme() {
 		kostenTabController.fillResult();
 	}

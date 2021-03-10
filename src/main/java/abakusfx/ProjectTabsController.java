@@ -232,8 +232,8 @@ public class ProjectTabsController {
 
 	private void updateSummen() {
 		kostenTabs.forEach(KostenTab::updateSumme);
-		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull)
-				.reduce(Money::add).orElseGet(() -> Constants.euros(0));
+		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull).reduce(Money::add)
+				.orElseGet(() -> Constants.euros(0));
 		projektSummeInternalProperty.set(summe);
 		updateHandler.accept(kostenTabs);
 	}

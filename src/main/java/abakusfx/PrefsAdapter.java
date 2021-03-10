@@ -14,30 +14,30 @@ class PrefsAdapter<T, K extends Enum<K>> {
 
 		private static final long serialVersionUID = -554364308103429180L;
 
-		PrefsException(Exception cause) {
+		PrefsException(final Exception cause) {
 			super(cause);
 		}
 	}
 
 	private final Class<T> clazz;
 
-	PrefsAdapter(Class<T> clazz) {
+	PrefsAdapter(final Class<T> clazz) {
 		this.clazz = clazz;
 	}
 
-	public void put(K key, String value) {
+	public void put(final K key, final String value) {
 		backingPrefs().put(key.name(), value);
 	}
 
-	public String get(K key) {
+	public String get(final K key) {
 		return backingPrefs().get(key.name(), null);
 	}
 
-	public boolean contains(K key) throws PrefsException {
+	public boolean contains(final K key) throws PrefsException {
 		return get(key) != null;
 	}
 
-	public void remove(K key) {
+	public void remove(final K key) {
 		backingPrefs().remove(key.name());
 	}
 

@@ -84,8 +84,8 @@ public class Anstellung {
 	 */
 	List<Stelle> calcBaseStellen(final int year) {
 
-		final List<YearMonth> yms = Stream.of(Month.JULY, Month.AUGUST, Month.SEPTEMBER)
-				.map(m -> YearMonth.of(year, m)).filter(this::isInAnstellung).collect(Collectors.toList());
+		final List<YearMonth> yms = Stream.of(Month.JULY, Month.AUGUST, Month.SEPTEMBER).map(m -> YearMonth.of(year, m))
+				.filter(this::isInAnstellung).collect(Collectors.toList());
 		if (yms.isEmpty())
 			yms.add(YearMonth.of(year, getBeginn().getMonth().getValue()));
 		return yms.stream().map(this::am).collect(Collectors.toList());

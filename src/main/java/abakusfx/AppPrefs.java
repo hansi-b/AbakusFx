@@ -12,7 +12,7 @@ class AppPrefs {
 	static class Factory {
 		private static AppPrefs fixedPrefs = null;
 
-		static void fixed(AppPrefs appPrefs) {
+		static void fixed(final AppPrefs appPrefs) {
 			fixedPrefs = appPrefs;
 		}
 
@@ -20,7 +20,7 @@ class AppPrefs {
 			if (fixedPrefs != null)
 				return fixedPrefs;
 
-			AppPrefs prefs = new AppPrefs();
+			final AppPrefs prefs = new AppPrefs();
 			prefs.initialize();
 			return prefs;
 		}
@@ -47,24 +47,24 @@ class AppPrefs {
 			prefs.put(PrefKeys._version, currentVersion.name());
 		}
 
-		String versionName = prefs.get(PrefKeys._version);
+		final String versionName = prefs.get(PrefKeys._version);
 		try {
-			PrefVersion incomingVersion = PrefVersion.valueOf(versionName);
+			final PrefVersion incomingVersion = PrefVersion.valueOf(versionName);
 			if (incomingVersion != currentVersion)
 				throw new IllegalStateException(String.format("Cannot handle outdated preferences version %s (need %s)",
 						incomingVersion, currentVersion));
-		} catch (IllegalArgumentException ex) {
+		} catch (final IllegalArgumentException ex) {
 			throw new IllegalStateException(String.format("Cannot handle unknown preferences version %s (need %s)",
 					versionName, currentVersion), ex);
 		}
 	}
 
 	Optional<File> getLastProject() {
-		String s = prefs.get(PrefKeys.lastProject);
+		final String s = prefs.get(PrefKeys.lastProject);
 		return Optional.ofNullable(s).map(File::new);
 	}
 
-	void setLastProject(File projectFile) {
+	void setLastProject(final File projectFile) {
 		prefs.put(PrefKeys.lastProject, projectFile.getAbsolutePath());
 	}
 

@@ -15,7 +15,7 @@ public class Stelle {
 		this.umfang = umfang;
 	}
 
-	public static Stelle of(Stelle stelle, Stufe stufe) {
+	public static Stelle of(final Stelle stelle, final Stufe stufe) {
 		return new Stelle(stelle.gruppe, stufe, stelle.umfang);
 	}
 
