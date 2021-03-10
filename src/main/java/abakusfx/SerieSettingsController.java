@@ -1,5 +1,6 @@
 package abakusfx;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 import abakus.Anstellung;
@@ -42,6 +43,15 @@ public class SerieSettingsController {
 
 	@FXML
 	void initialize() {
+		von.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.getDayOfMonth() != 1)
+				von.valueProperty().setValue(newValue.withDayOfMonth(1));
+		});
+		bis.valueProperty().addListener((observable, oldValue, newValue) -> {
+			int lastDay = newValue.lengthOfMonth();
+			if (newValue.getDayOfMonth() != lastDay)
+				bis.valueProperty().setValue(newValue.withDayOfMonth(lastDay));
+		});
 
 		gruppe.getItems().setAll(Gruppe.values());
 		// set the first toggle true to have one true
@@ -67,7 +77,7 @@ public class SerieSettingsController {
 	SeriesModel getState() {
 		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
 				weiter.isSelected(), seit.getValue()
-		// umfangSeit: ssc.umfangSeit.getValue()
+				// umfangSeit: ssc.umfangSeit.getValue()
 		);
 	}
 
@@ -91,7 +101,7 @@ public class SerieSettingsController {
 
 	Anstellung getAnstellung() {
 		final YearMonth beginn = YearMonth
-				.from(weiter.selectedProperty().getValue().booleanValue() ? seit.getValue() : von.getValue());
+				.from(weiter.selectedProperty().getValue() ? seit.getValue() : von.getValue());
 		return Anstellung.of(beginn, getStelle(), YearMonth.from(bis.getValue()));
 	}
 
