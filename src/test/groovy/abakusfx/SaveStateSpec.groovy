@@ -39,8 +39,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 	def "save on freshly saved project is not dirty"() {
 
 		given:
-		def pFile = tempDir.resolve('p1').toFile()
-		appController.setCurrentProject(pFile)
+		withCurrentProject()
 
 		expect:
 		appController.isCurrentProjectDirty.get() == false
@@ -49,8 +48,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 	def "Berechnen does not enable dirty"() {
 
 		given:
-		def pFile = tempDir.resolve('p1').toFile()
-		appController.setCurrentProject(pFile)
+		withCurrentProject()
 
 		when:
 		clickOn("Berechnen")
@@ -62,8 +60,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 	def "save after modifying setting is enabled"() {
 
 		given:
-		def pFile = tempDir.resolve('p1').toFile()
-		appController.setCurrentProject(pFile)
+		withCurrentProject()
 
 		and:
 		click("#gruppe")
@@ -77,8 +74,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 	def "renaming tab enables dirty"() {
 
 		given:
-		def pFile = tempDir.resolve('p1').toFile()
-		appController.setCurrentProject(pFile)
+		withCurrentProject()
 
 		when:
 		doubleClickOn(queryNthTab(0))
@@ -91,8 +87,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 	def "save after adding tab,saving,removing toggles dirty"() {
 
 		given:
-		def pFile = tempDir.resolve('p1').toFile()
-		appController.setCurrentProject(pFile)
+		def pFile = withCurrentProject()
 		appPrefs.getLastProject() >> Optional.of(pFile)
 
 		when:
@@ -113,5 +108,11 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 
 		then:
 		appController.isCurrentProjectDirty.get() == true
+	}
+	
+	def withCurrentProject(fileName = 'project1') {
+		def pFile = tempDir.resolve(fileName).toFile()
+		appController.setCurrentProject(pFile)
+		return pFile
 	}
 }
