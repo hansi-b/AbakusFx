@@ -67,7 +67,7 @@ public class SerieTableController {
 	@FXML
 	private TableColumn<Kosten, Money> kostenCol;
 
-	private final ObservableList<Kosten> kosten = FXCollections.observableArrayList();
+	private final ObservableList<Kosten> monatsKostenListe = FXCollections.observableArrayList();
 
 	@FXML
 	void initialize() {
@@ -88,7 +88,7 @@ public class SerieTableController {
 		kostenCol.prefWidthProperty().bind(kostenTabelle.widthProperty().subtract(colsWidth));
 
 		kostenTabelle.setPlaceholder(new Label("Keine Daten"));
-		kostenTabelle.setItems(kosten);
+		kostenTabelle.setItems(monatsKostenListe);
 
 		kostenTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		CsvCopyTable.setCsvCopy(kostenTabelle);
@@ -104,10 +104,10 @@ public class SerieTableController {
 	 * @param kostenListe the Monatskosten which to display
 	 */
 	boolean updateKosten(final List<Monatskosten> kostenListe) {
-		return kosten.setAll(kostenListe.stream().map(it -> Kosten.of(it)).collect(Collectors.toList()));
+		return monatsKostenListe.setAll(kostenListe.stream().map(it -> Kosten.of(it)).collect(Collectors.toList()));
 	}
 
 	void clearKosten() {
-		kosten.clear();
+		monatsKostenListe.clear();
 	}
 }

@@ -22,7 +22,7 @@ class KostenTab {
 	private final KostenTabController kostenTabController;
 
 	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler,
-			final Runnable summeUpdater) {
+			  final Runnable summeUpdater) {
 
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
@@ -49,7 +49,7 @@ class KostenTab {
 		renameItem.setOnAction(e -> renamableTab.editLabel());
 		contextMenu.getItems().add(renameItem);
 
-		final MenuItem closeItem = new MenuItem("Schließen");
+		final MenuItem closeItem = new MenuItem("Entfernen");
 		closeItem.setOnAction(e -> closeHandler.accept(this));
 		contextMenu.getItems().add(closeItem);
 		closeItem.disableProperty().bind(Bindings.size(getTab().getTabPane().getTabs()).isEqualTo(2));

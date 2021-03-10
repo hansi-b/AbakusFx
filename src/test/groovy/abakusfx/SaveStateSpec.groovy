@@ -109,7 +109,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 
 		when:
 		clickOn(queryNthTab(1), MouseButton.SECONDARY)
-		click("Schließen")
+		click("Entfernen")
 
 		then:
 		appController.isCurrentProjectDirty.get() == true
