@@ -18,3 +18,4 @@ build
 .idea/codeStyles/
 tmp/
 bin
+.idea
