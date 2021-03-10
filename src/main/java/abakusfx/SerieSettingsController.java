@@ -9,12 +9,7 @@ import abakus.Stelle;
 import abakus.Stufe;
 import abakusfx.models.SeriesModel;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 
 public class SerieSettingsController {
 	@FXML
@@ -47,10 +42,29 @@ public class SerieSettingsController {
 			if (newValue.getDayOfMonth() != 1)
 				von.valueProperty().setValue(newValue.withDayOfMonth(1));
 		});
+		von.setDayCellFactory(datePicker -> new DateCell() {
+			public void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item.isAfter(bis.valueProperty().get())) {
+					setDisable(true);
+					setStyle("-fx-background-color: #ffc0cb;");
+				}
+			}
+		});
+
 		bis.valueProperty().addListener((observable, oldValue, newValue) -> {
 			int lastDay = newValue.lengthOfMonth();
 			if (newValue.getDayOfMonth() != lastDay)
 				bis.valueProperty().setValue(newValue.withDayOfMonth(lastDay));
+		});
+		bis.setDayCellFactory(datePicker -> new DateCell() {
+			public void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item.isBefore(von.valueProperty().get())) {
+					setDisable(true);
+					setStyle("-fx-background-color: #ffc0cb;");
+				}
+			}
 		});
 
 		gruppe.getItems().setAll(Gruppe.values());
