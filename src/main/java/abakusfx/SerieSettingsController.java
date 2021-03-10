@@ -96,7 +96,7 @@ public class SerieSettingsController {
 	}
 
 	private Stelle getStelle() {
-		// issue #19 ignore the umfangSeit for the moment
+		// TODO issue #19 ignore the umfangSeit for the moment
 		// def umfang = weiter.selectedProperty().getValue() ? umfangSeit.getValue() :
 		// umfang.getValue()
 		return Stelle.of(gruppe.getValue(), stufe.getValue(), umfang.getValue());
