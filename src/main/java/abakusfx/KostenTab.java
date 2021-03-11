@@ -21,8 +21,8 @@ class KostenTab {
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
-	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyHandler,
-			  final Runnable summeUpdater) {
+	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyListener,
+			  final Runnable summeChangeListener) {
 
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
@@ -35,8 +35,8 @@ class KostenTab {
 		}
 		kostenTabController = loader.getController();
 		kostenTabController.setKostenRechner(kostenRechnerProp);
-		kostenTabController.addDirtyListener(dirtyHandler);
-		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeUpdater.run());
+		kostenTabController.addDirtyListener(dirtyListener);
+		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());
 	}
 
 	/**
@@ -70,7 +70,7 @@ class KostenTab {
 	}
 
 	void updateSumme() {
-		kostenTabController.fillResult();
+		kostenTabController.updateResult();
 	}
 
 	void setState(final PersonModel person) {

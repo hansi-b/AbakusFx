@@ -35,7 +35,7 @@ public class KostenTabController {
 	@FXML
 	void initialize() {
 		log.trace("KostenTabController.initialize");
-		calcKosten.setOnAction(a -> fillResult());
+		calcKosten.setOnAction(a -> updateResult());
 		serieSettingsController.addDirtyListener(this::clearResult);
 	}
 
@@ -43,7 +43,7 @@ public class KostenTabController {
 		this.kostenRechnerGetter = kostenRechnerGetter;
 	}
 
-	void fillResult() {
+	void updateResult() {
 
 		final YearMonth von = serieSettingsController.getVon();
 		final YearMonth bis = serieSettingsController.getBis();
