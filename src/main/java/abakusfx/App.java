@@ -36,8 +36,10 @@ public class App extends Application {
 
 		primaryStage.setTitle("Abakus");
 		primaryStage.setScene(new Scene(root));
-		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST,
-				appController::conditionalExit);
+		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
+			if (!appController.showUnsavedChangesDialogue())
+				e.consume();
+		});
 
 		primaryStage.show();
 

@@ -20,7 +20,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -117,12 +116,18 @@ public class AppController {
 	@FXML
 	void newProject(final ActionEvent actionEvent) {
 		log.trace("#newProject on {}", actionEvent);
+		if (isSettingsChanged.get() && !showUnsavedChangesDialogue())
+			return;
+
 		projectTabsController.newProject();
 		setCurrentProject(null);
 	}
 
 	@FXML
 	void loadProject(final ActionEvent actionEvent) {
+		if (isSettingsChanged.get() && !showUnsavedChangesDialogue())
+			return;
+
 		log.trace("#loadProject on {}", actionEvent);
 		final FileChooser fileChooser = createAbaChooser("Projekt laden");
 		final File file = fileChooser.showOpenDialog(getWindow());
@@ -209,9 +214,13 @@ public class AppController {
 		return fileChooser;
 	}
 
-	void conditionalExit(final Event someEvent) {
+	/**
+	 * @return true the user wants to proceed (i.e., has not cancelled); false if
+	 *         the user has cancelled
+	 */
+	boolean showUnsavedChangesDialogue() {
 		if (!isSettingsChanged.get())
-			return;
+			return true;
 
 		final boolean haveCurrentProject = prefs.getLastProject().isPresent();
 
@@ -219,8 +228,10 @@ public class AppController {
 		final ButtonType dontSave = new ButtonType("Nicht speichern", ButtonData.NO);
 		final ButtonType cancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
 
+		final String detail = haveCurrentProject ? String.format(" an \"%s\"", currentProjectName.get()) : "";
+
 		final Alert alert = new Alert(AlertType.CONFIRMATION,
-				"Änderungen wurden nicht gespeichert. Möchten Sie die Änderungen speichern?", save, dontSave, cancel);
+				String.format("Möchten Sie Ihre Änderungen%s speichern?", detail), save, dontSave, cancel);
 		alert.setTitle("Ungespeicherte Änderungen");
 		((Button) alert.getDialogPane().lookupButton(save)).setDefaultButton(true);
 		((Button) alert.getDialogPane().lookupButton(dontSave)).setDefaultButton(false);
@@ -229,13 +240,15 @@ public class AppController {
 		final Optional<ButtonType> answer = alert.showAndWait();
 
 		if (answer.isEmpty() || answer.get().equals(cancel))
-			someEvent.consume();
-		else if (answer.get().equals(save)) {
+			return false;
+
+		if (answer.get().equals(save)) {
 			if (haveCurrentProject)
 				saveProject(null);
 			else
 				saveProjectAs(null);
 		}
+		return true;
 	}
 
 	@FXML
