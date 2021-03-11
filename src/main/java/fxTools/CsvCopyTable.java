@@ -3,6 +3,8 @@ package fxTools;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -12,6 +14,8 @@ import javafx.scene.input.KeyCombination;
 
 public class CsvCopyTable {
 	private static final KeyCodeCombination defaultCopyControlKey = new KeyCodeCombination(KeyCode.C,
+			KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination defaultSelectAllControlKey = new KeyCodeCombination(KeyCode.A,
 			KeyCombination.CONTROL_DOWN);
 
 	/**
@@ -25,7 +29,23 @@ public class CsvCopyTable {
 		table.setOnKeyReleased(e -> {
 			if (defaultCopyControlKey.match(e) && table == e.getSource())
 				copyCsvToClipboard(table);
+			else if (defaultSelectAllControlKey.match(e) && table == e.getSource())
+				table.getSelectionModel().selectAll();
 		});
+		addSelectCopyContextMenu(table);
+	}
+
+	private static <T extends CsvRow> void addSelectCopyContextMenu(final TableView<T> table) {
+		final ContextMenu cm = new ContextMenu();
+		final MenuItem selectAll = new MenuItem("Alles auswählen");
+		selectAll.setOnAction(e -> table.getSelectionModel().selectAll());
+		cm.getItems().add(selectAll);
+
+		final MenuItem copySelection = new MenuItem("Auswahl kopieren");
+		cm.getItems().add(copySelection);
+		copySelection.setOnAction(e -> copyCsvToClipboard(table));
+
+		table.setContextMenu(cm);
 	}
 
 	private static <T extends CsvRow> void copyCsvToClipboard(final TableView<T> table) {
