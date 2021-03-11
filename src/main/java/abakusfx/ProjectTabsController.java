@@ -164,6 +164,7 @@ public class ProjectTabsController {
 	private void reset() {
 		tabPane.getTabs().clear();
 		kostenTabs.clear();
+		projektSummeInternalProperty.set(null);
 		initAdderTab();
 	}
 
