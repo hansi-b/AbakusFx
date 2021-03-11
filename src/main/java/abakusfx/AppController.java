@@ -7,13 +7,11 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javamoney.moneta.Money;
 
 import abakus.KostenRechner;
 import abakus.Tarif;
 import abakus.ÖtvCsvParser;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -51,9 +49,6 @@ public class AppController {
 	@FXML
 	private TextField stats;
 
-	@FXML
-	private TextField result;
-
 	private AppPrefs prefs;
 
 	/**
@@ -76,11 +71,6 @@ public class AppController {
 		projectTabsController.setKostenRechner(initKostenRechner());
 		projectTabsController.setChangedHandler(() -> isSettingsChanged.set(true));
 
-		result.textProperty().bind(Bindings.createStringBinding(() -> {
-			final Money money = projectTabsController.projektSummeProperty.get();
-			return money == null ? "" : new Converters.MoneyConverter().toString(money);
-		}, projectTabsController.projektSummeProperty));
-
 		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(isSettingsChanged);
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
@@ -88,7 +78,7 @@ public class AppController {
 		// e.g., store selected tab
 		prefs = AppPrefs.Factory.create();
 
-		projectTabsController.setUpdateHandler(tabs -> übersichtTableController.updateItems(tabs));
+		projectTabsController.setUpdateHandler(übersichtTableController::updateItems);
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
 	}
 
@@ -107,10 +97,6 @@ public class AppController {
 		isSettingsChanged.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 
 		prefs.getLastProject().ifPresent(this::loadAndShow);
-	}
-
-	void clearResult() {
-		result.setText("");
 	}
 
 	@FXML

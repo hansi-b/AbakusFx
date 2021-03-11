@@ -36,13 +36,4 @@
         <fx:include fx:id="übersichtTable"
             source="übersichtTable.fxml" />
     </right>
-    <bottom>
-        <VBox styleClass="text-pane">
-            <TextField fx:id="result" editable="false">
-                <padding>
-                    <Insets top="1" left="1" bottom="1" right="1" />
-                </padding>
-            </TextField>
-        </VBox>
-    </bottom>
 </BorderPane>
