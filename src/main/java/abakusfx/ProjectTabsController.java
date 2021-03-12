@@ -119,9 +119,6 @@ public class ProjectTabsController {
 		this.dirtyHandler = dirtyHandler;
 	}
 
-	/**
-	 * TODO: clarify usage - this is only for result updates
-	 */
 	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
 		this.updateHandler = updateHandler;
 		kostenTabChange.addHandler(updateHandler);
