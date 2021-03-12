@@ -76,5 +76,5 @@ test {
 }
 
 application {
-	mainClassName = 'abakusfx.App'
+	mainClass = 'abakusfx.App'
 }
