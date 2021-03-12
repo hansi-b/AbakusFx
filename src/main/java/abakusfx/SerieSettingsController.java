@@ -43,6 +43,11 @@ public class SerieSettingsController {
 	DatePicker seit;
 
 	@FXML
+	Label umfangSeitLabel;
+	@FXML
+	Spinner<Integer> umfangSeit;
+
+	@FXML
 	void initialize() {
 		von.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue.getDayOfMonth() != 1)
@@ -80,8 +85,10 @@ public class SerieSettingsController {
 		neuOderWeiter.getToggles().get(0).setSelected(true);
 		stufe.getItems().setAll(Stufe.values());
 
-		seit.disableProperty().bind(weiter.selectedProperty().not());
 		seitLabel.disableProperty().bind(weiter.selectedProperty().not());
+		seit.disableProperty().bind(weiter.selectedProperty().not());
+		umfangSeitLabel.disableProperty().bind(weiter.selectedProperty().not());
+		umfangSeit.disableProperty().bind(weiter.selectedProperty().not());
 
 		setState(SeriesModel.fallback());
 	}
@@ -94,13 +101,12 @@ public class SerieSettingsController {
 		umfang.getValueFactory().setValue(model.umfang);
 		weiter.setSelected(model.isWeiter);
 		seit.setValue(model.seit);
+		umfangSeit.getValueFactory().setValue(model.umfangSeit);
 	}
 
 	SeriesModel getState() {
 		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
-				weiter.isSelected(), seit.getValue()
-		// umfangSeit: ssc.umfangSeit.getValue()
-		);
+				weiter.isSelected(), seit.getValue(), umfangSeit.getValue());
 	}
 
 	void addDirtyListener(final Runnable dirtyListener) {
@@ -111,6 +117,7 @@ public class SerieSettingsController {
 		umfang.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 		seit.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 		weiter.selectedProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		umfangSeit.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 	}
 
 	YearMonth getVon() {
@@ -122,15 +129,12 @@ public class SerieSettingsController {
 	}
 
 	Anstellung getAnstellung() {
-		final YearMonth beginn = YearMonth
-				.from(weiter.selectedProperty().getValue() ? seit.getValue() : von.getValue());
-		return Anstellung.of(beginn, getStelle(), YearMonth.from(bis.getValue()));
-	}
+		boolean istWeiterBeschäftigung = weiter.selectedProperty().get();
 
-	private Stelle getStelle() {
-		// TODO issue #19 ignore the umfangSeit for the moment
-		// def umfang = weiter.selectedProperty().getValue() ? umfangSeit.getValue() :
-		// umfang.getValue()
-		return Stelle.of(gruppe.getValue(), stufe.getValue(), umfang.getValue());
+		final YearMonth beginn = YearMonth.from(istWeiterBeschäftigung ? seit.getValue() : von.getValue());
+		final Integer umfangVal = istWeiterBeschäftigung ? umfangSeit.getValue() : umfang.getValue();
+
+		final Stelle stelle = Stelle.of(gruppe.getValue(), stufe.getValue(), umfangVal);
+		return Anstellung.of(beginn, stelle, YearMonth.from(bis.getValue()));
 	}
 }

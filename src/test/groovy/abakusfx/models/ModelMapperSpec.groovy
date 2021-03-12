@@ -16,11 +16,10 @@ public class ModelMapperSpec extends Specification {
 
 		given:
 		def model = new SeriesModel(LocalDate.of(2019, 2, 7), LocalDate.of(2020,5,11), //
-				Gruppe.E13, Stufe.zwei, 80, true, LocalDate.of(2020,5,11))
+				Gruppe.E13, Stufe.zwei, 80, true, LocalDate.of(2020,5,11), 80)
 
 		when:
 		def modelYaml = new ModelMapper().asString(model)
-		println "$modelYaml"
 		def newModel = new ModelMapper().fromString(modelYaml, SeriesModel.class)
 
 		then:
@@ -31,9 +30,9 @@ public class ModelMapperSpec extends Specification {
 
 		given:
 		def m1 = new SeriesModel(LocalDate.of(2019, 2, 7), LocalDate.of(2020,5,11), //
-				Gruppe.E13, Stufe.zwei, 80, true, LocalDate.of(2020,5,11))
+				Gruppe.E13, Stufe.zwei, 80, true, LocalDate.of(2020,5,11), 90)
 		def m2 = new SeriesModel(LocalDate.of(2018, 1, 3), LocalDate.of(2021,11,13), //
-				Gruppe.E10, Stufe.drei, 75, false, LocalDate.of(2019,4,12))
+				Gruppe.E10, Stufe.drei, 75, false, LocalDate.of(2019,4,12), 90)
 		def projModel = new ProjectModel(Arrays.asList(//
 				new PersonModel("James Bond", m1),//
 				new PersonModel("Amelia Earhart", m2)))

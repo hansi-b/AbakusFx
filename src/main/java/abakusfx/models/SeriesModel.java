@@ -20,13 +20,13 @@ public class SeriesModel {
 	public final int umfang;
 	public final boolean isWeiter;
 	public final LocalDate seit;
-	public final int umfangSeit = 100;
+	public final int umfangSeit;
 
 	@JsonCreator
 	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
 			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
 			@JsonProperty("umfang") final int umfang, @JsonProperty("isWeiter") final boolean isWeiter,
-			@JsonProperty("seit") final LocalDate seit) {
+			@JsonProperty("seit") final LocalDate seit, @JsonProperty("umfangSeit") final int umfangSeit) {
 		this.von = von;
 		this.bis = bis;
 		this.gruppe = gruppe;
@@ -34,7 +34,7 @@ public class SeriesModel {
 		this.umfang = umfang;
 		this.isWeiter = isWeiter;
 		this.seit = seit;
-//		this.umfangSeit = umfangSeit;
+		this.umfangSeit = umfangSeit;
 	}
 
 	@Override
@@ -58,8 +58,6 @@ public class SeriesModel {
 
 	public static SeriesModel fallback() {
 		return new SeriesModel(LocalDate.now(), LocalDate.now().plusMonths(3), Gruppe.E10, Stufe.eins, 100, false,
-				LocalDate.now().minusMonths(6)
-		// umfangSeit: 100
-		);
+				LocalDate.now().minusMonths(6), 100);
 	}
 }
