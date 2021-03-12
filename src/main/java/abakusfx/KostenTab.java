@@ -22,7 +22,7 @@ class KostenTab {
 	private final KostenTabController kostenTabController;
 
 	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyListener,
-			  final Runnable summeChangeListener) {
+			final Runnable summeChangeListener) {
 
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);

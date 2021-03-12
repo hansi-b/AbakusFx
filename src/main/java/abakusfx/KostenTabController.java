@@ -52,8 +52,8 @@ public class KostenTabController {
 		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
 		serieTableController.updateKosten(moKosten);
 		final Money summe = rechner.summe(moKosten);
-		log.debug("Result = {}", summe);
 		summeInternalProperty.set(summe);
+		log.trace("updateResult -> {}", summe);
 	}
 
 	private void clearResult() {

@@ -29,16 +29,16 @@ public class Anstellung {
 		return a;
 	}
 
-	YearMonth getBeginn() {
-		return stelleByBeginn.firstKey();
-	}
-
 	private void add(final YearMonth beginn, final Stelle antrittsStelle) {
 		if (beginn.isAfter(ende))
 			throw Errors.illegalArg("Stellenbeginn %s liegt nach dem Anstellungsende %s", beginn, ende);
 
 		assert !stelleByBeginn.containsKey(beginn);
 		stelleByBeginn.put(beginn, antrittsStelle);
+	}
+
+	YearMonth getBeginn() {
+		return stelleByBeginn.firstKey();
 	}
 
 	Stelle am(final YearMonth ym) {
