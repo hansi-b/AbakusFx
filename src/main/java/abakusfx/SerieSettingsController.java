@@ -87,6 +87,11 @@ public class SerieSettingsController {
 
 		seitLabel.disableProperty().bind(weiter.selectedProperty().not());
 		seit.disableProperty().bind(weiter.selectedProperty().not());
+		seit.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.getDayOfMonth() != 1)
+				seit.valueProperty().setValue(newValue.withDayOfMonth(1));
+		});
+
 		umfangSeitLabel.disableProperty().bind(weiter.selectedProperty().not());
 		umfangSeit.disableProperty().bind(weiter.selectedProperty().not());
 
