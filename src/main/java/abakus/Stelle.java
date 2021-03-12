@@ -42,4 +42,9 @@ public class Stelle {
 	public int hashCode() {
 		return Objects.hash(gruppe, stufe, umfang);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("Stelle(%s/%s, %s%%)", gruppe, stufe, umfang);
+	}
 }

@@ -4,7 +4,7 @@ import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.SortedMap;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class Anstellung {
 
-	private final SortedMap<YearMonth, Stelle> stelleByBeginn;
+	private final NavigableMap<YearMonth, Stelle> stelleByBeginn;
 	final YearMonth ende;
 
 	private Anstellung(final YearMonth ende) {
@@ -23,9 +23,27 @@ public class Anstellung {
 		this.ende = ende;
 	}
 
+	/**
+	 * Eine Neuanstellung mit einer festen Stelle und einem gegebenen Ende (für die
+	 * JSZ benötigt).
+	 */
 	public static Anstellung of(final YearMonth beginn, final Stelle antrittsStelle, final YearMonth ende) {
 		final Anstellung a = new Anstellung(ende);
 		a.add(beginn, antrittsStelle);
+		return a;
+	}
+
+	/**
+	 * Eine Weiterbeschäftigung, evtl. mit verändertem Umfang. Stufe und Gruppe
+	 * ergeben sich aus der Vorbeschäftigung.
+	 */
+	public static Anstellung weiter(final YearMonth vorigerBeginn, final Stelle vorigeStelle,
+			final YearMonth neuerBeginn, final int neuerUmfang, final YearMonth ende) {
+
+		final Anstellung a = new Anstellung(ende);
+		a.add(vorigerBeginn, vorigeStelle);
+		a.add(neuerBeginn,
+				Stelle.of(vorigeStelle.gruppe, vorigeStelle.stufe.stufeAm(vorigerBeginn, neuerBeginn), neuerUmfang));
 		return a;
 	}
 
@@ -46,21 +64,21 @@ public class Anstellung {
 		if (ym.isAfter(ende))
 			throw Errors.illegalArg("Argument %s liegt nach dem Anstellungsende %s", ym, ende);
 
-		final Entry<YearMonth, Stelle> entry = stelleByBeginn.entrySet().stream().filter(e -> !e.getKey().isAfter(ym))
-				.findFirst().orElseThrow(() -> Errors
-						.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn()));
+		final Entry<YearMonth, Stelle> entry = stelleByBeginn.floorEntry(ym);
+		if (entry == null)
+			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
 
 		final Stelle stelle = entry.getValue();
 		final Stufe neueStufe = stelle.stufe.stufeAm(entry.getKey(), ym);
 		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
 	}
 
-	SortedMap<YearMonth, Stelle> monatsStellen(final YearMonth von, final YearMonth bis) {
+	NavigableMap<YearMonth, Stelle> monatsStellen(final YearMonth von, final YearMonth bis) {
 
 		if (bis.isBefore(von))
 			throw Errors.illegalArg("Enddatum %s liegt vor dem Anfang %s", bis, von);
 
-		final SortedMap<YearMonth, Stelle> stellenByYm = new TreeMap<>();
+		final NavigableMap<YearMonth, Stelle> stellenByYm = new TreeMap<>();
 		YearMonth current = von;
 		while (!current.isAfter(bis)) {
 			stellenByYm.put(current, am(current));

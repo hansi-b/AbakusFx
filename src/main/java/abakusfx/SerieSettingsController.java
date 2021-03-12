@@ -129,12 +129,13 @@ public class SerieSettingsController {
 	}
 
 	Anstellung getAnstellung() {
-		boolean istWeiterBeschäftigung = weiter.selectedProperty().get();
+		final boolean istWeiterBeschäftigung = weiter.selectedProperty().get();
 
-		final YearMonth beginn = YearMonth.from(istWeiterBeschäftigung ? seit.getValue() : von.getValue());
-		final Integer umfangVal = istWeiterBeschäftigung ? umfangSeit.getValue() : umfang.getValue();
+		final Stelle stelle = Stelle.of(gruppe.getValue(), stufe.getValue(),
+				istWeiterBeschäftigung ? umfangSeit.getValue() : umfang.getValue());
 
-		final Stelle stelle = Stelle.of(gruppe.getValue(), stufe.getValue(), umfangVal);
-		return Anstellung.of(beginn, stelle, YearMonth.from(bis.getValue()));
+		return istWeiterBeschäftigung
+				? Anstellung.weiter(YearMonth.from(seit.getValue()), stelle, getVon(), umfang.getValue(), getBis())
+				: Anstellung.of(getVon(), stelle, getBis());
 	}
 }

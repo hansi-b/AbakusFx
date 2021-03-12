@@ -13,9 +13,7 @@ import spock.lang.Unroll
 
 class KostenRechnerTest extends Specification {
 
-	Anstellung ans = Anstellung.of(YearMonth.of(2021, 1),
-	Stelle.of(Gruppe.E13, Stufe.eins),
-	YearMonth.of(2023, 1))
+	Anstellung ans = Anstellung.of( YearMonth.of(2021, 1), Stelle.of(Gruppe.E13, Stufe.eins), YearMonth.of(2023, 1))
 	KostenRechner rechner = new KostenRechner(new ÖtvCsvParser().parseTarif())
 
 	def "kosten beinhalten arbeitgeberzuschlag"() {
@@ -70,6 +68,29 @@ class KostenRechnerTest extends Specification {
 		mk[1] == new Monatskosten( end,
 				Stelle.of(Gruppe.E13, Stufe.zwei),
 				euros(1.3 * 4385.28),  euros(0))
+	}
+
+	def "monatskosten über Weiterbeschäftigung"() {
+
+		when:
+		Anstellung weiter = Anstellung.weiter( YearMonth.of(2021, 1),
+				Stelle.of(Gruppe.E13, Stufe.eins),
+				YearMonth.of(2022, 1), 70, YearMonth.of(2023, 1))
+
+		def start = YearMonth.of(2021, 12)
+		def end = YearMonth.of(2022, 1)
+		def mk = rechner.monatsKosten(weiter, start, end)
+
+		then:
+		mk.size() == 2
+
+		mk[0] == new Monatskosten( start,
+				Stelle.of(Gruppe.E13, Stufe.eins),
+				euros(1.3 * 4074.30),  euros(0))
+
+		mk[1] == new Monatskosten( end,
+				Stelle.of(Gruppe.E13, Stufe.zwei, 70),
+				euros(1.3 * 4385.28 * 0.7),  euros(0))
 	}
 
 	def "sonderzuschlag zero für Nicht-November"() {
