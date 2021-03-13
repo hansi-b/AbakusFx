@@ -67,6 +67,17 @@ dependencies {
 	testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
 }
 
+task writeVersion() {
+	doFirst {
+		file('src/main/resources/version.properties').text = """app.name=Abakus
+build.version=$version
+build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+"""
+	}
+}
+
+compileJava.dependsOn writeVersion
+
 tasks.withType(GroovyCompile) {
 	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
