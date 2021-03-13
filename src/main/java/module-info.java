@@ -1,9 +1,10 @@
 module hansi_abakusFx {
 	requires java.prefs;
 
-	requires javafx.graphics;
-	requires javafx.fxml;
 	requires javafx.controls;
+	requires javafx.fxml;
+	requires javafx.graphics;
+	requires javafx.web;
 
 	requires com.fasterxml.jackson.core;
 	requires com.fasterxml.jackson.databind;

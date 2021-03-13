@@ -26,14 +26,18 @@
                 <MenuItem accelerator="CTRL+Q" text="_Beenden"
                     onAction="#exitApp" />
             </Menu>
+            <Menu mnemonicParsing="true" text="Hilfe">
+                <MenuItem accelerator="F1"
+                    text="_Hilfe anzeigen..." onAction="#showHelp" />
+            </Menu>
         </MenuBar>
     </top>
     <center>
-        <fx:include fx:id="projectTabs"
-            source="projectTabs.fxml" />
+        <SplitPane dividerPositions="0.6" prefWidth="840">
+            <fx:include fx:id="projectTabs"
+                source="projectTabs.fxml" />
+            <fx:include fx:id="übersichtTable"
+                source="übersichtTable.fxml" />
+        </SplitPane>
     </center>
-    <right>
-        <fx:include fx:id="übersichtTable"
-            source="übersichtTable.fxml" />
-    </right>
 </BorderPane>

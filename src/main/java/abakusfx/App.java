@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import abakus.Constants;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -39,6 +40,8 @@ public class App extends Application {
 		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
 			if (!appController.showUnsavedChangesDialogue())
 				e.consume();
+			else
+				Platform.exit();
 		});
 
 		primaryStage.show();

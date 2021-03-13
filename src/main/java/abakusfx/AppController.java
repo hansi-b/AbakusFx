@@ -2,6 +2,8 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 
@@ -19,6 +21,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,7 +30,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
@@ -235,6 +241,32 @@ public class AppController {
 				saveProjectAs(null);
 		}
 		return true;
+	}
+
+	@FXML
+	public void showHelp(final ActionEvent actionEvent) {
+		log.trace("#showHelp on {}", actionEvent);
+		final WebView webView = new WebView();
+
+		try (InputStream docStream = getClass().getClassLoader().getResourceAsStream("doc/main.html")) {
+			final String helpString = new String(docStream.readAllBytes(), StandardCharsets.UTF_8);
+			log.info(helpString);
+			webView.getEngine().loadContent(helpString);
+		} catch (final IOException e) {
+			log.error("Could not load help", e);
+			final Alert alert = new Alert(AlertType.ERROR,
+					String.format("Die Hilfe konnte nicht geladen werden: %s", e.getMessage()));
+			alert.setTitle("Interner Fehler beim Laden der Hilfe");
+			alert.showAndWait();
+			return;
+		}
+
+		final VBox vBox = new VBox(webView);
+
+		final Stage stage = new Stage();
+		stage.setTitle("Abakus-Hilfe");
+		stage.setScene(new Scene(vBox, 600, 400));
+		stage.show();
 	}
 
 	@FXML
