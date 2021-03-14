@@ -23,6 +23,11 @@ public class App extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) throws Exception {
+		String disclaimer = ResourceLoader.loader.resourceAsString("version.properties");
+
+		for (String prop : disclaimer.split("\n"))
+			log.info(prop);
+
 		Locale.setDefault(Constants.locale);
 
 		final InputStream stream = getClass().getClassLoader().getResourceAsStream("logo.png");
