@@ -1,15 +1,25 @@
 Configuration:
-  status: info
-  name: YAMLConfigTest
-  Appenders:
-    Console:
-      name: General
-      target: SYSTEM_OUT
-      PatternLayout:
-        #pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} %c{1}: %msg%n"
-        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm} %c{1}: %msg%n"
-  Loggers:
-    Root:
-      level: trace
-      AppenderRef:
-        ref: General
+   status: info
+   name: YAMLConfigTest
+   Appenders:
+      RollingFile:
+         name: LogToFile
+         fileName: ./Abakus_aktuell.log
+         filePattern: ./Abakus_alt_%i.log
+         PatternLayout:
+            pattern: '[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1}: %msg%n'
+         Policies:
+            SizeBasedTriggeringPolicy:
+               size: 2MB
+         DefaultRollOverStrategy:
+            max: 3
+      Console:
+         name: LogToConsole
+         target: SYSTEM_OUT
+         PatternLayout:
+            pattern: '[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1}: %msg%n'
+   Loggers:
+      Root:
+         level: trace
+         AppenderRef:
+            ref: LogToConsole
