@@ -46,7 +46,7 @@
             </toggleGroup>
         </RadioButton>
         <RadioButton fx:id="weiter"
-            text="WeiterBeschäftigung">
+            text="Weiterbeschäftigung">
             <toggleGroup>
                 <fx:reference source="neuOderWeiter" />
             </toggleGroup>
