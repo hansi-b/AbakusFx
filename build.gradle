@@ -11,8 +11,8 @@ plugins {
 	id 'com.github.ben-manes.versions' version '0.38.0'
 
 	// license stuff
-	id 'com.github.jk1.dependency-license-report' version '1.16'
-	id 'com.github.hierynomus.license' version '0.15.0'
+	//id 'com.github.jk1.dependency-license-report' version '1.16'
+	//id 'com.github.hierynomus.license' version '0.15.0'
 }
 
 group 'org.hansi-b'
@@ -82,6 +82,14 @@ build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Da
 }
 
 compileJava.dependsOn writeVersion
+
+task srcZipToDist(type: Zip) {
+	classifier = 'src'
+	from projectDir
+	include 'src/**/*'
+}
+
+distZip.dependsOn srcZipToDist
 
 tasks.withType(GroovyCompile) {
 	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
