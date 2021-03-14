@@ -57,7 +57,7 @@ public class SeriesModel {
 	}
 
 	public static SeriesModel fallback() {
-		return new SeriesModel(LocalDate.now(), LocalDate.now().plusMonths(3), Gruppe.E10, Stufe.eins, 100, false,
+		return new SeriesModel(LocalDate.now(), LocalDate.now().plusMonths(12), Gruppe.E10, Stufe.eins, 100, false,
 				LocalDate.now().minusMonths(6), 100);
 	}
 }
