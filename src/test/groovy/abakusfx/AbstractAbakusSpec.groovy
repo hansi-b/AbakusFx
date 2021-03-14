@@ -31,6 +31,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	void init() throws Exception {
 		FxToolkit.registerStage { new Stage() }
 		AppPrefs.Factory.fixed(appPrefs)
+		appPrefs.wasDisclaimerAccepted() >> true
 	}
 
 	@Override
