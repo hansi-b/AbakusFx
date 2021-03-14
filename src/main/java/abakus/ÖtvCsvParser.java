@@ -55,7 +55,7 @@ public class ÖtvCsvParser {
 	private static Line parseLine(final String csvLine) {
 		final String[] parts = csvLine.split("\t");
 		if (parts.length != 9)
-			throw Errors.illegalArg("Zeile enthält %d Felder (nicht 9): '%s'", parts.length, Arrays.toString(parts));
+			throw Errors.illegalArg("Zeile enthält %d Feld(er) (nicht 9): '%s'", parts.length, Arrays.toString(parts));
 		final Integer jahr = Integer.valueOf(parts[0]);
 		final Gruppe gruppe = Gruppe.valueOf(parts[1]);
 

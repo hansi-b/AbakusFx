@@ -1,5 +1,5 @@
 package abakus;
 
 public enum Gruppe {
-	E10, E13
+	E8, E10, E13
 }
