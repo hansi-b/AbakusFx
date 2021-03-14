@@ -31,7 +31,7 @@ class AppPrefs {
 		private static void initialize(final PrefsAdapter<App, PrefKeys> prefs) {
 
 			if (!prefs.contains(PrefKeys._version)) {
-				prefs.put(PrefKeys._version, currentVersion.name());
+				prefs.put(PrefKeys._version, PrefVersion.v1.name());
 			}
 
 			final String versionName = prefs.get(PrefKeys._version);
@@ -53,7 +53,7 @@ class AppPrefs {
 	}
 
 	enum PrefKeys {
-		_version, lastProject
+		_version, lastProject, wasDisclaimerAccepted
 	}
 
 	private static final PrefVersion currentVersion = PrefVersion.v1;
@@ -71,5 +71,13 @@ class AppPrefs {
 
 	void removeLastProject() {
 		prefs.remove(PrefKeys.lastProject);
+	}
+
+	boolean wasDisclaimerAccepted() {
+		return Boolean.valueOf(prefs.get(PrefKeys.wasDisclaimerAccepted));
+	}
+
+	void setDisclaimerAccepted(boolean wasAccepted) {
+		prefs.put(PrefKeys.wasDisclaimerAccepted, Boolean.toString(wasAccepted));
 	}
 }

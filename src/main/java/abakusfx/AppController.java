@@ -2,8 +2,6 @@ package abakusfx;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 
@@ -81,9 +79,15 @@ public class AppController {
 		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(isSettingsChanged);
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
-		// TODO: introduce model with properties
-		// e.g., store selected tab
 		prefs = AppPrefs.Factory.create();
+
+		if (!prefs.wasDisclaimerAccepted()) {
+			prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
+			if (!prefs.wasDisclaimerAccepted()) {
+				Platform.exit();
+				log.info("Disclaimer was rejected");
+			}
+		}
 
 		projectTabsController.setUpdateHandler(übersichtTableController::updateItems);
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
@@ -250,8 +254,9 @@ public class AppController {
 		final WebView webView = new WebView();
 
 		try {
-			final String tarifString = resourceAsString("ötv.csv");
-			final String helpString = resourceAsString("doc/main.html").replace(">>>ötv.csv<<<", tarifString);
+			final String tarifString = ResourceLoader.loader.resourceAsString("ötv.csv");
+			final String helpString = ResourceLoader.loader.resourceAsString("doc/main.html").replace(">>>ötv.csv<<<",
+					tarifString);
 			webView.getEngine().loadContent(helpString);
 		} catch (final IOException e) {
 			log.error("Could not load help", e);
@@ -271,10 +276,31 @@ public class AppController {
 		stage.show();
 	}
 
-	private String resourceAsString(final String resourceName) throws IOException {
-		try (InputStream resStream = getClass().getClassLoader().getResourceAsStream(resourceName)) {
-			return new String(resStream.readAllBytes(), StandardCharsets.UTF_8);
+	public boolean displayDislaimerAndAccept() {
+		log.trace("#showDisclaimer");
+
+		final String disclaimer;
+		try {
+			disclaimer = ResourceLoader.loader.resourceAsString("disclaimer.txt");
+
+		} catch (final RuntimeException | IOException e) {
+			log.error("Could not load disclaimer", e);
+			final Alert alert = new Alert(AlertType.ERROR,
+					String.format("Die Nutzungsvereinbarung konnte nicht geladen werden: %s", e.getMessage()));
+			alert.setTitle("Interner Fehler beim Laden der Nutzungsvereinbarung");
+			alert.showAndWait();
+			return false;
 		}
+
+		final String frage = "Akzeptieren Sie diese Nutzungsvereinbarung?\n(\"Nein\" schließt das Programm.)";
+		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, String.format("%s%n%s", disclaimer, frage),
+				ButtonType.YES, ButtonType.NO);
+		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.NO)).setDefaultButton(true);
+		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.YES)).setDefaultButton(false);
+
+		disclaimerConf.setTitle("Nutzungsvereinbarung");
+		final Optional<ButtonType> answer = disclaimerConf.showAndWait();
+		return answer.isPresent() && answer.get().equals(ButtonType.YES);
 	}
 
 	@FXML
