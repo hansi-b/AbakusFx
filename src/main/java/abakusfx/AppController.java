@@ -276,21 +276,30 @@ public class AppController {
 		stage.show();
 	}
 
+	@FXML
+	public void showVersion(final ActionEvent actionEvent) {
+		log.trace("#showVersion on {}", actionEvent);
+
+		final String disclaimer = ResourceLoader.loader.loadDisclaimer();
+		if (disclaimer == null)
+			return;
+
+		final String versionString = ResourceLoader.loader.loadVersionProperties();
+
+		final String aboutString = String.format("%s%n%n%s", versionString, disclaimer);
+
+		final Alert info = new Alert(AlertType.INFORMATION, aboutString);
+		info.setHeaderText("Abakus - Version & Lizenz");
+		info.setTitle("Abakus - Version und Lizenz");
+		info.showAndWait();
+	}
+
 	public boolean displayDislaimerAndAccept() {
 		log.trace("#showDisclaimer");
 
-		final String disclaimer;
-		try {
-			disclaimer = ResourceLoader.loader.resourceAsString("disclaimer.txt");
-
-		} catch (final RuntimeException | IOException e) {
-			log.error("Could not load disclaimer", e);
-			final Alert alert = new Alert(AlertType.ERROR,
-					String.format("Die Nutzungsvereinbarung konnte nicht geladen werden: %s", e.getMessage()));
-			alert.setTitle("Interner Fehler beim Laden der Nutzungsvereinbarung");
-			alert.showAndWait();
+		final String disclaimer = ResourceLoader.loader.loadDisclaimer();
+		if (disclaimer == null)
 			return false;
-		}
 
 		final String frage = "Akzeptieren Sie diese Nutzungsvereinbarung?\n(\"Nein\" schließt das Programm.)";
 		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, String.format("%s%n%s", disclaimer, frage),
@@ -298,7 +307,8 @@ public class AppController {
 		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.NO)).setDefaultButton(true);
 		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.YES)).setDefaultButton(false);
 
-		disclaimerConf.setTitle("Nutzungsvereinbarung");
+		disclaimerConf.setHeaderText("Abakus - Nutzungsvereinbarung");
+		disclaimerConf.setTitle("Abakus - Nutzungsvereinbarung");
 		final Optional<ButtonType> answer = disclaimerConf.showAndWait();
 		return answer.isPresent() && answer.get().equals(ButtonType.YES);
 	}

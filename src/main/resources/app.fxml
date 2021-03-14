@@ -29,6 +29,7 @@
             <Menu mnemonicParsing="true" text="Hilfe">
                 <MenuItem accelerator="F1"
                     text="_Hilfe anzeigen..." onAction="#showHelp" />
+                <MenuItem text="Über..." onAction="#showVersion" />
             </Menu>
         </MenuBar>
     </top>
