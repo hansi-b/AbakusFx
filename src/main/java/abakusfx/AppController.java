@@ -230,6 +230,7 @@ public class AppController {
 		final Alert alert = new Alert(AlertType.CONFIRMATION,
 				String.format("Möchten Sie Ihre Änderungen%s speichern?", detail), save, dontSave, cancel);
 		alert.setTitle("Ungespeicherte Änderungen");
+		alert.setHeaderText(null);
 		((Button) alert.getDialogPane().lookupButton(save)).setDefaultButton(true);
 		((Button) alert.getDialogPane().lookupButton(dontSave)).setDefaultButton(false);
 		((Button) alert.getDialogPane().lookupButton(cancel)).setDefaultButton(false);
