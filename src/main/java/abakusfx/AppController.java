@@ -30,6 +30,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -248,9 +249,9 @@ public class AppController {
 		log.trace("#showHelp on {}", actionEvent);
 		final WebView webView = new WebView();
 
-		try (InputStream docStream = getClass().getClassLoader().getResourceAsStream("doc/main.html")) {
-			final String helpString = new String(docStream.readAllBytes(), StandardCharsets.UTF_8);
-			log.info(helpString);
+		try {
+			final String tarifString = resourceAsString("ötv.csv");
+			final String helpString = resourceAsString("doc/main.html").replace(">>>ötv.csv<<<", tarifString);
 			webView.getEngine().loadContent(helpString);
 		} catch (final IOException e) {
 			log.error("Could not load help", e);
@@ -262,11 +263,18 @@ public class AppController {
 		}
 
 		final VBox vBox = new VBox(webView);
+		VBox.setVgrow(webView, Priority.ALWAYS);
 
 		final Stage stage = new Stage();
 		stage.setTitle("Abakus-Hilfe");
 		stage.setScene(new Scene(vBox, 600, 400));
 		stage.show();
+	}
+
+	private String resourceAsString(final String resourceName) throws IOException {
+		try (InputStream resStream = getClass().getClassLoader().getResourceAsStream(resourceName)) {
+			return new String(resStream.readAllBytes(), StandardCharsets.UTF_8);
+		}
 	}
 
 	@FXML
