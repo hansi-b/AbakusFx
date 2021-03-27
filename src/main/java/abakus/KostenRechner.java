@@ -46,37 +46,38 @@ public class KostenRechner {
 	}
 
 	public Money summe(final List<Monatskosten> moKosten) {
-		return moKosten.stream().map(moKo -> moKo.brutto.add(moKo.sonderzahlung)).reduce(Constants.euros(0),
-				Money::add);
+		return moKosten.stream().map(moKo -> moKo.brutto.money().add(moKo.sonderzahlung.money()))
+				.reduce(Constants.euros(0), Money::add);
 	}
 
-	Money monatsBrutto(final Gruppe gruppe, final Stufe stufe, final int jahr, final BigDecimal umfang) {
-		return tarif.brutto(gruppe, stufe, jahr).multiply(zuschlagProzent).multiply(percent(umfang));
+	ExplainedMoney monatsBrutto(final Gruppe gruppe, final Stufe stufe, final int jahr, final BigDecimal umfang) {
+		ExplainedMoney bruttoExpl = tarif.brutto(gruppe, stufe, jahr);
+		return ExplainedMoney.of(bruttoExpl.money().multiply(zuschlagProzent).multiply(percent(umfang)), "");
 	}
 
 	/**
 	 * Calculate the Jahressonderzahlung according to
 	 * https://oeffentlicher-dienst.info/tv-l/allg/jahressonderzahlung.html
 	 */
-	Money sonderzahlung(final YearMonth stichtag, final Anstellung anstellung) {
+	ExplainedMoney sonderzahlung(final YearMonth stichtag, final Anstellung anstellung) {
 
 		// 1. only in November
 		if (stichtag.getMonth() != Month.NOVEMBER)
-			return euros(0);
+			return ExplainedMoney.of(euros(0), "");
 
 		final int year = stichtag.getYear();
 		// 2. only if to be employed at least for the coming December
 		if (anstellung.ende.isBefore(YearMonth.of(year, 12)))
-			return euros(0);
+			return ExplainedMoney.of(euros(0), "");
 
 		final double anteilig = anteilig(anstellung.monthsInYear(year).size());
 
 		final List<Stelle> baseStellen = anstellung.calcBaseStellen(year);
-		final Money summe = baseStellen.stream().map(
-				s -> tarif.sonderzahlung(s.gruppe, s.stufe, year).multiply(zuschlagProzent).multiply(percent(s.umfang)))
-				.reduce(euros(0), (a, b) -> a.add(b));
+		final Money summe = baseStellen.stream().map(s -> tarif.sonderzahlung(s.gruppe, s.stufe, year).money()
+				.multiply(zuschlagProzent).multiply(percent(s.umfang))).reduce(euros(0), (a, b) -> a.add(b));
 
-		return summe.divide(baseStellen.size()).multiply(anteilig).with(Monetary.getDefaultRounding());
+		return ExplainedMoney
+				.of(summe.divide(baseStellen.size()).multiply(anteilig).with(Monetary.getDefaultRounding()), "");
 	}
 
 	static double anteilig(final int monthsInYear) {

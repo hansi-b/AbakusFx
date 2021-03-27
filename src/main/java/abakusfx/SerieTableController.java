@@ -42,7 +42,7 @@ public class SerieTableController {
 			k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe);
 			k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe);
 			k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfang);
-			k.betrag = new SimpleObjectProperty<>(mKosten.brutto.add(mKosten.sonderzahlung));
+			k.betrag = new SimpleObjectProperty<>(mKosten.brutto.money().add(mKosten.sonderzahlung.money()));
 			return k;
 		}
 
@@ -95,7 +95,7 @@ public class SerieTableController {
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
-										 final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}

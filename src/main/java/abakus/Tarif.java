@@ -18,8 +18,8 @@ class Gehälter {
 	 */
 	static final Comparator<Gehälter> jahrUndGruppeComparator = new Comparator<Gehälter>() {
 		@Override
-		public int compare(Gehälter o1, Gehälter o2) {
-			int gCmp = o1.gruppe.compareTo(o2.gruppe);
+		public int compare(final Gehälter o1, final Gehälter o2) {
+			final int gCmp = o1.gruppe.compareTo(o2.gruppe);
 			return gCmp != 0 ? gCmp : Integer.compare(o1.jahr, o2.jahr);
 		}
 	};
@@ -29,7 +29,7 @@ class Gehälter {
 	final BigDecimal sonderzahlungProzent;
 	final Map<Stufe, Money> bruttos;
 
-	Gehälter(Gruppe gruppe, int jahr, final BigDecimal szProzent, final Map<Stufe, Money> bruttos) {
+	Gehälter(final Gruppe gruppe, final int jahr, final BigDecimal szProzent, final Map<Stufe, Money> bruttos) {
 		this.gruppe = gruppe;
 		this.jahr = jahr;
 		this.sonderzahlungProzent = szProzent;
@@ -39,33 +39,38 @@ class Gehälter {
 
 public class Tarif {
 
-	private final Map<Gruppe, Map<Integer, Gehälter>> gehälter;
+	private final Map<Gruppe, Map<Integer, Gehälter>> gehälterMapping;
 
 	Tarif(final Set<Gehälter> parsedGehälter) {
-		this.gehälter = new HashMap<>();
+		this.gehälterMapping = new HashMap<>();
 		parsedGehälter.forEach(g -> {
-			this.gehälter.computeIfAbsent(g.gruppe, k -> new HashMap<>()).put(g.jahr, g);
+			this.gehälterMapping.computeIfAbsent(g.gruppe, k -> new HashMap<>()).put(g.jahr, g);
 		});
 	}
 
 	/**
 	 * @return the 100%-Bruttogehalt for the given Gruppe, Stufe, and Year
 	 */
-	Money brutto(final Gruppe gruppe, final Stufe stufe, final int jahr) {
-		return lookupYearTolerant(gruppe, jahr).bruttos.get(stufe);
+	ExplainedMoney brutto(final Gruppe gruppe, final Stufe stufe, final int jahr) {
+		return explainedBrutto(lookupYearTolerant(gruppe, jahr), stufe);
 	}
 
 	/**
 	 * @return the Sonderzahlung on a 100%-Bruttogehalt for the given Gruppe, Stufe,
 	 *         and Year
 	 */
-	Money sonderzahlung(final Gruppe gruppe, final Stufe stufe, final int jahr) {
+	ExplainedMoney sonderzahlung(final Gruppe gruppe, final Stufe stufe, final int jahr) {
 		final Gehälter geh = lookupYearTolerant(gruppe, jahr);
-		return geh.bruttos.get(stufe).multiply(geh.sonderzahlungProzent);
+		return explainedBrutto(geh, stufe).multiplyPercent(geh.sonderzahlungProzent, "JSZ");
+	}
+
+	private ExplainedMoney explainedBrutto(final Gehälter gehälter, final Stufe stufe) {
+		return ExplainedMoney.of(gehälter.bruttos.get(stufe),
+				String.format("TV-L %d %s/%s", gehälter.jahr, gehälter.gruppe, stufe.asString()));
 	}
 
 	private Gehälter lookupYearTolerant(final Gruppe gruppe, final int jahr) {
-		final Map<Integer, Gehälter> gruppenGehälter = gehälter.get(gruppe);
+		final Map<Integer, Gehälter> gruppenGehälter = gehälterMapping.get(gruppe);
 		final Set<Integer> jahre = gruppenGehälter.keySet();
 
 		if (jahre.contains(jahr))

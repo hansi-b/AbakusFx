@@ -3,16 +3,15 @@ package abakus;
 import java.time.YearMonth;
 import java.util.Objects;
 
-import org.javamoney.moneta.Money;
-
 public class Monatskosten {
 
 	public final YearMonth stichtag;
 	public final Stelle stelle;
-	public final Money brutto;
-	public final Money sonderzahlung;
+	public final ExplainedMoney brutto;
+	public final ExplainedMoney sonderzahlung;
 
-	Monatskosten(final YearMonth stichtag, final Stelle stelle, final Money brutto, final Money sonderzahlung) {
+	Monatskosten(final YearMonth stichtag, final Stelle stelle, final ExplainedMoney brutto,
+			final ExplainedMoney sonderzahlung) {
 		this.stichtag = stichtag;
 		this.stelle = stelle;
 		this.brutto = brutto;

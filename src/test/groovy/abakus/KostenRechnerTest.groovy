@@ -22,10 +22,10 @@ class KostenRechnerTest extends Specification {
 		Tarif t = new ÖtvCsvParser().parseTarif()
 
 		when:
-		Money m = new KostenRechner(t).monatsBrutto(Gruppe.E10, Stufe.drei, 2020, BigDecimal.valueOf(80))
+		ExplainedMoney m = new KostenRechner(t).monatsBrutto(Gruppe.E10, Stufe.drei, 2020, BigDecimal.valueOf(80))
 
 		then:
-		m.getNumber() == 3880.76 * 1.3 * 0.8
+		m.money.getNumber() == 3880.76 * 1.3 * 0.8
 	}
 
 	def "einfache monatskosten"() {
@@ -44,11 +44,13 @@ class KostenRechnerTest extends Specification {
 
 		mk[0] == new Monatskosten(start,
 				Stelle.of(Gruppe.E13, Stufe.eins),
-				euros(1.3 * 4074.30), euros(0))
+				ExplainedMoney.of(euros(1.3 * 4074.30), ""),
+				ExplainedMoney.of(euros(0), ""))
 
-		mk[1] == new Monatskosten( end,
+		mk[1] == new Monatskosten(end,
 				Stelle.of(Gruppe.E13, Stufe.eins),
-				euros(1.3 * 4074.30),  euros(0))
+				ExplainedMoney.of(euros(1.3 * 4074.30), ""),
+				ExplainedMoney.of(euros(0), ""))
 	}
 
 	def "monatskosten mit aufstieg"() {
@@ -61,13 +63,15 @@ class KostenRechnerTest extends Specification {
 		then:
 		mk.size() == 2
 
-		mk[0] == new Monatskosten( start,
+		mk[0] == new Monatskosten(start,
 				Stelle.of(Gruppe.E13, Stufe.eins),
-				euros(1.3 * 4074.30),  euros(0))
+				ExplainedMoney.of(euros(1.3 * 4074.30), ""),
+				ExplainedMoney.of(euros(0), ""))
 
-		mk[1] == new Monatskosten( end,
+		mk[1] == new Monatskosten(end,
 				Stelle.of(Gruppe.E13, Stufe.zwei),
-				euros(1.3 * 4385.28),  euros(0))
+				ExplainedMoney.of(euros(1.3 * 4385.28), ""),
+				ExplainedMoney.of(euros(0), ""))
 	}
 
 	def "monatskosten über Weiterbeschäftigung"() {
@@ -84,13 +88,15 @@ class KostenRechnerTest extends Specification {
 		then:
 		mk.size() == 2
 
-		mk[0] == new Monatskosten( start,
+		mk[0] == new Monatskosten(start,
 				Stelle.of(Gruppe.E13, Stufe.eins),
-				euros(1.3 * 4074.30),  euros(0))
+				ExplainedMoney.of(euros(1.3 * 4074.30), ""),
+				ExplainedMoney.of(euros(0), ""))
 
-		mk[1] == new Monatskosten( end,
+		mk[1] == new Monatskosten(end,
 				Stelle.of(Gruppe.E13, Stufe.zwei, 70),
-				euros(1.3 * 4385.28 * 0.7),  euros(0))
+				ExplainedMoney.of(euros(1.3 * 4385.28 * 0.7), ""),
+				ExplainedMoney.of(euros(0), ""))
 	}
 
 	def "sonderzuschlag zero für Nicht-November"() {
@@ -99,7 +105,7 @@ class KostenRechnerTest extends Specification {
 		def stichtag = YearMonth.of(2021, 10)
 
 		then:
-		rechner.sonderzahlung(stichtag, ans) == euros(0)
+		rechner.sonderzahlung(stichtag, ans).money == euros(0)
 	}
 
 	def "sonderzuschlag zero falls Ende vor Dezember"() {
@@ -111,7 +117,7 @@ class KostenRechnerTest extends Specification {
 				YearMonth.of(2021, 11))
 
 		then:
-		rechner.sonderzahlung(stichtag, ans) == euros(0)
+		rechner.sonderzahlung(stichtag, ans).money == euros(0)
 	}
 
 	def "sonderzuschlag einfach"() {
@@ -124,7 +130,7 @@ class KostenRechnerTest extends Specification {
 				start.plusYears(2))
 		then:
 		// E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
-		rechner.sonderzahlung(stichtag, ans) == eurosRounded(1.3 * 0.7531 * 3367.04)
+		rechner.sonderzahlung(stichtag, ans).money == eurosRounded(1.3 * 0.7531 * 3367.04)
 	}
 
 	@Unroll
@@ -137,7 +143,7 @@ class KostenRechnerTest extends Specification {
 		expect:
 		// E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
 		def expected = eurosRounded(fullSalary * anteil)
-		def actual = rechner.sonderzahlung(stichtag, ans)
+		def actual = rechner.sonderzahlung(stichtag, ans).money
 		println "Expected ${expected}"
 		println "Actual ${actual}"
 		actual == expected

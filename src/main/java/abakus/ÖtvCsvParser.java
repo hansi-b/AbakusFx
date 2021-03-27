@@ -45,7 +45,7 @@ public class ÖtvCsvParser {
 		final Integer jahr = Integer.valueOf(parts[0]);
 		final Gruppe gruppe = Gruppe.valueOf(parts[1]);
 
-		final BigDecimal sz = Constants.percent(Constants.toBigDec(parts[2]));
+		final BigDecimal sz = Constants.toBigDec(parts[2]);
 		final Map<Stufe, Money> bruttoByStufe = new EnumMap<>(Stufe.class);
 		for (int p = 3; p < parts.length; p++)
 			bruttoByStufe.put(Stufe.values()[p - 3], Constants.toEuro(parts[p]));
