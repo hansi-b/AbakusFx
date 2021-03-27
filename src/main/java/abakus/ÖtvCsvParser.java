@@ -2,12 +2,14 @@ package abakus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.javamoney.moneta.Money;
 
@@ -16,43 +18,27 @@ public class ÖtvCsvParser {
 	private static final String ötvCsv = "ötv.csv";
 
 	public Tarif parseTarif() throws IOException {
-		return new Tarif(parseGehälter());
+		final InputStream resStream = getClass().getClassLoader().getResourceAsStream(ötvCsv);
+		return new Tarif(parseGehälter(resStream));
 	}
 
-	private static class Line {
-		final Gruppe gruppe;
-		final int jahr;
-		final Gehälter gehälter;
+	Set<Gehälter> parseGehälter(final InputStream gehälterCsv) throws IOException {
 
-		private Line(final Gruppe gr, final int j, final Gehälter ge) {
-			this.gruppe = gr;
-			this.jahr = j;
-			this.gehälter = ge;
-		}
-	}
-
-	private Map<Gruppe, Map<Integer, Gehälter>> parseGehälter() throws IOException {
-		final Map<Gruppe, Map<Integer, Gehälter>> gehälterMap = new EnumMap<>(Gruppe.class);
-		try (final BufferedReader br = new BufferedReader(
-				new InputStreamReader(getClass().getClassLoader().getResourceAsStream(ötvCsv)))) {
+		final Set<Gehälter> result = new TreeSet<>(Gehälter.jahrUndGruppeComparator);
+		try (final BufferedReader br = new BufferedReader(new InputStreamReader(gehälterCsv))) {
 			br.lines().map(String::trim).filter((final String l) -> !l.isEmpty() && !l.startsWith("#"))
 					.forEach(lStr -> {
-						final Line l = parseLine(lStr);
-						final Gruppe gruppe = l.gruppe;
-						final int jahr = l.jahr;
-						final Gehälter gehälter = l.gehälter;
-
-						final Map<Integer, Gehälter> gruppeMap = gehälterMap.computeIfAbsent(gruppe,
-								g -> new HashMap<>());
-						if (gruppeMap.containsKey(jahr))
-							throw Errors.illegalArg("Doppelte Daten für Gruppe %s im Jahr %d", gruppe, jahr);
-						gruppeMap.put(jahr, gehälter);
+						final Gehälter gehälter = parseGehälter(lStr);
+						if (result.contains(gehälter))
+							throw Errors.illegalArg("Doppelte Daten für Gruppe %s im Jahr %d", gehälter.gruppe,
+									gehälter.jahr);
+						result.add(gehälter);
 					});
 		}
-		return gehälterMap;
+		return result;
 	}
 
-	private static Line parseLine(final String csvLine) {
+	private static Gehälter parseGehälter(final String csvLine) {
 		final String[] parts = csvLine.split("\t");
 		if (parts.length != 9)
 			throw Errors.illegalArg("Zeile enthält %d Feld(er) (nicht 9): '%s'", parts.length, Arrays.toString(parts));
@@ -64,6 +50,6 @@ public class ÖtvCsvParser {
 		for (int p = 3; p < parts.length; p++)
 			bruttoByStufe.put(Stufe.values()[p - 3], Constants.toEuro(parts[p]));
 
-		return new Line(gruppe, jahr, new Gehälter(sz, bruttoByStufe));
+		return new Gehälter(gruppe, jahr, sz, bruttoByStufe);
 	}
 }

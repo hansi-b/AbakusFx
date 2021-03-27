@@ -2,16 +2,36 @@ package abakus;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.javamoney.moneta.Money;
 
 class Gehälter {
+
+	/**
+	 * A comparator which only tests for equality with respect to year and Gruppe.
+	 * Use with caution: Not consistent with a general notion of equals for
+	 * Gehälter!
+	 */
+	static final Comparator<Gehälter> jahrUndGruppeComparator = new Comparator<Gehälter>() {
+		@Override
+		public int compare(Gehälter o1, Gehälter o2) {
+			int gCmp = o1.gruppe.compareTo(o2.gruppe);
+			return gCmp != 0 ? gCmp : Integer.compare(o1.jahr, o2.jahr);
+		}
+	};
+
+	final Gruppe gruppe;
+	final int jahr;
 	final BigDecimal sonderzahlungProzent;
 	final Map<Stufe, Money> bruttos;
 
-	Gehälter(final BigDecimal szProzent, final Map<Stufe, Money> bruttos) {
+	Gehälter(Gruppe gruppe, int jahr, final BigDecimal szProzent, final Map<Stufe, Money> bruttos) {
+		this.gruppe = gruppe;
+		this.jahr = jahr;
 		this.sonderzahlungProzent = szProzent;
 		this.bruttos = bruttos;
 	}
@@ -21,8 +41,11 @@ public class Tarif {
 
 	private final Map<Gruppe, Map<Integer, Gehälter>> gehälter;
 
-	Tarif(final Map<Gruppe, Map<Integer, Gehälter>> parseGehälter) {
-		this.gehälter = parseGehälter;
+	Tarif(final Set<Gehälter> parsedGehälter) {
+		this.gehälter = new HashMap<>();
+		parsedGehälter.forEach(g -> {
+			this.gehälter.computeIfAbsent(g.gruppe, k -> new HashMap<>()).put(g.jahr, g);
+		});
 	}
 
 	/**
