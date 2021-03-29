@@ -28,6 +28,11 @@ public class ExplainedMoney {
 		return new ExplainedMoney(money, String.format("%s %s", money, explain), true);
 	}
 
+	public ExplainedMoney add(ExplainedMoney other) {
+		final String newExplain = String.format("%s + %s", quotedExpl(), other.quotedExpl());
+		return new ExplainedMoney(money.add(other.money()), newExplain, false);
+	}
+
 	public ExplainedMoney multiplyPercent(final Number percent, final String explainPercent) {
 		final String newExplain = String.format("%s × %s%% %s", quotedExpl(), percent, explainPercent);
 		return new ExplainedMoney(money.multiply(percent).divide(100), newExplain, false);

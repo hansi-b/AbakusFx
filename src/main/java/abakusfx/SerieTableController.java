@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.javamoney.moneta.Money;
-
-import abakus.Constants;
+import abakus.ExplainedMoney;
 import abakus.Gruppe;
 import abakus.Monatskosten;
 import abakus.Stufe;
@@ -35,7 +33,7 @@ public class SerieTableController {
 		ObjectProperty<Gruppe> gruppe;
 		ObjectProperty<Stufe> stufe;
 		ObjectProperty<BigDecimal> umfang;
-		ObjectProperty<Money> betrag;
+		ObjectProperty<ExplainedMoney> betrag;
 
 		static Kosten of(final Monatskosten mKosten) {
 			final Kosten k = new Kosten();
@@ -43,15 +41,14 @@ public class SerieTableController {
 			k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe);
 			k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe);
 			k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfangPercent);
-			k.betrag = new SimpleObjectProperty<>(mKosten.brutto.money()
-					.add(mKosten.sonderzahlung != null ? mKosten.sonderzahlung.money() : Constants.euros(0)));
+			k.betrag = new SimpleObjectProperty<>(mKosten.kosten);
 			return k;
 		}
 
 		@Override
 		public String asCsv() {
 			return String.join("\t", monat.get().toString(), gruppe.get().toString(), stufe.get().toString(),
-					umfang.get().toString(), moneyConverter.toString(betrag.get()));
+					umfang.get().toString(), moneyConverter.toString(betrag.get().money()));
 		}
 	}
 
@@ -67,7 +64,7 @@ public class SerieTableController {
 	@FXML
 	private TableColumn<Kosten, BigDecimal> umfangCol;
 	@FXML
-	private TableColumn<Kosten, Money> kostenCol;
+	private TableColumn<Kosten, ExplainedMoney> kostenCol;
 
 	private final ObservableList<Kosten> monatsKostenListe = FXCollections.observableArrayList();
 
@@ -77,7 +74,8 @@ public class SerieTableController {
 		setFactories(gruppeCol, k -> k.gruppe, null);
 		setFactories(stufeCol, k -> k.stufe, null);
 		setFactories(umfangCol, k -> k.umfang, null);
-		setFactories(kostenCol, k -> k.betrag, moneyConverter::toString);
+
+		setMoneyFactories(kostenCol);
 
 		monatCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.2));
 		gruppeCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.18));
@@ -94,6 +92,15 @@ public class SerieTableController {
 
 		kostenTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		CsvCopyTable.setCsvCopy(kostenTabelle);
+	}
+
+	private static void setMoneyFactories(final TableColumn<Kosten, ExplainedMoney> kostenCol) {
+		kostenCol.setCellValueFactory(cellData -> ((Function<Kosten, ObservableValue<ExplainedMoney>>) k -> k.betrag)
+				.apply(cellData.getValue()));
+		final DragSelectCellFactory<Kosten, ExplainedMoney> fact = new DragSelectCellFactory<>(
+				em -> moneyConverter.toString(em.money()));
+
+		kostenCol.setCellFactory(fact);
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,

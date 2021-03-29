@@ -39,27 +39,29 @@ public class KostenRechner {
 		return anstellung.monatsStellen(von, bis).entrySet().stream().map(e -> {
 			final YearMonth current = e.getKey();
 			final Stelle aktStelle = e.getValue();
-			return new Monatskosten(current, aktStelle, monatsBrutto(aktStelle, current.getYear()),
-					sonderzahlung(current, anstellung));
+			final ExplainedMoney monatsBrutto = monatsBrutto(aktStelle, current.getYear());
+			final ExplainedMoney sonderzahlung = sonderzahlung(current, anstellung);
+			return new Monatskosten(current, aktStelle,
+					sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto);
 		}).collect(Collectors.toList());
 	}
 
 	public Money summe(final List<Monatskosten> moKosten) {
-		return moKosten.stream().map(
-				moKo -> moKo.brutto.money().add(moKo.sonderzahlung != null ? moKo.sonderzahlung.money() : euros(0)))
-				.reduce(Constants.euros(0), Money::add);
+		return moKosten.stream().map(moKo -> moKo.kosten.money()).reduce(Constants.euros(0), Money::add);
 	}
 
 	ExplainedMoney monatsBrutto(final Stelle stelle, final int jahr) {
-		final ExplainedMoney agzBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, jahr).addPercent(zuschlagProzent,
-				"AGZ");
-		return stelle.istVollzeit() ? agzBrutto : agzBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
+		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, jahr);
+		final ExplainedMoney umfangBrutto = stelle.istVollzeit() ? tarifBrutto
+				: tarifBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
+
+		return umfangBrutto.addPercent(zuschlagProzent, "AGZ");
 	}
 
 	/**
 	 * Calculate the Jahressonderzahlung according to
 	 * https://oeffentlicher-dienst.info/tv-l/allg/jahressonderzahlung.html
-	 * 
+	 *
 	 * @return null if the Stichtag is not November; zero if the Stelle does not
 	 *         last beyond November; the calculated JSZ otherwise
 	 */
@@ -72,7 +74,7 @@ public class KostenRechner {
 		final int year = stichtag.getYear();
 		// 2. only if to be employed at least for the coming December
 		if (anstellung.ende.isBefore(YearMonth.of(year, 12)))
-			return ExplainedMoney.of(euros(0), "JSZ appliziert nicht");
+			return ExplainedMoney.of(euros(0), "keine JSZ");
 
 		final double anteilig = anteilig(anstellung.monthsInYear(year).size());
 

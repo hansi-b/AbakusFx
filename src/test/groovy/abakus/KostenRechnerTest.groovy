@@ -44,13 +44,11 @@ class KostenRechnerTest extends Specification {
 
 		mk[0].stichtag == start
 		mk[0].stelle == Stelle.of(Gruppe.E13, Stufe.eins)
-		mk[0].brutto.money() == euros(1.3 * 4074.30)
-		mk[0].sonderzahlung == null
+		mk[0].kosten.money() == euros(1.3 * 4074.30)
 
 		mk[1].stichtag == end
 		mk[1].stelle == Stelle.of(Gruppe.E13, Stufe.eins)
-		mk[1].brutto.money() == euros(1.3 * 4074.30)
-		mk[1].sonderzahlung == null
+		mk[1].kosten.money() == euros(1.3 * 4074.30)
 	}
 
 	def "monatskosten mit aufstieg"() {
@@ -65,13 +63,11 @@ class KostenRechnerTest extends Specification {
 
 		mk[0].stichtag == start
 		mk[0].stelle == Stelle.of(Gruppe.E13, Stufe.eins)
-		mk[0].brutto.money() == euros(1.3 * 4074.30)
-		mk[0].sonderzahlung == null
+		mk[0].kosten.money() == euros(1.3 * 4074.30)
 
 		mk[1].stichtag == end
 		mk[1].stelle == Stelle.of(Gruppe.E13, Stufe.zwei)
-		mk[1].brutto.money() == euros(1.3 *  4385.28)
-		mk[1].sonderzahlung == null
+		mk[1].kosten.money() == euros(1.3 *  4385.28)
 	}
 
 	def "monatskosten über Weiterbeschäftigung"() {
@@ -89,13 +85,11 @@ class KostenRechnerTest extends Specification {
 		mk.size() == 2
 		mk[0].stichtag == start
 		mk[0].stelle == Stelle.of(Gruppe.E13, Stufe.eins)
-		mk[0].brutto.money() == euros(1.3 * 4074.30)
-		mk[0].sonderzahlung == null
+		mk[0].kosten.money() == euros(1.3 * 4074.30)
 
 		mk[1].stichtag == end
 		mk[1].stelle == Stelle.of(Gruppe.E13, Stufe.zwei, 70)
-		mk[1].brutto.money() == euros(1.3 * 4385.28 * 0.7)
-		mk[1].sonderzahlung == null
+		mk[1].kosten.money() == euros(1.3 * 4385.28 * 0.7)
 	}
 
 	def "sonderzuschlag zero für Nicht-November"() {

@@ -7,20 +7,17 @@ public class Monatskosten {
 
 	public final YearMonth stichtag;
 	public final Stelle stelle;
-	public final ExplainedMoney brutto;
-	public final ExplainedMoney sonderzahlung;
+	public final ExplainedMoney kosten;
 
-	Monatskosten(final YearMonth stichtag, final Stelle stelle, final ExplainedMoney brutto,
-			final ExplainedMoney sonderzahlung) {
+	Monatskosten(final YearMonth stichtag, final Stelle stelle, final ExplainedMoney kosten) {
 		this.stichtag = stichtag;
 		this.stelle = stelle;
-		this.brutto = brutto;
-		this.sonderzahlung = sonderzahlung;
+		this.kosten = kosten;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(brutto, sonderzahlung, stelle, stichtag);
+		return Objects.hash(kosten, stelle, stichtag);
 	}
 
 	@Override
@@ -34,8 +31,7 @@ public class Monatskosten {
 
 		final Monatskosten other = (Monatskosten) obj;
 
-		return Constants.eq(brutto, other.brutto) && //
-				Constants.eq(sonderzahlung, other.sonderzahlung) && //
+		return Constants.eq(kosten, other.kosten) && //
 				Constants.eq(stelle, other.stelle) && //
 				Constants.eq(stichtag, other.stichtag);
 	}
