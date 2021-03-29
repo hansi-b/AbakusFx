@@ -12,6 +12,7 @@ import abakus.Monatskosten;
 import abakus.Stufe;
 import fxTools.CsvCopyTable;
 import fxTools.DragSelectCellFactory;
+import fxTools.ToolTipCellDecorator;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -97,10 +98,9 @@ public class SerieTableController {
 	private static void setMoneyFactories(final TableColumn<Kosten, ExplainedMoney> kostenCol) {
 		kostenCol.setCellValueFactory(cellData -> ((Function<Kosten, ObservableValue<ExplainedMoney>>) k -> k.betrag)
 				.apply(cellData.getValue()));
-		final DragSelectCellFactory<Kosten, ExplainedMoney> fact = new DragSelectCellFactory<>(
-				em -> moneyConverter.toString(em.money()));
-
-		kostenCol.setCellFactory(fact);
+		kostenCol.setCellFactory(
+				new ToolTipCellDecorator<>(new DragSelectCellFactory<>(em -> moneyConverter.toString(em.money())),
+						em -> em != null ? em.explain() : ""));
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
