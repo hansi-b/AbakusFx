@@ -4,16 +4,20 @@ import java.util.Objects;
 
 import org.javamoney.moneta.Money;
 
+import abakusfx.Converters;
+
 public class ExplainedMoney {
+
+	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 
 	private final Money money;
 	private final String explained;
-	private final boolean elementary;
+	private final boolean isElementary;
 
-	private ExplainedMoney(final Money money, final String explained, final boolean elementary) {
+	private ExplainedMoney(final Money money, final String explained, final boolean isElementary) {
 		this.money = money;
 		this.explained = explained;
-		this.elementary = elementary;
+		this.isElementary = isElementary;
 	}
 
 	public Money money() {
@@ -25,10 +29,10 @@ public class ExplainedMoney {
 	}
 
 	public static ExplainedMoney of(final Money money, final String explain) {
-		return new ExplainedMoney(money, String.format("%s %s", money, explain), true);
+		return new ExplainedMoney(money, String.format("%s %s", moneyConverter.toString(money), explain), true);
 	}
 
-	public ExplainedMoney add(ExplainedMoney other) {
+	public ExplainedMoney add(final ExplainedMoney other) {
 		final String newExplain = String.format("%s + %s", quotedExpl(), other.quotedExpl());
 		return new ExplainedMoney(money.add(other.money()), newExplain, false);
 	}
@@ -40,17 +44,17 @@ public class ExplainedMoney {
 
 	public ExplainedMoney addPercent(final Number percent, final String explainPercent) {
 		final String newExplain = String.format("%s + %s%% %s", quotedExpl(), percent, explainPercent);
-		Money zuschlag = money.multiply(percent).divide(100);
+		final Money zuschlag = money.multiply(percent).divide(100);
 		return new ExplainedMoney(money.add(zuschlag), newExplain, false);
 	}
 
 	private String quotedExpl() {
-		return elementary ? explained : String.format("( %s )", explained);
+		return isElementary ? explained : String.format("( %s )", explained);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(money, explained, elementary);
+		return Objects.hash(money, explained, isElementary);
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class ExplainedMoney {
 
 		return Constants.eq(money, other.money) && //
 				Constants.eq(explained, other.explained) && //
-				elementary == other.elementary;
+				isElementary == other.isElementary;
 	}
 
 	@Override
