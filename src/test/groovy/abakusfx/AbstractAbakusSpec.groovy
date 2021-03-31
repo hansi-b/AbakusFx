@@ -27,6 +27,19 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	TabPane projectTabsPane
 	ObservableList<Tab> projectTabs
 
+	def setupSpec() {
+		if (Boolean.getBoolean("headless")) {
+			println ">>> HEADLESS MODE"
+
+			System.setProperty("testfx.robot", "glass");
+			System.setProperty("testfx.headless", "true");
+			System.setProperty("prism.order", "sw");
+			System.setProperty("prism.text", "t2k");
+		} else {
+			println ">>> LIVE MODE"
+		}
+	}
+
 	@Override
 	void init() throws Exception {
 		FxToolkit.registerStage { new Stage() }
@@ -49,9 +62,10 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	}
 
 	/**
-	 *
+	 * from https://github.com/TestFX/TestFX/issues/634
+	 * 
 	 * @param idx the zero-based index of the tab to be selected
-	 * @return the selected project tab
+	 * @return the selected project tab - actually only the skin class
 	 */
 	def queryNthTab(idx) {
 		lookup(".tab-pane > .tab-header-area > .headers-region > .tab").nth(idx).query()

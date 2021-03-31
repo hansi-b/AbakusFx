@@ -8,6 +8,7 @@ import java.nio.file.Files
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 import org.testfx.matcher.control.TableViewMatchers
+import org.testfx.util.WaitForAsyncUtils
 
 import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
@@ -22,6 +23,7 @@ import javafx.stage.Stage
 
 /**
  * Test for issue#25
+ *
  * Ensure the state of the "save" action reflects the project state
  */
 public class SaveStateSpec extends AbstractAbakusSpec {
@@ -103,14 +105,22 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		appController.isCurrentProjectDirty.get() == false
 
 		when:
-		clickOn(queryNthTab(1), MouseButton.SECONDARY)
+		def tab = queryNthTab(1)
+		clickOn(tab, MouseButton.SECONDARY)
+		if (Boolean.getBoolean("headless")) {
+			/*
+			 * need something like
+			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
+			 */
+			//WaitForAsyncUtils.asyncFx { tab.node.contextmenu.show(stage.scene.window) }.get()
+		}
 		click("Entfernen")
 
 		then:
 		appController.isCurrentProjectDirty.get() == true
 	}
-	
-	def withCurrentProject(fileName = 'project1') {
+
+	def withCurrentProject(final fileName = 'project1') {
 		def pFile = tempDir.resolve(fileName).toFile()
 		appController.setCurrentProject(pFile)
 		return pFile
