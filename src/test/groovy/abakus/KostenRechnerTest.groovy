@@ -16,7 +16,7 @@ class KostenRechnerTest extends Specification {
 	Anstellung ans = Anstellung.of( YearMonth.of(2021, 1), Stelle.of(Gruppe.E13, Stufe.eins), YearMonth.of(2023, 1))
 	KostenRechner rechner = new KostenRechner(new ÖtvCsvParser().parseTarif())
 
-	def "kosten beinhalten arbeitgeberzuschlag"() {
+	def "monatsBrutto beinhaltet nicht arbeitgeberzuschlag"() {
 
 		given:
 		Tarif t = new ÖtvCsvParser().parseTarif()
@@ -25,7 +25,7 @@ class KostenRechnerTest extends Specification {
 		ExplainedMoney m = new KostenRechner(t).monatsBrutto(Stelle.of(Gruppe.E10, Stufe.drei, 80), 2020)
 
 		then:
-		m.money.getNumber() == 3880.76 * 1.3 * 0.8
+		m.money.getNumber() == 3880.76 * 0.8
 	}
 
 	def "einfache monatskosten"() {
@@ -123,7 +123,7 @@ class KostenRechnerTest extends Specification {
 				start.plusYears(2))
 		then:
 		// E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
-		rechner.sonderzahlung(stichtag, ans).money == eurosRounded(1.3 * 0.7531 * 3367.04)
+		rechner.sonderzahlung(stichtag, ans).money == eurosRounded(0.7531 * 3367.04)
 	}
 
 	@Unroll
@@ -131,7 +131,7 @@ class KostenRechnerTest extends Specification {
 
 		given:
 		def stichtag = YearMonth.of(2020, 11)
-		def fullSalary = euros(1.3 * 0.7531 * 3367.04)
+		def fullSalary = euros(0.7531 * 3367.04)
 
 		expect:
 		// E10, Stufe 1, 2020: 3.367,04, Faktor 75,31

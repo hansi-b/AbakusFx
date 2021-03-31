@@ -37,15 +37,19 @@ public class ExplainedMoney {
 		return new ExplainedMoney(money.add(other.money()), newExplain, false);
 	}
 
-	public ExplainedMoney multiplyPercent(final Number percent, final String explainPercent) {
-		final String newExplain = String.format("%s × %s%% %s", quotedExpl(), percent, explainPercent);
+	public ExplainedMoney multiplyPercent(final Number percent, final String explain) {
+		final String newExplain = String.format("%s × %s%%%s", quotedExpl(), percent, explainSuffix(explain));
 		return new ExplainedMoney(money.multiply(percent).divide(100), newExplain, false);
 	}
 
-	public ExplainedMoney addPercent(final Number percent, final String explainPercent) {
-		final String newExplain = String.format("%s + %s%% %s", quotedExpl(), percent, explainPercent);
+	public ExplainedMoney addPercent(final Number percent, final String explain) {
+		final String suffix = String.format("%s + %s%%%s", quotedExpl(), percent, explainSuffix(explain));
 		final Money zuschlag = money.multiply(percent).divide(100);
-		return new ExplainedMoney(money.add(zuschlag), newExplain, false);
+		return new ExplainedMoney(money.add(zuschlag), suffix, false);
+	}
+
+	private static String explainSuffix(final String explain) {
+		return explain == null || explain.isEmpty() ? "" : String.format(" %s", explain);
 	}
 
 	private String quotedExpl() {

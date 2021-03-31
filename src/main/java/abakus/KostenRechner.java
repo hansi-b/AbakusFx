@@ -41,8 +41,8 @@ public class KostenRechner {
 			final Stelle aktStelle = e.getValue();
 			final ExplainedMoney monatsBrutto = monatsBrutto(aktStelle, current.getYear());
 			final ExplainedMoney sonderzahlung = sonderzahlung(current, anstellung);
-			return new Monatskosten(current, aktStelle,
-					sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto);
+			final ExplainedMoney summe = sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto;
+			return new Monatskosten(current, aktStelle, summe.addPercent(zuschlagProzent, "AGZ"));
 		}).collect(Collectors.toList());
 	}
 
@@ -52,10 +52,7 @@ public class KostenRechner {
 
 	ExplainedMoney monatsBrutto(final Stelle stelle, final int jahr) {
 		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, jahr);
-		final ExplainedMoney umfangBrutto = stelle.istVollzeit() ? tarifBrutto
-				: tarifBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
-
-		return umfangBrutto.addPercent(zuschlagProzent, "AGZ");
+		return stelle.istVollzeit() ? tarifBrutto : tarifBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
 	}
 
 	/**
@@ -76,20 +73,18 @@ public class KostenRechner {
 		if (anstellung.ende.isBefore(YearMonth.of(year, 12)))
 			return ExplainedMoney.of(euros(0), "keine JSZ");
 
-		final double anteilig = anteilig(anstellung.monthsInYear(year).size());
-
 		final List<Stelle> baseStellen = anstellung.calcBaseStellen(year);
-		final Money summe = baseStellen.stream()
-				.map(s -> tarif.sonderzahlung(s.gruppe, s.stufe, year).money()
-						.multiply(zuschlagProzent.add(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(100)))
-						.multiply(percent(s.umfangPercent)))
+		Money summe = baseStellen.stream()
+				.map(s -> tarif.sonderzahlung(s.gruppe, s.stufe, year).money().multiply(percent(s.umfangPercent)))
 				.reduce(euros(0), Money::add);
+		summe = summe.divide(baseStellen.size());
 
-		return ExplainedMoney
-				.of(summe.divide(baseStellen.size()).multiply(anteilig).with(Monetary.getDefaultRounding()), "JSZ");
-	}
+		final int applicableMonths = anstellung.monthsInYear(year).size();
+		if (applicableMonths != 12) {
+			final double anteilig = applicableMonths / 12.;
+			summe = summe.multiply(anteilig);
+		}
 
-	static double anteilig(final int monthsInYear) {
-		return monthsInYear / 12.;
+		return ExplainedMoney.of(summe.with(Monetary.getDefaultRounding()), "JSZ");
 	}
 }
