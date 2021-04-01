@@ -13,6 +13,8 @@ import abakus.Stufe;
 
 public class SeriesModel {
 
+	private static final double defaultAgz = 30.;
+
 	public final LocalDate von;
 	public final LocalDate bis;
 	public final Gruppe gruppe;
@@ -21,12 +23,15 @@ public class SeriesModel {
 	public final boolean isWeiter;
 	public final LocalDate seit;
 	public final int umfangSeit;
+	public final double agz;
 
 	@JsonCreator
 	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
 			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
 			@JsonProperty("umfang") final int umfang, @JsonProperty("isWeiter") final boolean isWeiter,
-			@JsonProperty("seit") final LocalDate seit, @JsonProperty("umfangSeit") final int umfangSeit) {
+			@JsonProperty("seit") final LocalDate seit, @JsonProperty("umfangSeit") final int umfangSeit,
+			@JsonProperty("agz") final Double agz) {
+
 		this.von = von;
 		this.bis = bis;
 		this.gruppe = gruppe;
@@ -35,11 +40,12 @@ public class SeriesModel {
 		this.isWeiter = isWeiter;
 		this.seit = seit;
 		this.umfangSeit = umfangSeit;
+		this.agz = agz == null ? defaultAgz : agz;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(von, bis, gruppe, stufe, umfang, isWeiter, seit, umfangSeit);
+		return Objects.hash(von, bis, gruppe, stufe, umfang, isWeiter, seit, umfangSeit, agz);
 	}
 
 	@Override
@@ -53,11 +59,11 @@ public class SeriesModel {
 		return eq(von, other.von) && eq(bis, other.bis) && //
 				gruppe == other.gruppe && stufe == other.stufe && //
 				eq(umfang, other.umfang) && isWeiter == other.isWeiter && //
-				eq(seit, other.seit) && eq(umfangSeit, other.umfangSeit);
+				eq(seit, other.seit) && eq(umfangSeit, other.umfangSeit) && eq(agz, other.agz);
 	}
 
 	public static SeriesModel fallback() {
 		return new SeriesModel(LocalDate.now(), LocalDate.now().plusMonths(12), Gruppe.E10, Stufe.eins, 100, false,
-				LocalDate.now().minusMonths(6), 100);
+				LocalDate.now().minusMonths(6), 100, 30.);
 	}
 }

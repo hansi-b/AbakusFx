@@ -80,7 +80,7 @@
 		<padding>
 			<Insets top="3" left="3" bottom="2" right="3" />
 		</padding>
-		<Spinner fx:id="percentAgz" editable="true"
+		<Spinner fx:id="agz" editable="true"
 			styleClass="double-percent-spinner">
 			<valueFactory>
 				<Converters.AgzSpinnerFactory />

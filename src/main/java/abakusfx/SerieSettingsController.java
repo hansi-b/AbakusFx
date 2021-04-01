@@ -49,7 +49,7 @@ public class SerieSettingsController {
 	Spinner<Integer> umfangSeit;
 
 	@FXML
-	Spinner<Double> percentAgz;
+	Spinner<Double> agz;
 
 	@FXML
 	Button calcKosten;
@@ -114,11 +114,12 @@ public class SerieSettingsController {
 		weiter.setSelected(model.isWeiter);
 		seit.setValue(model.seit);
 		umfangSeit.getValueFactory().setValue(model.umfangSeit);
+		agz.getValueFactory().setValue(model.agz);
 	}
 
 	SeriesModel getState() {
 		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
-				weiter.isSelected(), seit.getValue(), umfangSeit.getValue());
+				weiter.isSelected(), seit.getValue(), umfangSeit.getValue(), agz.getValue());
 	}
 
 	void addDirtyListener(final Runnable dirtyListener) {
@@ -130,6 +131,7 @@ public class SerieSettingsController {
 		seit.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 		weiter.selectedProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 		umfangSeit.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
+		agz.valueProperty().addListener((ob, ov, nv) -> dirtyListener.run());
 	}
 
 	YearMonth getVon() {
