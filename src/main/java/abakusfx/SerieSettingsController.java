@@ -9,6 +9,7 @@ import abakus.Stelle;
 import abakus.Stufe;
 import abakusfx.models.SeriesModel;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -46,6 +47,12 @@ public class SerieSettingsController {
 	Label umfangSeitLabel;
 	@FXML
 	Spinner<Integer> umfangSeit;
+
+	@FXML
+	Spinner<Double> percentAgz;
+
+	@FXML
+	Button calcKosten;
 
 	@FXML
 	void initialize() {

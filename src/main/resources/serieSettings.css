@@ -1,8 +1,11 @@
 
 .date-picker {
-    -fx-pref-width: 10em;
+    -fx-pref-width: 10.0em;
 }
 
-.percent-spinner {
-    -fx-pref-width: 7em;
+.int-percent-spinner {
+    -fx-pref-width: 6.5em;
+}
+.double-percent-spinner {
+    -fx-pref-width: 8.5em;
 }

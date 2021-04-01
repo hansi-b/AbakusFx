@@ -5,75 +5,94 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-    xmlns="http://javafx.com/javafx"
-    fx:controller="abakusfx.SerieSettingsController"
-    stylesheets="app.css, serieSettings.css">
+	xmlns="http://javafx.com/javafx"
+	fx:controller="abakusfx.SerieSettingsController"
+	stylesheets="app.css, serieSettings.css">
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="3" left="3" bottom="2" right="3" />
-        </padding>
-        <Label text="von" />
-        <DatePicker fx:id="von" />
-        <Label text="bis" />
-        <DatePicker fx:id="bis" />
-    </HBox>
+	<HBox spacing="6" alignment="CENTER_LEFT">
+		<padding>
+			<Insets top="3" left="3" bottom="2" right="3" />
+		</padding>
+		<Label text="von" />
+		<DatePicker fx:id="von" />
+		<Label text="bis" />
+		<DatePicker fx:id="bis" />
+	</HBox>
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="3" left="3" bottom="2" right="3" />
-        </padding>
-        <Label text="Entgeltgruppe" />
-        <ComboBox fx:id="gruppe" />
+	<HBox spacing="6" alignment="CENTER_LEFT">
+		<padding>
+			<Insets top="3" left="3" bottom="2" right="3" />
+		</padding>
+		<Label text="Entgeltgruppe" />
+		<ComboBox fx:id="gruppe" />
 
-        <Label text="Umfang" />
-        <Spinner fx:id="umfang" editable="true"
-            styleClass="percent-spinner">
-            <valueFactory>
-                <Converters.PercentSpinnerFactory />
-            </valueFactory>
-        </Spinner>
-    </HBox>
+		<Label text="Umfang" />
+		<Spinner fx:id="umfang" editable="true"
+			styleClass="int-percent-spinner">
+			<valueFactory>
+				<Converters.UmfangSpinnerFactory />
+			</valueFactory>
+		</Spinner>
+	</HBox>
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="3" left="3" bottom="2" right="3" />
-        </padding>
-        <RadioButton text="Neueinstellung">
-            <toggleGroup>
-                <ToggleGroup fx:id="neuOderWeiter" />
-            </toggleGroup>
-        </RadioButton>
-        <RadioButton fx:id="weiter"
-            text="Weiterbeschäftigung">
-            <toggleGroup>
-                <fx:reference source="neuOderWeiter" />
-            </toggleGroup>
-        </RadioButton>
-    </HBox>
+	<HBox spacing="6" alignment="CENTER_LEFT">
+		<padding>
+			<Insets top="3" left="3" bottom="2" right="3" />
+		</padding>
+		<RadioButton text="Neueinstellung">
+			<toggleGroup>
+				<ToggleGroup fx:id="neuOderWeiter" />
+			</toggleGroup>
+		</RadioButton>
+		<RadioButton fx:id="weiter" text="Weiterbeschäftigung">
+			<toggleGroup>
+				<fx:reference source="neuOderWeiter" />
+			</toggleGroup>
+		</RadioButton>
+	</HBox>
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="3" left="3" bottom="2" right="3" />
-        </padding>
+	<HBox spacing="6" alignment="CENTER_LEFT">
+		<padding>
+			<Insets top="3" left="3" bottom="2" right="3" />
+		</padding>
 
-        <Label text="Stufe" />
-        <ComboBox fx:id="stufe">
-            <converter>
-                <abakusfx.Converters
-                    fx:factory="createStufeConverter" />
-            </converter>
-        </ComboBox>
+		<Label text="Stufe" />
+		<ComboBox fx:id="stufe">
+			<converter>
+				<abakusfx.Converters
+					fx:factory="createStufeConverter" />
+			</converter>
+		</ComboBox>
 
-        <Label text="seit" fx:id="seitLabel" />
-        <DatePicker fx:id="seit" />
-        <Label text="Umfang" fx:id="umfangSeitLabel" />
-        <Spinner fx:id="umfangSeit" editable="true"
-            styleClass="percent-spinner">
-            <valueFactory>
-                <Converters.PercentSpinnerFactory />
-            </valueFactory>
-        </Spinner>
-    </HBox>
+		<Label text="seit" fx:id="seitLabel" />
+		<DatePicker fx:id="seit" />
+		<Label text="Umfang" fx:id="umfangSeitLabel" />
+		<Spinner fx:id="umfangSeit" editable="true"
+			styleClass="int-percent-spinner">
+			<valueFactory>
+				<Converters.UmfangSpinnerFactory />
+			</valueFactory>
+		</Spinner>
+	</HBox>
+	<HBox spacing="6" alignment="CENTER_RIGHT">
+		<padding>
+			<Insets top="3" left="3" bottom="2" right="3" />
+		</padding>
+		<Spinner fx:id="percentAgz" editable="true"
+			styleClass="double-percent-spinner">
+			<valueFactory>
+				<Converters.AgzSpinnerFactory />
+			</valueFactory>
+		</Spinner>
+		<Label text="AGZ">
+			<tooltip>
+				<Tooltip text="Arbeitgeberzuschlag" />
+			</tooltip>
+		</Label>
+		<Region HBox.hgrow="ALWAYS" />
+		<Button fx:id="calcKosten" text="Berechnen" />
+	</HBox>
+
 </VBox>

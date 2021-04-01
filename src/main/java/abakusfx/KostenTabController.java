@@ -15,15 +15,12 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 
 public class KostenTabController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
 	private SerieSettingsController serieSettingsController;
-	@FXML
-	private Button calcKosten;
 	@FXML
 	private SerieTableController serieTableController;
 
@@ -35,7 +32,7 @@ public class KostenTabController {
 	@FXML
 	void initialize() {
 		log.trace("KostenTabController.initialize");
-		calcKosten.setOnAction(a -> updateResult());
+		serieSettingsController.calcKosten.setOnAction(a -> updateResult());
 		serieSettingsController.addDirtyListener(this::clearResult);
 	}
 

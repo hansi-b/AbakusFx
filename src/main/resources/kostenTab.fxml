@@ -9,11 +9,5 @@
 
     <fx:include fx:id="serieSettings"
         source="serieSettings.fxml" />
-    <HBox alignment="CENTER_RIGHT">
-        <padding>
-            <Insets top="1" left="1" bottom="1" right="1" />
-        </padding>
-        <Button fx:id="calcKosten" text="Berechnen" />
-    </HBox>
     <fx:include fx:id="serieTable" source="serieTable.fxml" />
 </VBox>
