@@ -2,6 +2,7 @@ package abakusfx.models;
 
 import static abakus.Constants.eq;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ import abakus.Stufe;
 
 public class SeriesModel {
 
-	private static final double defaultAgz = 30.;
+	private static final BigDecimal defaultAgz = BigDecimal.valueOf(30);
 
 	public final LocalDate von;
 	public final LocalDate bis;
@@ -23,14 +24,14 @@ public class SeriesModel {
 	public final boolean isWeiter;
 	public final LocalDate seit;
 	public final int umfangSeit;
-	public final double agz;
+	public final BigDecimal agz;
 
 	@JsonCreator
 	public SeriesModel(@JsonProperty("von") final LocalDate von, @JsonProperty("bis") final LocalDate bis,
 			@JsonProperty("gruppe") final Gruppe gruppe, @JsonProperty("stufe") final Stufe stufe,
 			@JsonProperty("umfang") final int umfang, @JsonProperty("isWeiter") final boolean isWeiter,
 			@JsonProperty("seit") final LocalDate seit, @JsonProperty("umfangSeit") final int umfangSeit,
-			@JsonProperty("agz") final Double agz) {
+			@JsonProperty("agz") final BigDecimal agz) {
 
 		this.von = von;
 		this.bis = bis;
@@ -64,6 +65,6 @@ public class SeriesModel {
 
 	public static SeriesModel fallback() {
 		return new SeriesModel(LocalDate.now(), LocalDate.now().plusMonths(12), Gruppe.E10, Stufe.eins, 100, false,
-				LocalDate.now().minusMonths(6), 100, 30.);
+				LocalDate.now().minusMonths(6), 100, defaultAgz);
 	}
 }

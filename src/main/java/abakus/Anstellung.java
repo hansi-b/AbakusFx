@@ -1,5 +1,6 @@
 package abakus;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
@@ -17,18 +18,21 @@ public class Anstellung {
 
 	private final NavigableMap<YearMonth, Stelle> stelleByBeginn;
 	final YearMonth ende;
+	final BigDecimal agz;
 
-	private Anstellung(final YearMonth ende) {
+	private Anstellung(final YearMonth ende, final BigDecimal agz) {
 		this.stelleByBeginn = new TreeMap<>();
 		this.ende = ende;
+		this.agz = agz;
 	}
 
 	/**
 	 * Eine Neuanstellung mit einer festen Stelle und einem gegebenen Ende (für die
 	 * JSZ benötigt).
 	 */
-	public static Anstellung of(final YearMonth beginn, final Stelle antrittsStelle, final YearMonth ende) {
-		final Anstellung a = new Anstellung(ende);
+	public static Anstellung of(final YearMonth beginn, final Stelle antrittsStelle, final YearMonth ende,
+			final BigDecimal agz) {
+		final Anstellung a = new Anstellung(ende, agz);
 		a.add(beginn, antrittsStelle);
 		return a;
 	}
@@ -38,9 +42,9 @@ public class Anstellung {
 	 * ergeben sich aus der Vorbeschäftigung.
 	 */
 	public static Anstellung weiter(final YearMonth vorigerBeginn, final Stelle vorigeStelle,
-			final YearMonth neuerBeginn, final int neuerUmfang, final YearMonth ende) {
+			final YearMonth neuerBeginn, final int neuerUmfang, final YearMonth ende, final BigDecimal agz) {
 
-		final Anstellung a = new Anstellung(ende);
+		final Anstellung a = new Anstellung(ende, agz);
 		a.add(vorigerBeginn, vorigeStelle);
 		a.add(neuerBeginn,
 				Stelle.of(vorigeStelle.gruppe, vorigeStelle.stufe.stufeAm(vorigerBeginn, neuerBeginn), neuerUmfang));

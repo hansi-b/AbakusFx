@@ -11,13 +11,15 @@ import java.time.YearMonth
 
 class AnstellungTest extends Specification {
 
+	def agz = BigDecimal.valueOf(30)
+
 	def start_2019_12 = YearMonth.of(2019, 12)
 	def stelle_e10_1 = Stelle.of(E10, eins)
 
 	def "'am' darf nicht vor Anstellungsbeginn liegen"() {
 
 		given:
-		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10))
+		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10), agz)
 
 		when:
 		def vorher = start_2019_12.minusMonths(1)
@@ -31,7 +33,7 @@ class AnstellungTest extends Specification {
 	def "einfache Anstellung"() {
 
 		when:
-		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10))
+		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(10), agz)
 
 		then:
 		a.am(start_2019_12) == stelle_e10_1
@@ -44,7 +46,7 @@ class AnstellungTest extends Specification {
 
 		when:
 		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
-				start_2019_12.plusYears(1), 65, start_2019_12.plusYears(2))
+				start_2019_12.plusYears(1), 65, start_2019_12.plusYears(2), agz)
 
 		then:
 		a.am(start_2019_12) == stelle_e10_1
@@ -59,7 +61,7 @@ class AnstellungTest extends Specification {
 		def stelle_5 = Stelle.of(E10, fünf)
 
 		when:
-		def a = Anstellung.of(start_2019_12, stelle_5, start_2019_12.plusYears(30))
+		def a = Anstellung.of(start_2019_12, stelle_5, start_2019_12.plusYears(30), agz)
 
 		then:
 		a.am(start_2019_12.plusYears(20)) == Stelle.of(E10, sechs)
@@ -68,7 +70,7 @@ class AnstellungTest extends Specification {
 	def "calcBaseStellen happy path"() {
 
 		when:
-		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(2))
+		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(2), agz)
 
 		then:
 		a.calcBaseStellen(2020) == [
@@ -82,7 +84,7 @@ class AnstellungTest extends Specification {
 
 		when:
 		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
-				YearMonth.of(2020, 9), 65, start_2019_12.plusYears(2))
+				YearMonth.of(2020, 9), 65, start_2019_12.plusYears(2), agz)
 
 		println a.stelleByBeginn
 		then:
@@ -109,7 +111,7 @@ class AnstellungTest extends Specification {
 		YearMonth.of(2019, 3)  | YearMonth.of(2020, 2)  | (3..12)
 		YearMonth.of(2019, 3)  | YearMonth.of(2019, 4)  | (3..4)
 
-		a = Anstellung.of(beginn, stelle_e10_1, ende)
+		a = Anstellung.of(beginn, stelle_e10_1, ende, agz)
 	}
 
 
@@ -117,7 +119,7 @@ class AnstellungTest extends Specification {
 
 		given:
 		Anstellung weiter = Anstellung.weiter( YearMonth.of(2021, 1), Stelle.of(Gruppe.E13, Stufe.eins),
-				YearMonth.of(2022, 1), 70, YearMonth.of(2023, 1))
+				YearMonth.of(2022, 1), 70, YearMonth.of(2023, 1), agz)
 
 		def start = YearMonth.of(2021, 12)
 		def end = YearMonth.of(2022, 1)
@@ -137,7 +139,7 @@ class AnstellungTest extends Specification {
 
 		expect:
 		def start = YearMonth.of(2018, beginnMonth)
-		def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2))
+		def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2), agz)
 
 		ans.calcBaseStellen(2018) == Collections.nCopies(noOfStellen, stelle_e10_1)
 
@@ -158,7 +160,7 @@ class AnstellungTest extends Specification {
 		Stelle sZwei = Stelle.of(E10, zwei)
 
 		when:
-		def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2))
+		def ans = Anstellung.of(start, stelle_e10_1, start.plusYears(2), agz)
 
 		then:
 		ans.calcBaseStellen(2019) == [stelle_e10_1, sZwei, sZwei]

@@ -1,5 +1,6 @@
 package abakusfx;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 
@@ -114,12 +115,12 @@ public class SerieSettingsController {
 		weiter.setSelected(model.isWeiter);
 		seit.setValue(model.seit);
 		umfangSeit.getValueFactory().setValue(model.umfangSeit);
-		agz.getValueFactory().setValue(model.agz);
+		agz.getValueFactory().setValue(model.agz.doubleValue());
 	}
 
 	SeriesModel getState() {
 		return new SeriesModel(von.getValue(), bis.getValue(), gruppe.getValue(), stufe.getValue(), umfang.getValue(),
-				weiter.isSelected(), seit.getValue(), umfangSeit.getValue(), agz.getValue());
+				weiter.isSelected(), seit.getValue(), umfangSeit.getValue(), getAgz());
 	}
 
 	void addDirtyListener(final Runnable dirtyListener) {
@@ -142,6 +143,10 @@ public class SerieSettingsController {
 		return YearMonth.from(bis.getValue());
 	}
 
+	BigDecimal getAgz() {
+		return BigDecimal.valueOf(agz.getValue());
+	}
+
 	Anstellung getAnstellung() {
 		final boolean istWeiterBeschäftigung = weiter.selectedProperty().get();
 
@@ -149,7 +154,8 @@ public class SerieSettingsController {
 				istWeiterBeschäftigung ? umfangSeit.getValue() : umfang.getValue());
 
 		return istWeiterBeschäftigung
-				? Anstellung.weiter(YearMonth.from(seit.getValue()), stelle, getVon(), umfang.getValue(), getBis())
-				: Anstellung.of(getVon(), stelle, getBis());
+				? Anstellung.weiter(YearMonth.from(seit.getValue()), stelle, getVon(), umfang.getValue(), getBis(),
+						getAgz())
+				: Anstellung.of(getVon(), stelle, getBis(), getAgz());
 	}
 }

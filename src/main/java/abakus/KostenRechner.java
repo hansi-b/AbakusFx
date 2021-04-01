@@ -3,7 +3,6 @@ package abakus;
 import static abakus.Constants.euros;
 import static abakus.Constants.percent;
 
-import java.math.BigDecimal;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
@@ -14,11 +13,6 @@ import javax.money.Monetary;
 import org.javamoney.moneta.Money;
 
 public class KostenRechner {
-
-	/**
-	 * fixer Prozentsatz, der als Arbeitgeber-Kostenzuschlag genommen wird
-	 */
-	static final BigDecimal zuschlagProzent = BigDecimal.valueOf(30);
 
 	private final Tarif tarif;
 
@@ -42,7 +36,7 @@ public class KostenRechner {
 			final ExplainedMoney monatsBrutto = monatsBrutto(aktStelle, current.getYear());
 			final ExplainedMoney sonderzahlung = sonderzahlung(current, anstellung);
 			final ExplainedMoney summe = sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto;
-			return new Monatskosten(current, aktStelle, summe.addPercent(zuschlagProzent, "AGZ"));
+			return new Monatskosten(current, aktStelle, summe.addPercent(anstellung.agz, "AGZ"));
 		}).collect(Collectors.toList());
 	}
 
