@@ -15,8 +15,10 @@ if not exist ".\bin\AbakusFx.bat" (
     SET ABAKUS_ERROR=1
 )
 if %ABAKUS_ERROR% gtr 0 (
+	pause
     exit /b 1
 )
+set ABAKUS_FX_OPTS=-D
 echo Benutze Java in %JAVA_HOME%
 .\bin\AbakusFx.bat
 set JAVA_HOME=%JAVA_HOME_BEFORE%
