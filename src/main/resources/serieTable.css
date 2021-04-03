@@ -8,5 +8,9 @@
 }
  
 .table-row-cell:empty .table-cell {
-    -fx-border-width: 0px;
+    -fx-border-width: 0.0px;
+}
+
+.table-row-cell:sum-row {
+    -fx-border-color:  grey ;
 }
