@@ -11,6 +11,7 @@
     -fx-border-width: 0.0px;
 }
 
-.table-row-cell:sum-row {
-    -fx-border-color:  grey ;
+.table-row-cell:bottom-line {
+    -fx-border-color:  grey;
+    -fx-font-weight: bold;
 }

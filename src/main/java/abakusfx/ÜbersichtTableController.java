@@ -54,7 +54,7 @@ public class ÜbersichtTableController {
 	@FXML
 	private TableColumn<KostenÜbersicht, Money> kostenCol;
 
-	private static final PseudoClass sumRowCss = PseudoClass.getPseudoClass("sum-row");
+	private static final PseudoClass sumRowCss = PseudoClass.getPseudoClass("bottom-line");
 	private KostenÜbersicht sumRow;
 
 	@FXML
@@ -81,7 +81,7 @@ public class ÜbersichtTableController {
 			@Override
 			protected void updateItem(final KostenÜbersicht k, final boolean b) {
 				super.updateItem(k, b);
-				pseudoClassStateChanged(sumRowCss, sumRow != null && k == sumRow);
+				pseudoClassStateChanged(sumRowCss, k != null && k == sumRow);
 			}
 		});
 	}
