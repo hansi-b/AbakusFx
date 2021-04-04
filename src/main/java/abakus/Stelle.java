@@ -29,7 +29,7 @@ public class Stelle {
 	}
 
 	public boolean istVollzeit() {
-		return umfangPercent == BIG_100;
+		return BIG_100.compareTo(umfangPercent) == 0;
 	}
 
 	@Override
