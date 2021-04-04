@@ -24,14 +24,25 @@ public class ToolTipCellDecorator<O, T> implements Callback<TableColumn<O, T>, T
 	public TableCell<O, T> call(final TableColumn<O, T> col) {
 		final TableCell<O, T> cell = motherFactory.call(col);
 
+		cell.itemProperty().addListener((ChangeListener<T>) (observable, oldValue, newValue) -> {
+
+			String tipValue = tipFunction.apply(newValue);
+			if (tipValue == null)
+				cell.setTooltip(null);
+			else {
+				if (cell.getTooltip() == null)
+					cell.setTooltip(createTooltip());
+				cell.getTooltip().textProperty().set(tipValue);
+			}
+		});
+
+		return cell;
+	}
+
+	private Tooltip createTooltip() {
 		final Tooltip tooltip = new Tooltip();
 		tooltip.setShowDelay(Duration.millis(700));
 		tooltip.setShowDuration(Duration.minutes(1));
-
-		cell.itemProperty().addListener((ChangeListener<T>) (observable, oldValue, newValue) -> tooltip.textProperty()
-				.set(tipFunction.apply(newValue)));
-
-		cell.setTooltip(tooltip);
-		return cell;
+		return tooltip;
 	}
 }

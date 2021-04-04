@@ -100,7 +100,7 @@ public class SerieTableController {
 				.apply(cellData.getValue()));
 		kostenCol.setCellFactory(
 				new ToolTipCellDecorator<>(new DragSelectCellFactory<>(em -> moneyConverter.toString(em.money())),
-						em -> em != null ? em.explain() : ""));
+						em -> em != null ? em.explain() : null));
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
