@@ -9,15 +9,19 @@ import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
-public class ToolTipCellDecorator<O, T> implements Callback<TableColumn<O, T>, TableCell<O, T>> {
+public class TooltipCellDecorator<O, T> implements Callback<TableColumn<O, T>, TableCell<O, T>> {
 
 	private final Callback<TableColumn<O, T>, TableCell<O, T>> motherFactory;
 	private final Function<T, String> tipFunction;
 
-	public ToolTipCellDecorator(final Callback<TableColumn<O, T>, TableCell<O, T>> motherFactory,
+	private TooltipCellDecorator(final Callback<TableColumn<O, T>, TableCell<O, T>> motherFactory,
 			final Function<T, String> tipFunction) {
 		this.motherFactory = motherFactory;
 		this.tipFunction = tipFunction;
+	}
+
+	public static <S, T> void decorateColumn(final TableColumn<S, T> column, final Function<T, String> tipFunction) {
+		column.setCellFactory(new TooltipCellDecorator<>(column.getCellFactory(), tipFunction));
 	}
 
 	@Override
@@ -26,7 +30,7 @@ public class ToolTipCellDecorator<O, T> implements Callback<TableColumn<O, T>, T
 
 		cell.itemProperty().addListener((ChangeListener<T>) (observable, oldValue, newValue) -> {
 
-			String tipValue = tipFunction.apply(newValue);
+			final String tipValue = tipFunction.apply(newValue);
 			if (tipValue == null)
 				cell.setTooltip(null);
 			else {

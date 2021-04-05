@@ -1,23 +1,22 @@
 package abakusfx;
 
 import static abakus.Constants.euros;
+import static fxTools.TableViewTools.initDragCellCol;
+import static fxTools.TableViewTools.setPrefWidth;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
 
 import abakus.Stelle;
 import fxTools.CsvCopyTable;
-import fxTools.DragSelectCellFactory;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
@@ -29,7 +28,7 @@ import javafx.scene.control.TableView;
 
 public class ÜbersichtTableController {
 
-	private static class ÜbersichtRow implements CsvCopyTable.CsvRow {
+	public static class ÜbersichtRow implements CsvCopyTable.CsvRow {
 		ObjectProperty<String> name;
 		ObjectProperty<BigDecimal> umfang;
 
@@ -115,22 +114,22 @@ public class ÜbersichtTableController {
 	@FXML
 	void initialize() {
 
-		initCol(nameCol, v -> v.name, null);
-		initCol(umfangCol, v -> v.umfang, null);
-		initCol(vonMonatCol, v -> v.vonMonat, Converters.yearMonthConverter::toString);
-		initCol(vonStelleCol, v -> v.vonStelle, null);
-		initCol(bisMonatCol, v -> v.bisMonat, Converters.yearMonthConverter::toString);
-		initCol(bisStelleCol, v -> v.bisStelle, null);
-		initCol(agzCol, v -> v.agz, null);
-		initCol(kostenCol, v -> v.betrag, m -> m == null ? "" : Converters.moneyConverter.toString(m));
+		initDragCellCol(nameCol, v -> v.name, null);
+		initDragCellCol(umfangCol, v -> v.umfang, null);
+		initDragCellCol(vonMonatCol, v -> v.vonMonat, Converters.yearMonthConverter::toString);
+		initDragCellCol(vonStelleCol, v -> v.vonStelle, null);
+		initDragCellCol(bisMonatCol, v -> v.bisMonat, Converters.yearMonthConverter::toString);
+		initDragCellCol(bisStelleCol, v -> v.bisStelle, null);
+		initDragCellCol(agzCol, v -> v.agz, null);
+		initDragCellCol(kostenCol, v -> v.betrag, m -> m == null ? "" : Converters.moneyConverter.toString(m));
 
-		nameCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.2));
-		umfangCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.08));
-		vonMonatCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.12));
-		vonStelleCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.1));
-		bisMonatCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.12));
-		bisStelleCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.1));
-		agzCol.prefWidthProperty().bind(übersichtTabelle.widthProperty().multiply(.08));
+		setPrefWidth(übersichtTabelle, nameCol, .2);
+		setPrefWidth(übersichtTabelle, umfangCol, .08);
+		setPrefWidth(übersichtTabelle, vonMonatCol, .12);
+		setPrefWidth(übersichtTabelle, vonStelleCol, .1);
+		setPrefWidth(übersichtTabelle, bisMonatCol, .12);
+		setPrefWidth(übersichtTabelle, bisStelleCol, .1);
+		setPrefWidth(übersichtTabelle, agzCol, .08);
 
 		final DoubleBinding colsWidth = nameCol.widthProperty().add(umfangCol.widthProperty())//
 				.add(vonMonatCol.widthProperty()).add(vonStelleCol.widthProperty())//
@@ -145,12 +144,6 @@ public class ÜbersichtTableController {
 		CsvCopyTable.setCsvCopy(übersichtTabelle);
 		setRowFactoryForSumRowStyle();
 		setSortPolicyForSumRowPosition();
-	}
-
-	private static <T> void initCol(final TableColumn<ÜbersichtRow, T> col,
-			final Function<ÜbersichtRow, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
-		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
-		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}
 
 	private void setRowFactoryForSumRowStyle() {

@@ -1,9 +1,11 @@
 package abakusfx;
 
+import static fxTools.TableViewTools.initDragCellCol;
+import static fxTools.TableViewTools.setPrefWidth;
+
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import abakus.ExplainedMoney;
@@ -11,12 +13,10 @@ import abakus.Gruppe;
 import abakus.Monatskosten;
 import abakus.Stufe;
 import fxTools.CsvCopyTable;
-import fxTools.DragSelectCellFactory;
-import fxTools.ToolTipCellDecorator;
+import fxTools.TooltipCellDecorator;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -69,17 +69,17 @@ public class SerieTableController {
 
 	@FXML
 	void initialize() {
-		setFactories(monatCol, k -> k.monat, Converters.yearMonthConverter::toString);
-		setFactories(gruppeCol, k -> k.gruppe, null);
-		setFactories(stufeCol, k -> k.stufe, null);
-		setFactories(umfangCol, k -> k.umfang, null);
+		initDragCellCol(monatCol, k -> k.monat, Converters.yearMonthConverter::toString);
+		initDragCellCol(gruppeCol, k -> k.gruppe, null);
+		initDragCellCol(stufeCol, k -> k.stufe, null);
+		initDragCellCol(umfangCol, k -> k.umfang, null);
+		initDragCellCol(kostenCol, k -> k.betrag, em -> Converters.moneyConverter.toString(em.money()));
+		TooltipCellDecorator.decorateColumn(kostenCol, em -> em != null ? em.explain() : null);
 
-		setMoneyFactories(kostenCol);
-
-		monatCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.2));
-		gruppeCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.18));
-		stufeCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.15));
-		umfangCol.prefWidthProperty().bind(kostenTabelle.widthProperty().multiply(.15));
+		setPrefWidth(kostenTabelle, monatCol, .2);
+		setPrefWidth(kostenTabelle, gruppeCol, .18);
+		setPrefWidth(kostenTabelle, stufeCol, .15);
+		setPrefWidth(kostenTabelle, umfangCol, .15);
 
 		final DoubleBinding colsWidth = monatCol.widthProperty().add(gruppeCol.widthProperty())//
 				.add(stufeCol.widthProperty())//
@@ -91,20 +91,6 @@ public class SerieTableController {
 
 		kostenTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		CsvCopyTable.setCsvCopy(kostenTabelle);
-	}
-
-	private static void setMoneyFactories(final TableColumn<Kosten, ExplainedMoney> kostenCol) {
-		kostenCol.setCellValueFactory(cellData -> ((Function<Kosten, ObservableValue<ExplainedMoney>>) k -> k.betrag)
-				.apply(cellData.getValue()));
-		kostenCol.setCellFactory(new ToolTipCellDecorator<>(
-				new DragSelectCellFactory<>(em -> Converters.moneyConverter.toString(em.money())),
-				em -> em != null ? em.explain() : null));
-	}
-
-	private static <T> void setFactories(final TableColumn<Kosten, T> col,
-			final Function<Kosten, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
-		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
-		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}
 
 	/**
