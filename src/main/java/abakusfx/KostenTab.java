@@ -2,12 +2,12 @@ package abakusfx;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
@@ -19,7 +19,7 @@ class KostenTab {
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
-	KostenTab(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerProp, final Runnable dirtyListener,
+	KostenTab(final Supplier<KostenRechner> lazyRechner, final Runnable dirtyListener,
 			final Runnable summeChangeListener) {
 
 		renamableTab = new RenamableTab("NN");
@@ -32,7 +32,7 @@ class KostenTab {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
 		kostenTabController = loader.getController();
-		kostenTabController.setKostenRechner(kostenRechnerProp);
+		kostenTabController.setKostenRechner(lazyRechner);
 		kostenTabController.addDirtyListener(dirtyListener);
 		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());
 	}

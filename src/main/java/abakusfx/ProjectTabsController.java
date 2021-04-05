@@ -98,7 +98,7 @@ public class ProjectTabsController {
 		}
 	}
 
-	private final ReadOnlyObjectWrapper<KostenRechner> kostenRechner = new ReadOnlyObjectWrapper<>();
+	private KostenRechner rechner;
 	private Runnable dirtyHandler;
 
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
@@ -124,7 +124,7 @@ public class ProjectTabsController {
 	}
 
 	void setKostenRechner(final KostenRechner rechner) {
-		kostenRechner.setValue(rechner);
+		this.rechner = rechner;
 	}
 
 	void newProject() {
@@ -193,7 +193,7 @@ public class ProjectTabsController {
 
 	private KostenTab newKostenTab(final PersonModel person) {
 		final KostenTab kostenTab = new KostenTab(//
-				kostenRechner.getReadOnlyProperty(), //
+				() -> rechner, //
 				this::setToDirty, //
 				this::updateSummen);
 

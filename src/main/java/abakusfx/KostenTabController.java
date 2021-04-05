@@ -2,6 +2,7 @@ package abakusfx;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class KostenTabController {
 	@FXML
 	private SerieTableController serieTableController;
 
-	private ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter;
+	private Supplier<KostenRechner> lazyRechner;
 
 	private final ReadOnlyObjectWrapper<Money> summeInternalProperty = new ReadOnlyObjectWrapper<>(null);
 	final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
@@ -36,8 +37,8 @@ public class KostenTabController {
 		serieSettingsController.addDirtyListener(this::clearResult);
 	}
 
-	void setKostenRechner(final ReadOnlyObjectProperty<KostenRechner> kostenRechnerGetter) {
-		this.kostenRechnerGetter = kostenRechnerGetter;
+	void setKostenRechner(final Supplier<KostenRechner> lazyRechner) {
+		this.lazyRechner = lazyRechner;
 	}
 
 	void updateResult() {
@@ -45,10 +46,10 @@ public class KostenTabController {
 		final YearMonth von = serieSettingsController.getVon();
 		final YearMonth bis = serieSettingsController.getBis();
 
-		final KostenRechner rechner = kostenRechnerGetter.get();
-		final List<Monatskosten> moKosten = rechner.monatsKosten(serieSettingsController.getAnstellung(), von, bis);
+		final List<Monatskosten> moKosten = lazyRechner.get().monatsKosten(serieSettingsController.getAnstellung(), von,
+				bis);
 		serieTableController.updateKosten(moKosten);
-		final Money summe = rechner.summe(moKosten);
+		final Money summe = lazyRechner.get().summe(moKosten);
 		summeInternalProperty.set(summe);
 		log.trace("updateResult -> {}", summe);
 	}
