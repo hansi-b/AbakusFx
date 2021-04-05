@@ -33,7 +33,7 @@ public class ÜbersichtTableController {
 		ObjectProperty<Money> betrag;
 
 		private ÜbersichtRow(final PersonÜbersicht p) {
-			this(p.name, p.summe);
+			this(p.name, p.serie.summe);
 		}
 
 		private ÜbersichtRow(final String label, final Money money) {
@@ -106,7 +106,7 @@ public class ÜbersichtTableController {
 
 	void updateItems(final List<PersonÜbersicht> personen) {
 		übersichtTabelle.getItems().setAll(personen.stream().map(ÜbersichtRow::new).collect(Collectors.toList()));
-		final boolean isDirty = personen.stream().anyMatch(t -> t.summe == null);
+		final boolean isDirty = personen.stream().anyMatch(t -> t.serie.summe == null);
 		if (!isDirty && personen.size() > 1) {
 			final Money summe = PersonÜbersicht.sumÜbersichten(personen);
 			if (summe.isGreaterThan(euros(0))) {

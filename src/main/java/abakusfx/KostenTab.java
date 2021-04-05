@@ -64,7 +64,7 @@ class KostenTab {
 	}
 
 	PersonÜbersicht getÜbersicht() {
-		return new PersonÜbersicht(tabLabelProperty().get(), kostenTabController.summeProperty.get());
+		return new PersonÜbersicht(tabLabelProperty().get(), kostenTabController.getÜbersicht());
 	}
 
 	void updateSumme() {

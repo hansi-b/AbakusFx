@@ -143,6 +143,10 @@ public class SerieSettingsController {
 		return YearMonth.from(bis.getValue());
 	}
 
+	BigDecimal getUmfang() {
+		return BigDecimal.valueOf(umfang.getValue());
+	}
+
 	BigDecimal getAgz() {
 		return BigDecimal.valueOf(agz.getValue());
 	}
