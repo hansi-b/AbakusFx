@@ -31,11 +31,12 @@ public class DragSelectCellFactory<O, T> implements Callback<TableColumn<O, T>, 
 		@Override
 		public void updateItem(final T item, final boolean empty) {
 			super.updateItem(item, empty);
-			String result;
-			if (empty)
+
+			final String result;
+			if (item == null || empty)
 				result = null;
 			else if (formatter == null)
-				result = item != null ? item.toString() : null;
+				result = item.toString();
 			else
 				result = formatter.apply(item);
 

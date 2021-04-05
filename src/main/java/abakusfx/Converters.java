@@ -22,8 +22,11 @@ import javafx.util.converter.IntegerStringConverter;
 
 public class Converters {
 
+	public static final StufeConverter stufeConverter = new StufeConverter();
+
+	// used in FXML
 	public static StufeConverter createStufeConverter() {
-		return new StufeConverter();
+		return stufeConverter;
 	}
 
 	public static class StufeConverter extends StringConverter<Stufe> {
@@ -39,6 +42,8 @@ public class Converters {
 		}
 	}
 
+	public static final YearMonthConverter yearMonthConverter = new YearMonthConverter();
+
 	public static class YearMonthConverter extends StringConverter<YearMonth> {
 
 		@Override
@@ -51,6 +56,8 @@ public class Converters {
 			return YearMonth.parse(string);
 		}
 	}
+
+	public static final MoneyConverter moneyConverter = new MoneyConverter();
 
 	public static class MoneyConverter extends StringConverter<Money> {
 		private static final MonetaryAmountFormat format = MonetaryFormats
@@ -94,7 +101,7 @@ public class Converters {
 
 		private static class AgzConverter extends DoubleStringConverter {
 			private static final Logger log = LogManager.getLogger();
-			private static final NumberFormat nf = NumberFormat.getInstance(Constants.locale);
+			private final NumberFormat nf = Constants.getNumberFormat();
 
 			@Override
 			public String toString(final Double percent) {
@@ -107,7 +114,7 @@ public class Converters {
 
 				try {
 					return numStr.isEmpty() ? 0 : nf.parse(numStr).doubleValue();
-				} catch (ParseException e) {
+				} catch (final ParseException e) {
 					log.error("Could not parse double string value '%s'", string, e);
 					return 0.;
 				}

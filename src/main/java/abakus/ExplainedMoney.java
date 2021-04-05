@@ -9,8 +9,7 @@ import abakusfx.Converters;
 
 public class ExplainedMoney {
 
-	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
-	private static final NumberFormat nf = NumberFormat.getInstance(Constants.locale);
+	private final NumberFormat numberFormat = Constants.getNumberFormat();
 
 	private final Money money;
 	private final String explained;
@@ -31,7 +30,8 @@ public class ExplainedMoney {
 	}
 
 	public static ExplainedMoney of(final Money money, final String explain) {
-		return new ExplainedMoney(money, String.format("%s %s", moneyConverter.toString(money), explain), true);
+		return new ExplainedMoney(money, String.format("%s %s", Converters.moneyConverter.toString(money), explain),
+				true);
 	}
 
 	public ExplainedMoney add(final ExplainedMoney other) {
@@ -40,13 +40,14 @@ public class ExplainedMoney {
 	}
 
 	public ExplainedMoney multiplyPercent(final Number percent, final String explain) {
-		final String newExplain = String.format("%s × %s%%%s", quotedExpl(), nf.format(percent),
+		final String newExplain = String.format("%s × %s%%%s", quotedExpl(), numberFormat.format(percent),
 				explainSuffix(explain));
 		return new ExplainedMoney(money.multiply(percent).divide(100), newExplain, false);
 	}
 
 	public ExplainedMoney addPercent(final Number percent, final String explain) {
-		final String suffix = String.format("%s + %s%%%s", quotedExpl(), nf.format(percent), explainSuffix(explain));
+		final String suffix = String.format("%s + %s%%%s", quotedExpl(), numberFormat.format(percent),
+				explainSuffix(explain));
 		final Money zuschlag = money.multiply(percent).divide(100);
 		return new ExplainedMoney(money.add(zuschlag), suffix, false);
 	}

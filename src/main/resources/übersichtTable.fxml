@@ -4,11 +4,18 @@
 <?import javafx.scene.layout.HBox?>
 
 <TableView xmlns:fx="http://javafx.com/fxml"
-    xmlns="http://javafx.com/javafx" fx:id="übersichtTabelle"
-    fx:controller="abakusfx.ÜbersichtTableController"
-    stylesheets="app.css, serieTable.css" HBox.hgrow="ALWAYS">
-    <columns>
-        <TableColumn fx:id="nameCol" text="Name" />
-        <TableColumn fx:id="kostenCol" text="Kosten" />
-    </columns>
+	xmlns="http://javafx.com/javafx" fx:id="übersichtTabelle"
+	fx:controller="abakusfx.ÜbersichtTableController"
+	stylesheets="app.css, serieTable.css" HBox.hgrow="ALWAYS">
+	<columns>
+		<TableColumn fx:id="nameCol" text="Name" />
+		<TableColumn fx:id="umfangCol" text="\%" />
+		<TableColumn fx:id="vonMonatCol" text="von" />
+		<TableColumn fx:id="vonStelleCol" text="Start" />
+		<TableColumn fx:id="bisMonatCol" text="bis" />
+		<TableColumn fx:id="bisStelleCol" text="Ende" />
+		<TableColumn fx:id="agzCol" text="AGZ" />
+
+		<TableColumn fx:id="kostenCol" text="Kosten" />
+	</columns>
 </TableView>

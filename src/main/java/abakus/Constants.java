@@ -16,6 +16,10 @@ public class Constants {
 	public static final Locale locale = Locale.GERMANY;
 	private static final CurrencyUnit eur = Monetary.getCurrency(locale);
 
+	public static final NumberFormat getNumberFormat() {
+		return NumberFormat.getInstance(locale);
+	}
+
 	private static final DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 	static {
 		df.setParseBigDecimal(true);

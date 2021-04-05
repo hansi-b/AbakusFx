@@ -26,8 +26,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 public class SerieTableController {
-	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
-	private static final Converters.YearMonthConverter ymConverter = new Converters.YearMonthConverter();
 
 	static class Kosten implements CsvCopyTable.CsvRow {
 		ObjectProperty<YearMonth> monat;
@@ -49,7 +47,7 @@ public class SerieTableController {
 		@Override
 		public String asCsv() {
 			return String.join("\t", monat.get().toString(), gruppe.get().toString(), stufe.get().toString(),
-					umfang.get().toString(), moneyConverter.toString(betrag.get().money()));
+					umfang.get().toString(), Converters.moneyConverter.toString(betrag.get().money()));
 		}
 	}
 
@@ -71,7 +69,7 @@ public class SerieTableController {
 
 	@FXML
 	void initialize() {
-		setFactories(monatCol, k -> k.monat, ymConverter::toString);
+		setFactories(monatCol, k -> k.monat, Converters.yearMonthConverter::toString);
 		setFactories(gruppeCol, k -> k.gruppe, null);
 		setFactories(stufeCol, k -> k.stufe, null);
 		setFactories(umfangCol, k -> k.umfang, null);
@@ -85,7 +83,7 @@ public class SerieTableController {
 
 		final DoubleBinding colsWidth = monatCol.widthProperty().add(gruppeCol.widthProperty())//
 				.add(stufeCol.widthProperty())//
-				.add(umfangCol.widthProperty()).multiply(1.1);
+				.add(umfangCol.widthProperty()).multiply(1.05);
 		kostenCol.prefWidthProperty().bind(kostenTabelle.widthProperty().subtract(colsWidth));
 
 		kostenTabelle.setPlaceholder(new Label("Keine Daten"));
@@ -98,9 +96,9 @@ public class SerieTableController {
 	private static void setMoneyFactories(final TableColumn<Kosten, ExplainedMoney> kostenCol) {
 		kostenCol.setCellValueFactory(cellData -> ((Function<Kosten, ObservableValue<ExplainedMoney>>) k -> k.betrag)
 				.apply(cellData.getValue()));
-		kostenCol.setCellFactory(
-				new ToolTipCellDecorator<>(new DragSelectCellFactory<>(em -> moneyConverter.toString(em.money())),
-						em -> em != null ? em.explain() : null));
+		kostenCol.setCellFactory(new ToolTipCellDecorator<>(
+				new DragSelectCellFactory<>(em -> Converters.moneyConverter.toString(em.money())),
+				em -> em != null ? em.explain() : null));
 	}
 
 	private static <T> void setFactories(final TableColumn<Kosten, T> col,
