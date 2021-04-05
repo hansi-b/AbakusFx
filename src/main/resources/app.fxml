@@ -5,40 +5,37 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-    xmlns="http://javafx.com/javafx"
-    fx:controller="abakusfx.AppController" fx:id="topLevelPane"
-    stylesheets="app.css">
-    <padding>
-        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-    </padding>
-    <top>
-        <MenuBar>
-            <Menu mnemonicParsing="true" text="Datei">
-                <MenuItem accelerator="CTRL+N" text="_Neu"
-                    onAction="#newProject" />
-                <MenuItem accelerator="CTRL+L"
-                    text="_Laden ..." onAction="#loadProject" />
-                <MenuItem fx:id="saveItem" accelerator="CTRL+S"
-                    text="_Speichern" onAction="#saveProject" />
-                <MenuItem id="saveAsItem"
-                    accelerator="CTRL+SHIFT+S" text="_Speichern als ..."
-                    onAction="#saveProjectAs" />
-                <MenuItem accelerator="CTRL+Q" text="_Beenden"
-                    onAction="#exitApp" />
-            </Menu>
-            <Menu mnemonicParsing="true" text="Hilfe">
-                <MenuItem accelerator="F1"
-                    text="_Hilfe anzeigen..." onAction="#showHelp" />
-                <MenuItem text="Über..." onAction="#showVersion" />
-            </Menu>
-        </MenuBar>
-    </top>
-    <center>
-        <SplitPane dividerPositions="0.6" prefWidth="840">
-            <fx:include fx:id="projectTabs"
-                source="projectTabs.fxml" />
-            <fx:include fx:id="übersichtTable"
-                source="übersichtTable.fxml" />
-        </SplitPane>
-    </center>
+	xmlns="http://javafx.com/javafx" fx:controller="abakusfx.AppController"
+	fx:id="topLevelPane" stylesheets="app.css">
+	<padding>
+		<Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+	</padding>
+	<top>
+		<MenuBar>
+			<Menu mnemonicParsing="true" text="Datei">
+				<MenuItem accelerator="CTRL+N" text="_Neu"
+					onAction="#newProject" />
+				<MenuItem accelerator="CTRL+L" text="_Laden ..."
+					onAction="#loadProject" />
+				<MenuItem fx:id="saveItem" accelerator="CTRL+S"
+					text="_Speichern" onAction="#saveProject" />
+				<MenuItem id="saveAsItem" accelerator="CTRL+SHIFT+S"
+					text="_Speichern als ..." onAction="#saveProjectAs" />
+				<MenuItem accelerator="CTRL+Q" text="_Beenden"
+					onAction="#exitApp" />
+			</Menu>
+			<Menu mnemonicParsing="true" text="Hilfe">
+				<MenuItem accelerator="F1" text="_Hilfe anzeigen..."
+					onAction="#showHelp" />
+				<MenuItem text="Über..." onAction="#showVersion" />
+			</Menu>
+		</MenuBar>
+	</top>
+	<center>
+		<SplitPane dividerPositions="0.4" prefWidth="920">
+			<fx:include fx:id="projectTabs" source="projectTabs.fxml" />
+			<fx:include fx:id="übersichtTable"
+				source="übersichtTable.fxml" />
+		</SplitPane>
+	</center>
 </BorderPane>

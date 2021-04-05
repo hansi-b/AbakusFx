@@ -13,5 +13,6 @@
 
 .table-row-cell:bottom-line {
     -fx-border-color:  grey;
+    -fx-table-cell-border-color: transparent;
     -fx-font-weight: bold;
 }
