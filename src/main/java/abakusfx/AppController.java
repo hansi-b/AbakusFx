@@ -273,7 +273,7 @@ public class AppController {
 
 		final Stage stage = new Stage();
 		stage.setTitle("Abakus-Hilfe");
-		stage.setScene(new Scene(vBox, 600, 400));
+		stage.setScene(new Scene(vBox, 640, 500));
 		stage.show();
 	}
 
