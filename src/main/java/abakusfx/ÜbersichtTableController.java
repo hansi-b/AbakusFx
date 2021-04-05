@@ -28,15 +28,17 @@ public class ÜbersichtTableController {
 
 	private static final Converters.MoneyConverter moneyConverter = new Converters.MoneyConverter();
 
-	static class KostenÜbersicht implements CsvCopyTable.CsvRow {
+	private static class ÜbersichtRow implements CsvCopyTable.CsvRow {
 		ObjectProperty<String> name;
 		ObjectProperty<Money> betrag;
 
-		static KostenÜbersicht of(final String name, final Money betrag) {
-			final KostenÜbersicht k = new KostenÜbersicht();
-			k.name = new SimpleObjectProperty<>(name);
-			k.betrag = new SimpleObjectProperty<>(betrag);
-			return k;
+		private ÜbersichtRow(final PersonÜbersicht p) {
+			this(p.name, p.summe);
+		}
+
+		private ÜbersichtRow(final String label, final Money money) {
+			name = new SimpleObjectProperty<>(label);
+			betrag = new SimpleObjectProperty<>(money);
 		}
 
 		@Override
@@ -47,15 +49,15 @@ public class ÜbersichtTableController {
 	}
 
 	@FXML
-	private TableView<KostenÜbersicht> übersichtTabelle;
+	private TableView<ÜbersichtRow> übersichtTabelle;
 
 	@FXML
-	private TableColumn<KostenÜbersicht, String> nameCol;
+	private TableColumn<ÜbersichtRow, String> nameCol;
 	@FXML
-	private TableColumn<KostenÜbersicht, Money> kostenCol;
+	private TableColumn<ÜbersichtRow, Money> kostenCol;
 
 	private static final PseudoClass sumRowCss = PseudoClass.getPseudoClass("bottom-line");
-	private KostenÜbersicht sumRow;
+	private ÜbersichtRow sumRow;
 
 	@FXML
 	void initialize() {
@@ -77,9 +79,9 @@ public class ÜbersichtTableController {
 	}
 
 	private void setRowFactoryForSumRowStyle() {
-		übersichtTabelle.setRowFactory(tv -> new TableRow<KostenÜbersicht>() {
+		übersichtTabelle.setRowFactory(tv -> new TableRow<ÜbersichtRow>() {
 			@Override
-			protected void updateItem(final KostenÜbersicht k, final boolean b) {
+			protected void updateItem(final ÜbersichtRow k, final boolean b) {
 				super.updateItem(k, b);
 				pseudoClassStateChanged(sumRowCss, k != null && k == sumRow);
 			}
@@ -88,13 +90,13 @@ public class ÜbersichtTableController {
 
 	private void setSortPolicyForSumRowPosition() {
 		übersichtTabelle.sortPolicyProperty().set(tv -> {
-			final Comparator<KostenÜbersicht> cmp = (row1, row2) -> {
+			final Comparator<ÜbersichtRow> cmp = (row1, row2) -> {
 				if (sumRow != null && row1 == sumRow)
 					return 1;
 				if (sumRow != null && row2 == sumRow)
 					return -1;
 
-				final Comparator<KostenÜbersicht> tvCmp = tv.getComparator();
+				final Comparator<ÜbersichtRow> tvCmp = tv.getComparator();
 				return tvCmp == null ? 0 : tvCmp.compare(row1, row2);
 			};
 			FXCollections.sort(tv.getItems(), cmp);
@@ -102,15 +104,13 @@ public class ÜbersichtTableController {
 		});
 	}
 
-	void updateItems(final List<KostenTab> tabs) {
-		übersichtTabelle.getItems()
-				.setAll(tabs.stream().map(t -> KostenÜbersicht.of(t.tabLabelProperty().get(), t.summe().get()))
-						.collect(Collectors.toList()));
-		final boolean isDirty = tabs.stream().anyMatch(t -> t.summe().get() == null);
-		if (!isDirty && tabs.size() > 1) {
-			final Money summe = tabs.stream().map(k -> k.summe().get()).reduce(euros(0), Money::add);
+	void updateItems(final List<PersonÜbersicht> personen) {
+		übersichtTabelle.getItems().setAll(personen.stream().map(ÜbersichtRow::new).collect(Collectors.toList()));
+		final boolean isDirty = personen.stream().anyMatch(t -> t.summe == null);
+		if (!isDirty && personen.size() > 1) {
+			final Money summe = PersonÜbersicht.sumÜbersichten(personen);
 			if (summe.isGreaterThan(euros(0))) {
-				sumRow = KostenÜbersicht.of("∑", summe);
+				sumRow = new ÜbersichtRow("∑", summe);
 				übersichtTabelle.getItems().add(sumRow);
 			} else
 				sumRow = null;
@@ -118,8 +118,8 @@ public class ÜbersichtTableController {
 		übersichtTabelle.sort();
 	}
 
-	private static <T> void initCol(final TableColumn<KostenÜbersicht, T> col,
-			final Function<KostenÜbersicht, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
+	private static <T> void initCol(final TableColumn<ÜbersichtRow, T> col,
+			final Function<ÜbersichtRow, ObservableValue<T>> cellValueFac, final Function<T, String> formatter) {
 		col.setCellValueFactory(cellData -> cellValueFac.apply(cellData.getValue()));
 		col.setCellFactory(new DragSelectCellFactory<>(formatter));
 	}

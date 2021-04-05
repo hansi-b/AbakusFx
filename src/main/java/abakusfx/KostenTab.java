@@ -3,8 +3,6 @@ package abakusfx;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import org.javamoney.moneta.Money;
-
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
@@ -65,8 +63,8 @@ class KostenTab {
 		return renamableTab.labelProperty();
 	}
 
-	ReadOnlyObjectProperty<Money> summe() {
-		return kostenTabController.summeProperty;
+	PersonÜbersicht getÜbersicht() {
+		return new PersonÜbersicht(tabLabelProperty().get(), kostenTabController.summeProperty.get());
 	}
 
 	void updateSumme() {

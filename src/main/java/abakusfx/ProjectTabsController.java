@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -19,7 +18,6 @@ import org.javamoney.moneta.Money;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import abakus.Constants;
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import abakusfx.models.ProjectModel;
@@ -55,7 +53,7 @@ public class ProjectTabsController {
 		private final ObservableList<KostenTab> kostenTabs;
 		private final Map<KostenTab, ChangeListener<String>> tabListeners;
 
-		private final Set<Consumer<List<KostenTab>>> handlers;
+		private final Set<Consumer<List<PersonÜbersicht>>> handlers;
 		private final Runnable dirtyHandler;
 
 		private KostenTabsChanges(final ObservableList<KostenTab> kostenTabs, final Runnable dirtyHandler) {
@@ -73,7 +71,8 @@ public class ProjectTabsController {
 
 		private void triggerHandlers() {
 			syncHandlersToTabs();
-			handlers.forEach(h -> h.accept(Collections.unmodifiableList(kostenTabs)));
+			final List<PersonÜbersicht> übersichten = asÜbersichten(kostenTabs);
+			handlers.forEach(h -> h.accept(übersichten));
 			dirtyHandler.run();
 		}
 
@@ -94,7 +93,7 @@ public class ProjectTabsController {
 			});
 		}
 
-		private void addHandler(final Consumer<List<KostenTab>> handler) {
+		private void addHandler(final Consumer<List<PersonÜbersicht>> handler) {
 			handlers.add(handler);
 		}
 	}
@@ -105,7 +104,7 @@ public class ProjectTabsController {
 	private final ReadOnlyObjectWrapper<Money> projektSummeInternalProperty = new ReadOnlyObjectWrapper<>();
 	final ReadOnlyObjectProperty<Money> projektSummeProperty = projektSummeInternalProperty.getReadOnlyProperty();
 
-	private Consumer<List<KostenTab>> updateHandler;
+	private Consumer<List<PersonÜbersicht>> updateHandler;
 
 	@FXML
 	void initialize() {
@@ -119,7 +118,7 @@ public class ProjectTabsController {
 		this.dirtyHandler = dirtyHandler;
 	}
 
-	void setUpdateHandler(final Consumer<List<KostenTab>> updateHandler) {
+	void setUpdateHandler(final Consumer<List<PersonÜbersicht>> updateHandler) {
 		this.updateHandler = updateHandler;
 		kostenTabChange.addHandler(updateHandler);
 	}
@@ -228,11 +227,14 @@ public class ProjectTabsController {
 		}
 	}
 
+	private static List<PersonÜbersicht> asÜbersichten(final List<KostenTab> ktList) {
+		return ktList.stream().map(KostenTab::getÜbersicht).collect(Collectors.toList());
+	}
+
 	private void updateSummen() {
 		kostenTabs.forEach(KostenTab::updateSumme);
-		final Money summe = kostenTabs.stream().map(k -> k.summe().get()).filter(Objects::nonNull).reduce(Money::add)
-				.orElseGet(() -> Constants.euros(0));
-		projektSummeInternalProperty.set(summe);
-		updateHandler.accept(kostenTabs);
+		final List<PersonÜbersicht> übersichten = asÜbersichten(kostenTabs);
+		projektSummeInternalProperty.set(PersonÜbersicht.sumÜbersichten(übersichten));
+		updateHandler.accept(übersichten);
 	}
 }
