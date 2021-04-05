@@ -17,6 +17,9 @@
 		</padding>
 		<Label text="von" />
 		<DatePicker fx:id="von" />
+
+		<Region />
+
 		<Label text="bis" />
 		<DatePicker fx:id="bis" />
 	</HBox>
@@ -27,6 +30,8 @@
 		</padding>
 		<Label text="Entgeltgruppe" />
 		<ComboBox fx:id="gruppe" />
+
+		<Region />
 
 		<Label text="Umfang" />
 		<Spinner fx:id="umfang" editable="true"
@@ -66,8 +71,13 @@
 			</converter>
 		</ComboBox>
 
+		<Region />
+
 		<Label text="seit" fx:id="seitLabel" />
 		<DatePicker fx:id="seit" />
+
+		<Region />
+
 		<Label text="Umfang" fx:id="umfangSeitLabel" />
 		<Spinner fx:id="umfangSeit" editable="true"
 			styleClass="int-percent-spinner">
@@ -75,23 +85,27 @@
 				<Converters.UmfangSpinnerFactory />
 			</valueFactory>
 		</Spinner>
+
 	</HBox>
+
 	<HBox spacing="6" alignment="CENTER_RIGHT">
 		<padding>
 			<Insets top="3" left="3" bottom="2" right="3" />
 		</padding>
+		<Label text="AGZ">
+			<tooltip>
+				<Tooltip text="Arbeitgeberzuschlag" />
+			</tooltip>
+		</Label>
 		<Spinner fx:id="agz" editable="true"
 			styleClass="double-percent-spinner">
 			<valueFactory>
 				<Converters.AgzSpinnerFactory />
 			</valueFactory>
 		</Spinner>
-		<Label text="AGZ">
-			<tooltip>
-				<Tooltip text="Arbeitgeberzuschlag" />
-			</tooltip>
-		</Label>
-		<Region HBox.hgrow="ALWAYS" />
+
+		<Region />
+
 		<Button fx:id="calcKosten" text="Berechnen" />
 	</HBox>
 

@@ -5,6 +5,7 @@ import static fxTools.TableViewTools.initDragCellCol;
 import static fxTools.TableViewTools.setPrefWidth;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.javamoney.moneta.Money;
 
+import abakus.Constants;
 import abakus.Stelle;
 import fxTools.CsvCopyTable;
 import javafx.beans.binding.DoubleBinding;
@@ -28,7 +30,12 @@ import javafx.scene.control.TableView;
 
 public class ÜbersichtTableController {
 
+	private final NumberFormat numberFormat = Constants.getNumberFormat();
+
 	static class ÜbersichtRow implements CsvCopyTable.CsvRow {
+
+		private final NumberFormat numberFormat = Constants.getNumberFormat();
+
 		ObjectProperty<String> name;
 		ObjectProperty<BigDecimal> umfang;
 
@@ -68,14 +75,13 @@ public class ÜbersichtTableController {
 
 		@Override
 		public String asCsv() {
-			final Money money = betrag.get();
 			return String.join("\t", //
 					nullSafeToString(name), //
 					nullSafeToString(umfang), //
 					nullSafeToString(vonMonat), nullSafeToString(vonStelle), //
 					nullSafeToString(bisMonat), nullSafeToString(bisStelle), //
-					nullSafeToString(agz), //
-					money == null ? "" : Converters.moneyConverter.toString(money));
+					agz.get() == null ? "" : numberFormat.format(agz.get()), //
+					betrag.get() == null ? "" : Converters.moneyConverter.toString(betrag.get()));
 		}
 
 		static <T> String nullSafeToString(final ObjectProperty<T> sop) {
@@ -116,16 +122,16 @@ public class ÜbersichtTableController {
 		initDragCellCol(vonStelleCol, v -> v.vonStelle, null);
 		initDragCellCol(bisMonatCol, v -> v.bisMonat, Converters.yearMonthConverter::toString);
 		initDragCellCol(bisStelleCol, v -> v.bisStelle, null);
-		initDragCellCol(agzCol, v -> v.agz, null);
+		initDragCellCol(agzCol, v -> v.agz, numberFormat::format);
 		initDragCellCol(kostenCol, v -> v.betrag, m -> m == null ? "" : Converters.moneyConverter.toString(m));
 
 		setPrefWidth(übersichtTabelle, nameCol, .2);
-		setPrefWidth(übersichtTabelle, umfangCol, .08);
-		setPrefWidth(übersichtTabelle, vonMonatCol, .12);
+		setPrefWidth(übersichtTabelle, umfangCol, .07);
+		setPrefWidth(übersichtTabelle, vonMonatCol, .115);
 		setPrefWidth(übersichtTabelle, vonStelleCol, .1);
-		setPrefWidth(übersichtTabelle, bisMonatCol, .12);
+		setPrefWidth(übersichtTabelle, bisMonatCol, .115);
 		setPrefWidth(übersichtTabelle, bisStelleCol, .1);
-		setPrefWidth(übersichtTabelle, agzCol, .08);
+		setPrefWidth(übersichtTabelle, agzCol, .11);
 
 		final DoubleBinding colsWidth = nameCol.widthProperty().add(umfangCol.widthProperty())//
 				.add(vonMonatCol.widthProperty()).add(vonStelleCol.widthProperty())//

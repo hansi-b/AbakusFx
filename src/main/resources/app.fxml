@@ -32,7 +32,7 @@
 		</MenuBar>
 	</top>
 	<center>
-		<SplitPane dividerPositions="0.4" prefWidth="920">
+		<SplitPane dividerPositions="0.42" prefWidth="1100">
 			<fx:include fx:id="projectTabs" source="projectTabs.fxml" />
 			<fx:include fx:id="übersichtTable"
 				source="übersichtTable.fxml" />

@@ -14,7 +14,7 @@
 		<TableColumn fx:id="vonStelleCol" text="Start" />
 		<TableColumn fx:id="bisMonatCol" text="bis" />
 		<TableColumn fx:id="bisStelleCol" text="Ende" />
-		<TableColumn fx:id="agzCol" text="AGZ" />
+		<TableColumn fx:id="agzCol" text="%% AGZ" />
 
 		<TableColumn fx:id="kostenCol" text="Kosten" />
 	</columns>
