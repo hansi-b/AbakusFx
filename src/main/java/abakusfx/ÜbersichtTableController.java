@@ -28,15 +28,15 @@ import javafx.scene.control.TableView;
 
 public class ÜbersichtTableController {
 
-	public static class ÜbersichtRow implements CsvCopyTable.CsvRow {
+	static class ÜbersichtRow implements CsvCopyTable.CsvRow {
 		ObjectProperty<String> name;
 		ObjectProperty<BigDecimal> umfang;
 
 		ObjectProperty<YearMonth> vonMonat;
-		ObjectProperty<String> vonStelle;
+		ObjectProperty<GruppeStufe> vonStelle;
 
 		ObjectProperty<YearMonth> bisMonat;
-		ObjectProperty<String> bisStelle;
+		ObjectProperty<GruppeStufe> bisStelle;
 
 		ObjectProperty<BigDecimal> agz;
 
@@ -58,16 +58,12 @@ public class ÜbersichtTableController {
 			this.umfang = new SimpleObjectProperty<>(umfang);
 
 			this.vonMonat = new SimpleObjectProperty<>(von);
-			this.vonStelle = new SimpleObjectProperty<>(fmtShort(vonStelle));
+			this.vonStelle = new SimpleObjectProperty<>(GruppeStufe.of(vonStelle));
 			this.bisMonat = new SimpleObjectProperty<>(bis);
-			this.bisStelle = new SimpleObjectProperty<>(fmtShort(bisStelle));
+			this.bisStelle = new SimpleObjectProperty<>(GruppeStufe.of(bisStelle));
 
 			this.agz = new SimpleObjectProperty<>(agz);
 			this.betrag = new SimpleObjectProperty<>(money);
-		}
-
-		private static String fmtShort(final Stelle s) {
-			return s != null ? String.format("%s/%s", s.gruppe, s.stufe.asString()) : null;
 		}
 
 		@Override
@@ -97,11 +93,11 @@ public class ÜbersichtTableController {
 	@FXML
 	private TableColumn<ÜbersichtRow, YearMonth> vonMonatCol;
 	@FXML
-	private TableColumn<ÜbersichtRow, String> vonStelleCol;
+	private TableColumn<ÜbersichtRow, GruppeStufe> vonStelleCol;
 	@FXML
 	private TableColumn<ÜbersichtRow, YearMonth> bisMonatCol;
 	@FXML
-	private TableColumn<ÜbersichtRow, String> bisStelleCol;
+	private TableColumn<ÜbersichtRow, GruppeStufe> bisStelleCol;
 	@FXML
 	private TableColumn<ÜbersichtRow, BigDecimal> agzCol;
 
