@@ -6,8 +6,6 @@ if [ -z "$JRE_ZIP_DIR" ] ; then
     exit 1
 fi
 
-gradle clean distZip
-
 CNT=`ls -1 "$JRE_ZIP_DIR"/*jre11*win*.zip| wc -l`
 if [ $CNT != 1 ] ; then
     (>&2 echo "Aborting: Expected one JRE, but found $CNT")
@@ -16,6 +14,7 @@ fi
 JRE=`ls -1 "$JRE_ZIP_DIR"/zulu*jre11*win*.zip`
 echo "Will use $JRE"
 
+gradle clean distZip
 cd build/distributions
 
 CNT=`ls -1 AbakusFx*.zip | grep -v '\-src' | wc -l`
