@@ -73,8 +73,22 @@ public class Anstellung {
 			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
 
 		final Stelle stelle = entry.getValue();
-		final Stufe neueStufe = stelle.stufe.stufeAm(entry.getKey(), ym);
+		final YearMonth beginn = findStufenBeginn(entry);
+
+		final Stufe neueStufe = stelle.stufe.stufeAm(beginn, ym);
 		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
+	}
+
+	private YearMonth findStufenBeginn(final Entry<YearMonth, Stelle> entry) {
+		final Stelle stelle = entry.getValue();
+		YearMonth beginn = entry.getKey();
+
+		Entry<YearMonth, Stelle> previous = stelleByBeginn.lowerEntry(beginn);
+		while (previous != null && entry.getValue().gruppe == stelle.gruppe && entry.getValue().stufe == stelle.stufe) {
+			beginn = previous.getKey();
+			previous = stelleByBeginn.lowerEntry(beginn);
+		}
+		return beginn;
 	}
 
 	NavigableMap<YearMonth, Stelle> monatsStellen(final YearMonth von, final YearMonth bis) {

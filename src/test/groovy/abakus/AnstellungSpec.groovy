@@ -9,7 +9,7 @@ import static abakus.Stufe.*
 import java.time.YearMonth
 
 
-class AnstellungTest extends Specification {
+class AnstellungSpec extends Specification {
 
 	def agz = BigDecimal.valueOf(30)
 
@@ -42,16 +42,45 @@ class AnstellungTest extends Specification {
 		a.am(start_2019_12.plusMonths(13)) == Stelle.of(E10, zwei)
 	}
 
-	def "mit Weiterbeschäftigung"() {
+	def "mit Weiterbeschäftigung & implizitem Aufstieg"() {
 
 		when:
 		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
-				start_2019_12.plusYears(1), 65, start_2019_12.plusYears(2), agz)
+				start_2019_12.plusMonths(monate), 65, start_2019_12.plusYears(2), agz)
+
+		then:
+		a.am(start_2019_12) == stelle_e10_1
+		a.am(start_2019_12.plusMonths(monate-1)) == stelle_e10_1
+		a.am(start_2019_12.plusMonths(monate)) == Stelle.of(E10, eins, 65)
+		a.am(start_2019_12.plusMonths(11)) == Stelle.of(E10, eins, 65)
+		a.am(start_2019_12.plusMonths(12)) == Stelle.of(E10, zwei, 65)
+
+		where:
+		monate << (3 .. 11)
+	}
+
+	def "mit Weiterbeschäftigung zum Stufenwechsel"() {
+
+		when:
+		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
+				start_2019_12.plusMonths(12), 65, start_2019_12.plusYears(2), agz)
 
 		then:
 		a.am(start_2019_12) == stelle_e10_1
 		a.am(start_2019_12.plusMonths(11)) == stelle_e10_1
 		a.am(start_2019_12.plusMonths(12)) == Stelle.of(E10, zwei, 65)
+	}
+
+	def "mit Weiterbeschäftigung nach Aufstieg"() {
+
+		when:
+		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
+				start_2019_12.plusMonths(13), 65, start_2019_12.plusYears(2), agz)
+
+		then:
+		a.am(start_2019_12) == stelle_e10_1
+		a.am(start_2019_12.plusMonths(11)) == stelle_e10_1
+		a.am(start_2019_12.plusMonths(12)) == Stelle.of(E10, zwei, 100)
 		a.am(start_2019_12.plusMonths(13)) == Stelle.of(E10, zwei, 65)
 	}
 
@@ -100,7 +129,9 @@ class AnstellungTest extends Specification {
 	def "months in year von #beginn bis #ende"() {
 
 		expect:
-		a.monthsInYear(2019) == resultMonthRange.collect { YearMonth.of(2019, it) }
+		a.monthsInYear(2019) == resultMonthRange.collect {
+			YearMonth.of(2019, it)
+		}
 
 		where:
 		beginn                 | ende                   | resultMonthRange
