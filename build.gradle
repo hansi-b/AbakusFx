@@ -6,9 +6,13 @@ plugins {
 	id 'distribution'
 	id 'maven-publish'
 
+	id "org.openjfx.javafxplugin" version "0.0.10"
+
 	id 'com.palantir.git-version' version '0.12.3'
 
 	id 'com.github.ben-manes.versions' version '0.38.0'
+
+	id 'org.beryx.jlink' version '2.23.6'
 
 	// license stuff
 	//id 'com.github.jk1.dependency-license-report' version '1.16'
@@ -17,15 +21,6 @@ plugins {
 
 group 'org.hansi-b'
 version gitVersion()
-
-sourceCompatibility=11
-wrapper.gradleVersion='6.8.3'
-
-plugins.withType(JavaPlugin).configureEach {
-	java {
-		modularity.inferModulePath = true
-	}
-}
 
 repositories {
 	jcenter()
@@ -78,6 +73,18 @@ dependencies {
 	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
+sourceCompatibility=16
+wrapper.gradleVersion='7.1.1'
+
+java {
+	modularity.inferModulePath = true
+}
+
+javafx {
+	modules "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.web"
+}
+
+
 task writeVersion() {
 	doFirst {
 		file('src/main/resources/version.properties').text = """app.name=Abakus
@@ -111,4 +118,8 @@ test {
 
 application {
 	mainClass = 'abakusfx.App'
+}
+
+jlink {
+	forceMerge 'jackson', 'log4j'
 }
