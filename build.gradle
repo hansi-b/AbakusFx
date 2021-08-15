@@ -1,125 +1,132 @@
 plugins {
-	id 'eclipse'
+    id 'eclipse'
 
-	id 'application'
-	id 'groovy'
-	id 'distribution'
-	id 'maven-publish'
+    id 'application'
+    id 'groovy'
+    id 'distribution'
+    id 'maven-publish'
 
-	id "org.openjfx.javafxplugin" version "0.0.10"
+    id "org.openjfx.javafxplugin" version "0.0.10"
 
-	id 'com.palantir.git-version' version '0.12.3'
+    id 'com.palantir.git-version' version '0.12.3'
 
-	id 'com.github.ben-manes.versions' version '0.38.0'
+    id 'com.github.ben-manes.versions' version '0.38.0'
 
-	id 'org.beryx.jlink' version '2.23.6'
+    id 'org.beryx.jlink' version '2.23.6'
 
-	// license stuff
-	//id 'com.github.jk1.dependency-license-report' version '1.16'
-	//id 'com.github.hierynomus.license' version '0.15.0'
+    // license stuff
+    //id 'com.github.jk1.dependency-license-report' version '1.16'
+    //id 'com.github.hierynomus.license' version '0.15.0'
 }
 
 group 'org.hansi-b'
 version gitVersion()
 
 repositories {
-	jcenter()
+    mavenCentral()
 }
 
 publishing {
 
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = 'abakusfx'
-			from components.java
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'abakusfx'
+            from components.java
+        }
+    }
 
-	repositories {
-		maven {
-			name = 'GitHubPackages'
-			url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
-			credentials {
-				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
-				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
-			}
-		}
-	}
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
+            credentials {
+                username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
+                password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
+            }
+        }
+    }
 }
 
 dependencies {
 
-	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
+    implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 
-	implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
-	implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.2'
 
-	testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.0'
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
-	testImplementation 'org.objenesis:objenesis:3.2'
-	testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-3.0'
+    testImplementation 'org.objenesis:objenesis:3.2'
+    testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-3.0'
 
-	testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
-	testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
+    testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
+    testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
 
-	/* 11+26 runs into https://github.com/javafxports/openjdk-jfx/issues/461
-	 * Unsure if this is some local versions problem
-	 */
-	//testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-11+26'
-	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
+    /* 11+26 runs into https://github.com/javafxports/openjdk-jfx/issues/461
+     * Unsure if this is some local versions problem
+     */
+    //testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-11+26'
+    testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
-sourceCompatibility=16
-wrapper.gradleVersion='7.1.1'
+sourceCompatibility = 16
+wrapper.gradleVersion = '7.1.1'
 
 java {
-	modularity.inferModulePath = true
+    modularity.inferModulePath = true
 }
 
 javafx {
-	modules "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.web"
+    modules "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.web"
 }
 
 
 task writeVersion() {
-	doFirst {
-		file('src/main/resources/version.properties').text = """app.name=Abakus
+    doFirst {
+        file('src/main/resources/version.properties').text = """app.name=Abakus
 build.version=$version
 build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
 """
-	}
+    }
 }
 
 compileJava.dependsOn writeVersion
 
 task srcZipToDist(type: Zip) {
-	classifier = 'src'
-	from projectDir
-	include 'src/**/*'
+    classifier = 'src'
+    from projectDir
+    include 'src/**/*'
 }
 
 distZip.dependsOn srcZipToDist
 
 tasks.withType(GroovyCompile) {
-	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
 /*
  * for headless tests, run as: gradle test -Pheadless=true
  */
 test {
-	useJUnitPlatform()
-	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}"
+    useJUnitPlatform()
+    jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}"
 }
 
 application {
-	mainClass = 'abakusfx.App'
+    mainClass = 'abakusfx.App'
 }
 
 jlink {
-	forceMerge 'jackson', 'log4j'
+    forceMerge 'jackson', 'log4j'
+
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+
+    launcher {
+        name = 'Abakus'
+        jvmArgs = ['-Dlog4j.configurationFile=./log4j2.xml']
+    }
 }
