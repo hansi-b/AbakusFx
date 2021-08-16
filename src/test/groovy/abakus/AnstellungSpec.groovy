@@ -1,5 +1,6 @@
 package abakus
 
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -11,6 +12,7 @@ import java.time.YearMonth
 
 class AnstellungSpec extends Specification {
 
+	@Shared
 	def agz = BigDecimal.valueOf(30)
 
 	def start_2019_12 = YearMonth.of(2019, 12)
@@ -128,6 +130,9 @@ class AnstellungSpec extends Specification {
 	@Unroll
 	def "months in year von #beginn bis #ende"() {
 
+		given:
+		Anstellung a = Anstellung.of(beginn, stelle_e10_1, ende, agz)
+
 		expect:
 		a.monthsInYear(2019) == resultMonthRange.collect {
 			YearMonth.of(2019, it)
@@ -141,8 +146,6 @@ class AnstellungSpec extends Specification {
 		YearMonth.of(2019, 1)  | YearMonth.of(2019, 12) | (1..12)
 		YearMonth.of(2019, 3)  | YearMonth.of(2020, 2)  | (3..12)
 		YearMonth.of(2019, 3)  | YearMonth.of(2019, 4)  | (3..4)
-
-		a = Anstellung.of(beginn, stelle_e10_1, ende, agz)
 	}
 
 

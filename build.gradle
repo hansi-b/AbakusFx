@@ -1,3 +1,4 @@
+
 plugins {
     id 'eclipse'
 
@@ -12,7 +13,7 @@ plugins {
 
     id 'com.github.ben-manes.versions' version '0.38.0'
 
-    id 'org.beryx.jlink' version '2.23.6'
+    id 'org.beryx.runtime' version '1.12.5'
 
     // license stuff
     //id 'com.github.jk1.dependency-license-report' version '1.16'
@@ -54,31 +55,24 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4'
 
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
     testImplementation 'org.objenesis:objenesis:3.2'
-    testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
 
     testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
     testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
 
-    /* 11+26 runs into https://github.com/javafxports/openjdk-jfx/issues/461
-     * Unsure if this is some local versions problem
-     */
-    //testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-11+26'
     testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
 sourceCompatibility = 16
-wrapper.gradleVersion = '7.1.1'
 
-java {
-    modularity.inferModulePath = true
-}
+wrapper.gradleVersion = '7.1.1'
 
 javafx {
     modules "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.web"
@@ -97,7 +91,6 @@ build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Da
 compileJava.dependsOn writeVersion
 
 task srcZipToDist(type: Zip) {
-    classifier = 'src'
     from projectDir
     include 'src/**/*'
 }
@@ -120,13 +113,18 @@ application {
     mainClass = 'abakusfx.App'
 }
 
-jlink {
-    forceMerge 'jackson', 'log4j'
+runtime {
 
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    
+    jpackage {
+        appVersion = "${project.version}".split('-')[0]
+        installerType = "msi"
+        //icon = "src/main/resources/logo.ico"
+    }
 
     launcher {
-        name = 'Abakus'
         jvmArgs = ['-Dlog4j.configurationFile=./log4j2.xml']
     }
 }
+
