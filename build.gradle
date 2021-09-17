@@ -114,6 +114,8 @@ application {
 }
 
 def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
+def isWin = currentOs.contains('win')
+assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
 
 runtime {
 
@@ -126,14 +128,14 @@ runtime {
     jpackage {
 
         appVersion = "${project.version}".split('-')[0]
-        installerType = currentOs.contains('win') ? "msi" : "deb"
+        installerType = isWin ? "msi" : "deb"
 
-        def iconExt = currentOs.contains('win') ? 'ico' : 'png'
+        def iconExt = isWin ? 'ico' : 'png'
         imageOptions += ["--icon", "src/main/resources/logo.$iconExt"]
 
         installerOptions += ["--resource-dir", "src/main/resources"]
         installerOptions += ["--file-associations", "src/main/resources/file_assoc_aba.properties"]
-        if (currentOs.contains('win')) {
+        if (isWin) {
             installerOptions += ["--win-menu", "--win-shortcut"]
         }
     }
