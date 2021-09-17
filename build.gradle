@@ -122,6 +122,7 @@ runtime {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
 
     launcher {
+        jvmArgs = [ '-Dlog4j.configurationFile=log4j2_prod.yaml' ]
         noConsole = true
     }
 

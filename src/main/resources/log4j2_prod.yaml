@@ -1,0 +1,20 @@
+Configuration:
+   status: info
+   name: YAMLConfig
+   Appenders:
+      RollingFile:
+         name: LogToFile
+         fileName: ${sys:user.home:-.}/.Abakus.log
+         filePattern: ${sys:user.home:-.}/.Abakus_%i.log
+         PatternLayout:
+            pattern: '[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1}: %msg%n'
+         Policies:
+            SizeBasedTriggeringPolicy:
+               size: 2MB
+         DefaultRollOverStrategy:
+            max: 3
+   Loggers:
+      Root:
+         level: debug
+         AppenderRef:
+         -  ref: LogToFile

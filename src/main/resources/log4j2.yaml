@@ -7,20 +7,8 @@ Configuration:
          target: SYSTEM_OUT
          PatternLayout:
             pattern: '[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1}: %msg%n'
-      RollingFile:
-         name: LogToFile
-         fileName: ./Abakus.log
-         filePattern: ./Abakus_alt_%i.log
-         PatternLayout:
-            pattern: '[%-5level] %d{yyyy-MM-dd HH:mm:ss} %c{1}: %msg%n'
-         Policies:
-            SizeBasedTriggeringPolicy:
-               size: 2MB
-         DefaultRollOverStrategy:
-            max: 3
    Loggers:
       Root:
          level: trace
          AppenderRef:
          -  ref: LogToConsole
-         -  ref: LogToFile
