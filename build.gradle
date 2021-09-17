@@ -113,6 +113,8 @@ application {
     mainClass = 'abakusfx.AppStarter'
 }
 
+def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
+
 runtime {
 
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
@@ -122,13 +124,17 @@ runtime {
     }
 
     jpackage {
-        appVersion = "${project.version}".split('-')[0]
-        installerType = "msi"
 
-        imageOptions += ["--icon", "src/main/resources/logo.ico"]
+        appVersion = "${project.version}".split('-')[0]
+        installerType = currentOs.contains('win') ? "msi" : "deb"
+
+        def iconExt = currentOs.contains('win') ? 'ico' : 'png'
+        imageOptions += ["--icon", "src/main/resources/logo.$iconExt"]
 
         installerOptions += ["--resource-dir", "src/main/resources"]
-        installerOptions += ["--win-menu", "--win-shortcut"]
+        installerOptions += ["--file-associations", "src/main/resources/file_assoc_aba.properties"]
+        if (currentOs.contains('win')) {
+            installerOptions += ["--win-menu", "--win-shortcut"]
+        }
     }
 }
-
