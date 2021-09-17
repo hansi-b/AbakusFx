@@ -1,12 +1,5 @@
 package abakusfx;
 
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.logging.Level;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import abakus.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -16,27 +9,33 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+import java.util.logging.Level;
 
 public class App extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
 	@Override
-	public void start(final Stage primaryStage) throws Exception {
-		String disclaimer = ResourceLoader.loader.resourceAsString("version.properties");
-
-		for (String prop : disclaimer.split("\n"))
-			log.info(prop);
-
+	public void start(final Stage primaryStage) throws IOException {
 		Locale.setDefault(Constants.locale);
 
-		final InputStream stream = getClass().getClassLoader().getResourceAsStream("logo.png");
+		String props = ResourceLoader.loader.resourceAsString("version.properties");
+		for (String prop : props.split("\n"))
+			log.info(prop);
+
+		final InputStream stream = ResourceLoader.loader.getResourceStream("logo.png");
 		if (stream == null)
 			log.warn("Could not load application icon");
 		else
 			primaryStage.getIcons().add(new Image(stream));
 
-		final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("app.fxml"));
+		final FXMLLoader fxmlLoader = ResourceLoader.loader.getFxmlLoader("app.fxml");
 		final Parent root = fxmlLoader.load();
 		final AppController appController = fxmlLoader.getController();
 

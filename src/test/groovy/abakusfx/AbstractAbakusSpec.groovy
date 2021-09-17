@@ -49,7 +49,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = new FXMLLoader(App.class.getClassLoader().getResource("app.fxml"))
+		final FXMLLoader fxmlLoader = abakusfx.ResourceLoader.loader.getFxmlLoader("app.fxml")
 		root = fxmlLoader.load()
 		appController = (AppController) fxmlLoader.getController()
 

@@ -1,9 +1,5 @@
 package abakusfx;
 
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
@@ -14,18 +10,22 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 class KostenTab {
 
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
 	KostenTab(final Supplier<KostenRechner> lazyRechner, final Runnable dirtyListener,
-			final Runnable summeChangeListener) {
+			  final Runnable summeChangeListener) {
 
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
 
-		final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("kostenTab.fxml"));
+		final FXMLLoader loader = ResourceLoader.loader.getFxmlLoader("kostenTab.fxml");
 		try {
 			getTab().setContent(loader.load());
 		} catch (final IOException ioEx) {

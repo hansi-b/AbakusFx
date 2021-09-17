@@ -1,14 +1,14 @@
 package abakusfx;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 class ResourceLoader {
 
@@ -28,7 +28,6 @@ class ResourceLoader {
 			alert.showAndWait();
 			return null;
 		}
-
 	}
 
 	String loadVersionProperties() {
@@ -41,8 +40,16 @@ class ResourceLoader {
 	}
 
 	String resourceAsString(final String resourceName) throws IOException {
-		try (InputStream resStream = getClass().getClassLoader().getResourceAsStream(resourceName)) {
+		try (InputStream resStream = getResourceStream(resourceName)) {
 			return new String(resStream.readAllBytes(), StandardCharsets.UTF_8);
 		}
+	}
+
+	InputStream getResourceStream(String resourceName) {
+		return getClass().getClassLoader().getResourceAsStream(resourceName);
+	}
+
+	FXMLLoader getFxmlLoader(String fxml) {
+		return new FXMLLoader(getClass().getClassLoader().getResource(fxml));
 	}
 }
