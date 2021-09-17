@@ -135,7 +135,7 @@ public class AppController {
 		loadAndShow(file);
 	}
 
-	private void loadAndShow(final File projectFile) {
+	void loadAndShow(final File projectFile) {
 		try {
 			projectTabsController.loadProject(projectFile);
 			setCurrentProject(projectFile);

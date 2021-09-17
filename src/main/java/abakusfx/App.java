@@ -12,8 +12,10 @@ import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -51,6 +53,13 @@ public class App extends Application {
 		primaryStage.show();
 
 		appController.fill(new AppTitle(primaryStage));
+		Parameters parameters = getParameters();
+
+		List<String> unnamed = parameters.getUnnamed();
+		if (!unnamed.isEmpty()) {
+			log.debug("got unnamed parameters: {}", unnamed);
+			appController.loadAndShow(new File(unnamed.get(0)));
+		}
 	}
 
 	public static void main(final String[] args) {
