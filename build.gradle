@@ -90,12 +90,17 @@ build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Da
 
 compileJava.dependsOn writeVersion
 
-task srcZipToDist(type: Zip) {
+task zipSrc(type: Zip) {
+	dependsOn jpackageImage
+
+	def data = jpackageImage.jpackageData
+
     from projectDir
     include 'src/**/*'
+    destinationDir file("${data.imageOutputDirOrDefault}/${data.imageNameOrDefault}")
 }
 
-distZip.dependsOn srcZipToDist
+jpackage.dependsOn zipSrc
 
 tasks.withType(GroovyCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
