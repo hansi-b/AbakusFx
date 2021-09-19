@@ -1,16 +1,9 @@
 package abakusfx;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import abakus.KostenRechner;
 import abakus.Tarif;
 import abakus.ÖtvCsvParser;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -20,13 +13,9 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -35,6 +24,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
+import java.util.List;
+import java.util.Optional;
 
 public class AppController {
 	static final Logger log = LogManager.getLogger();
@@ -103,11 +100,19 @@ public class AppController {
 	 * to be called after the initialization is done, when we can access the stage
 	 * (indirectly via the AppTitle)
 	 */
-	void fill(final AppTitle appTitle) {
+	void addTitleListeners(final AppTitle appTitle) {
 		currentProjectName.addListener((observable, oldValue, newValue) -> appTitle.updateProject(newValue));
 		isSettingsChanged.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
+	}
 
-		prefs.getLastProject().ifPresent(this::loadAndShow);
+	void fill(Application.Parameters parameters) {
+		List<String> unnamed = parameters.getUnnamed();
+		if (!unnamed.isEmpty()) {
+			log.debug("got unnamed parameters: {}", unnamed);
+			loadAndShow(new File(unnamed.get(0)));
+		} else {
+			prefs.getLastProject().ifPresent(this::loadAndShow);
+		}
 	}
 
 	@FXML
@@ -135,7 +140,7 @@ public class AppController {
 		loadAndShow(file);
 	}
 
-	void loadAndShow(final File projectFile) {
+	private void loadAndShow(final File projectFile) {
 		try {
 			projectTabsController.loadProject(projectFile);
 			setCurrentProject(projectFile);
@@ -213,7 +218,7 @@ public class AppController {
 
 	/**
 	 * @return true the user wants to proceed (i.e., has not cancelled); false if
-	 *         the user has cancelled
+	 * the user has cancelled
 	 */
 	boolean showUnsavedChangesDialogue() {
 		if (!isSettingsChanged.get())

@@ -12,10 +12,8 @@ import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -52,14 +50,8 @@ public class App extends Application {
 
 		primaryStage.show();
 
-		appController.fill(new AppTitle(primaryStage));
-		Parameters parameters = getParameters();
-
-		List<String> unnamed = parameters.getUnnamed();
-		if (!unnamed.isEmpty()) {
-			log.debug("got unnamed parameters: {}", unnamed);
-			appController.loadAndShow(new File(unnamed.get(0)));
-		}
+		appController.addTitleListeners(new AppTitle(primaryStage));
+		appController.fill(getParameters());
 	}
 
 	public static void main(final String[] args) {
@@ -75,38 +67,3 @@ public class App extends Application {
 	}
 }
 
-class AppTitle {
-	private static final Logger log = LogManager.getLogger();
-
-	private final Stage stage;
-
-	private String project;
-	private boolean isDirty;
-
-	AppTitle(final Stage stage) {
-		this.stage = stage;
-		this.project = null;
-		this.isDirty = false;
-	}
-
-	void updateProject(final String newProject) {
-		log.debug("Updating title: project = '{}'", newProject);
-		this.project = newProject;
-		updateTitle();
-	}
-
-	void updateIsDirty(final boolean newIsDirty) {
-		log.debug("Updating title: isDirty = '{}'", newIsDirty);
-		this.isDirty = newIsDirty;
-		updateTitle();
-	}
-
-	private void updateTitle() {
-		String pName = project;
-		if (pName != null && pName.endsWith(".aba"))
-			pName = pName.substring(0, pName.length() - 4);
-		final String projectPart = pName != null ? String.format(": %s", pName) : "";
-		final String dirtyPart = isDirty ? "*" : "";
-		stage.setTitle(String.format("Abakus%s%s", projectPart, dirtyPart));
-	}
-}
