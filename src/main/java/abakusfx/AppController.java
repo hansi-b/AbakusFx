@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class AppController {
 	static final Logger log = LogManager.getLogger();
@@ -100,7 +101,8 @@ public class AppController {
 	 * to be called after the initialization is done, when we can access the stage
 	 * (indirectly via the AppTitle)
 	 */
-	void addTitleListeners(final AppTitle appTitle) {
+	void addTitleListeners(Consumer<String> titleHandler) {
+		final AppTitle appTitle = new AppTitle(titleHandler);
 		currentProjectName.addListener((observable, oldValue, newValue) -> appTitle.updateProject(newValue));
 		isSettingsChanged.addListener((observable, oldValue, newValue) -> appTitle.updateIsDirty(newValue));
 	}
@@ -218,7 +220,7 @@ public class AppController {
 
 	/**
 	 * @return true the user wants to proceed (i.e., has not cancelled); false if
-	 * the user has cancelled
+	 *         the user has cancelled
 	 */
 	boolean showUnsavedChangesDialogue() {
 		if (!isSettingsChanged.get())

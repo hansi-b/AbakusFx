@@ -1,19 +1,20 @@
 package abakusfx;
 
-import javafx.stage.Stage;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 class AppTitle {
 	private static final Logger log = LogManager.getLogger();
 
-	private final Stage stage;
+	private final Consumer<String> titleHandler;
 
 	private String project;
 	private boolean isDirty;
 
-	AppTitle(final Stage stage) {
-		this.stage = stage;
+	AppTitle(final Consumer<String> titleHandler) {
+		this.titleHandler = titleHandler;
 		this.project = null;
 		this.isDirty = false;
 	}
@@ -36,6 +37,6 @@ class AppTitle {
 			pName = pName.substring(0, pName.length() - 4);
 		final String projectPart = pName != null ? String.format(": %s", pName) : "";
 		final String dirtyPart = isDirty ? "*" : "";
-		stage.setTitle(String.format("Abakus%s%s", projectPart, dirtyPart));
+		titleHandler.accept(String.format("Abakus%s%s", projectPart, dirtyPart));
 	}
 }

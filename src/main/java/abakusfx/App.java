@@ -1,5 +1,13 @@
 package abakusfx;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+import java.util.logging.Level;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import abakus.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -9,13 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.logging.Level;
 
 public class App extends Application {
 
@@ -50,7 +51,7 @@ public class App extends Application {
 
 		primaryStage.show();
 
-		appController.addTitleListeners(new AppTitle(primaryStage));
+		appController.addTitleListeners(primaryStage::setTitle);
 		appController.fill(getParameters());
 	}
 
@@ -66,4 +67,3 @@ public class App extends Application {
 		log.info("Stopping");
 	}
 }
-
