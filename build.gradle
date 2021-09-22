@@ -15,8 +15,7 @@ plugins {
     id 'org.beryx.runtime' version '1.12.5'
 
     // license stuff
-    //id 'com.github.jk1.dependency-license-report' version '1.16'
-    //id 'com.github.hierynomus.license' version '0.15.0'
+    id 'com.github.hierynomus.license' version '0.16.1'
 }
 
 group 'org.hansi-b'
@@ -45,6 +44,13 @@ publishing {
             }
         }
     }
+}
+
+license {
+    header project.file('LICENSE.HEADER')
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)    
+
+	include '**/*.java'
 }
 
 dependencies {
@@ -98,6 +104,14 @@ task zipSrc(type: Zip) {
     from projectDir
     include 'src/**/*'
     destinationDir file("${data.imageOutputDirOrDefault}/${data.imageNameOrDefault}")
+}
+
+jpackageImage.doLast {
+    copy {
+        from projectDir
+        include 'LICENSE'
+        into file("${jpackageData.imageOutputDirOrDefault}/${jpackageData.imageNameOrDefault}")
+    }
 }
 
 jpackage.dependsOn zipSrc
