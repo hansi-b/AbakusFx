@@ -157,6 +157,7 @@ runtime {
         installerOptions += ["--file-associations", "src/main/resources/file_assoc_aba.properties"]
         if (isWin) {
             installerOptions += ["--win-menu", "--win-shortcut"]
+            installerOptions += ["--win-per-user-install"]
         }
     }
 }
