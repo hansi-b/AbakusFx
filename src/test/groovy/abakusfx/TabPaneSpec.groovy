@@ -52,4 +52,23 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 		projectTabs[0].graphic.text == 'NN'
 		projectTabs[1].graphic.text == 'second'
 	}
+
+    def "tab colour changes according to content status"() {
+        given:
+        doubleClickOn(queryNthTab(0))
+
+        when:
+        type(KeyCode.DELETE)
+
+        then:
+        projectTabs[0].graphic.text.isEmpty()
+        projectTabs[0].graphic.styleClass.contains("error")
+
+        when:
+        write('x')
+
+        then:
+        !projectTabs[0].graphic.text.isEmpty()
+        !projectTabs[0].graphic.styleClass.contains("error")
+    }
 }

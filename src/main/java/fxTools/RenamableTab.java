@@ -21,6 +21,7 @@ package fxTools;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -38,6 +39,8 @@ public class RenamableTab {
 
 	private final StringProperty labelProp;
 
+	private BooleanBinding isTabEmpty;
+
 	public RenamableTab(final String initialLabel) {
 		tab = new Tab();
 
@@ -49,7 +52,8 @@ public class RenamableTab {
 
 		textField = new TextField();
 
-		textField.textProperty().isEmpty().addListener((obs, oldVal, newVal) -> {
+		isTabEmpty = textField.textProperty().isEmpty();
+		isTabEmpty.addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();
 			if (Boolean.TRUE.equals(newVal))
 				styleClass.add("error");
