@@ -103,7 +103,7 @@ task zipSrc(type: Zip) {
 
     from projectDir
     include 'src/**/*'
-    destinationDir file("${data.imageOutputDirOrDefault}/${data.imageNameOrDefault}")
+    destinationDirectory = file("${data.imageOutputDirOrDefault}/${data.imageNameOrDefault}")
 }
 
 jpackageImage.doLast {
