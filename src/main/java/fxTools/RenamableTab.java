@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -39,7 +40,8 @@ public class RenamableTab {
 
 	private final StringProperty labelProp;
 
-	private BooleanBinding isTabEmpty;
+	private final BooleanBinding isTabEmpty;
+	private final ReadOnlyBooleanProperty isTabSelected;
 
 	public RenamableTab(final String initialLabel) {
 		tab = new Tab();
@@ -48,10 +50,23 @@ public class RenamableTab {
 
 		label = new Label();
 		label.textProperty().bind(labelProp);
+		label.getStyleClass().add("unselected-tab");
 		tab.setGraphic(label);
 
 		textField = new TextField();
 
+		isTabSelected = tab.selectedProperty();
+		isTabSelected.addListener((observable, oldValue, newValue) -> {
+			log.trace("isTabSelected {} {} {}", observable, oldValue, newValue);
+			final ObservableList<String> styleClass = label.getStyleClass();
+			if (Boolean.TRUE.equals(newValue)) {
+				styleClass.remove("unselected-tab");
+				styleClass.add("selected-tab");
+			} else {
+				styleClass.remove("selected-tab");
+				styleClass.add("unselected-tab");
+			}
+		});
 		isTabEmpty = textField.textProperty().isEmpty();
 		isTabEmpty.addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();

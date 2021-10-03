@@ -172,7 +172,7 @@ public class ProjectTabsController {
 
 	void focusFirstTab() {
 		tabPane.getSelectionModel().select(0);
-		tabPane.getTabs().get(0).getContent().requestFocus();
+		tabPane.requestFocus();
 	}
 
 	private void reset() {

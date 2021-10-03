@@ -18,6 +18,14 @@
     -fx-text-fill: Grey;
 }
 
+.label.selected-tab {
+    -fx-font-weight: bold;
+}
+
+.label.unselected-tab {
+    -fx-text-fill: #707070;
+}
+
 .text-pane {
     -fx-border-color: #C8C8C8;
     -fx-border-width: 1 0 0 0;
@@ -35,7 +43,7 @@
 
 /* from https://stackoverflow.com/a/30883817/1016514 */
 .text-input.error {
-	 -fx-focus-color: #d35244;
+    -fx-focus-color: #d35244;
     -fx-faint-focus-color: #d3524422;
 
     -fx-highlight-fill: -fx-accent;
