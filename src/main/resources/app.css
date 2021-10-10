@@ -18,11 +18,11 @@
     -fx-text-fill: Grey;
 }
 
-.label.selected-tab {
+.label.renamable-tab-selected {
     -fx-font-weight: bold;
 }
 
-.label.unselected-tab {
+.label.renamable-tab-unselected {
     -fx-text-fill: #707070;
 }
 
@@ -42,7 +42,7 @@
 }
 
 /* from https://stackoverflow.com/a/30883817/1016514 */
-.text-input.error {
+.text-input.renamable-tab-error {
     -fx-focus-color: #d35244;
     -fx-faint-focus-color: #d3524422;
 

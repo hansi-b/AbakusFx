@@ -32,6 +32,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
 public class RenamableTab {
+
+	private static final String CSS_RENAMABLE_TAB_ERROR = "renamable-tab-error";
+	private static final String CSS_RENAMABLE_TAB_SELECTED = "renamable-tab-selected";
+	private static final String CSS_RENAMABLE_TAB_UNSELECTED = "renamable-tab-unselected";
+
 	private static final Logger log = LogManager.getLogger();
 
 	private final Tab tab;
@@ -50,7 +55,7 @@ public class RenamableTab {
 
 		label = new Label();
 		label.textProperty().bind(labelProp);
-		label.getStyleClass().add("unselected-tab");
+		label.getStyleClass().add(CSS_RENAMABLE_TAB_UNSELECTED);
 		tab.setGraphic(label);
 
 		textField = new TextField();
@@ -60,20 +65,20 @@ public class RenamableTab {
 			log.trace("isTabSelected {} {} {}", observable, oldValue, newValue);
 			final ObservableList<String> styleClass = label.getStyleClass();
 			if (Boolean.TRUE.equals(newValue)) {
-				styleClass.remove("unselected-tab");
-				styleClass.add("selected-tab");
+				styleClass.remove(CSS_RENAMABLE_TAB_UNSELECTED);
+				styleClass.add(CSS_RENAMABLE_TAB_SELECTED);
 			} else {
-				styleClass.remove("selected-tab");
-				styleClass.add("unselected-tab");
+				styleClass.remove(CSS_RENAMABLE_TAB_SELECTED);
+				styleClass.add(CSS_RENAMABLE_TAB_UNSELECTED);
 			}
 		});
 		isTabEmpty = textField.textProperty().isEmpty();
 		isTabEmpty.addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();
 			if (Boolean.TRUE.equals(newVal))
-				styleClass.add("error");
+				styleClass.add(CSS_RENAMABLE_TAB_ERROR);
 			else
-				styleClass.remove("error");
+				styleClass.remove(CSS_RENAMABLE_TAB_ERROR);
 		});
 
 		textField.setOnAction(event -> updateOrLeave(tab, labelProp, label, textField));
@@ -85,7 +90,7 @@ public class RenamableTab {
 		});
 
 		textField.setOnKeyPressed(e -> {
-			if (e.getCode().equals(KeyCode.ENTER) && textField.getText().isEmpty())
+			if (e.getCode() == KeyCode.ENTER && textField.getText().isEmpty())
 				textField.requestFocus();
 		});
 
