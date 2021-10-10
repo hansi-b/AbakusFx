@@ -53,6 +53,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class ProjectTabsController {
+	private static final String CSS_ADDER_TAB = "adder-tab";
+
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
@@ -204,6 +206,7 @@ public class ProjectTabsController {
 		adderTab.setClosable(false);
 
 		final Label label = new Label("+");
+		label.getStyleClass().add(CSS_ADDER_TAB);
 		adderTab.setGraphic(label);
 
 		adderListener = (obs, oldVal, newVal) -> {
