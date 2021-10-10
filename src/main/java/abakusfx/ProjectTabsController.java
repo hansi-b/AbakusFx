@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +49,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class ProjectTabsController {
 	private static final Logger log = LogManager.getLogger();
@@ -128,6 +129,19 @@ public class ProjectTabsController {
 	void initialize() {
 		newProject();
 		kostenTabChange = new KostenTabsChanges(kostenTabs, this::setToDirty);
+		tabPane.addEventFilter(KeyEvent.ANY, event -> {
+			if (event.getTarget() == tabPane && event.getEventType() == KeyEvent.KEY_PRESSED) {
+				int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
+				int maxIndex = kostenTabs.size() - 1;
+				if (event.getCode() == KeyCode.RIGHT && selectedIndex == maxIndex) {
+					tabPane.getSelectionModel().select(0);
+					event.consume();
+				} else if (event.getCode() == KeyCode.LEFT && selectedIndex == 0) {
+					tabPane.getSelectionModel().select(maxIndex);
+					event.consume();
+				}
+			}
+		});
 	}
 
 	void setChangedHandler(final Runnable dirtyHandler) {
@@ -155,7 +169,7 @@ public class ProjectTabsController {
 	void saveProject(final File targetFile) throws IOException {
 		log.info("Saving project to '{}' ...", targetFile);
 		final String modelYaml = new ModelMapper()
-				.asString(new ProjectModel(kostenTabs.stream().map(KostenTab::getState).collect(Collectors.toList())));
+				.asString(new ProjectModel(kostenTabs.stream().map(KostenTab::getState).toList()));
 		Files.writeString(targetFile.toPath(), modelYaml);
 	}
 
@@ -246,7 +260,7 @@ public class ProjectTabsController {
 	}
 
 	private static List<PersonÜbersicht> asÜbersichten(final List<KostenTab> ktList) {
-		return ktList.stream().map(KostenTab::getÜbersicht).collect(Collectors.toList());
+		return ktList.stream().map(KostenTab::getÜbersicht).toList();
 	}
 
 	private void updateSummen() {
