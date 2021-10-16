@@ -62,13 +62,13 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 
         then:
         projectTabs[0].graphic.text.isEmpty()
-        projectTabs[0].graphic.styleClass.contains("error")
+        projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
 
         when:
         write('x')
 
         then:
         !projectTabs[0].graphic.text.isEmpty()
-        !projectTabs[0].graphic.styleClass.contains("error")
+        !projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
     }
 }
