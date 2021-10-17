@@ -24,7 +24,6 @@ import static abakus.Constants.percent;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.money.Monetary;
 
@@ -55,7 +54,7 @@ public class KostenRechner {
 			final ExplainedMoney sonderzahlung = sonderzahlung(current, anstellung);
 			final ExplainedMoney summe = sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto;
 			return new Monatskosten(current, aktStelle, summe.addPercent(anstellung.agz, "AGZ"));
-		}).collect(Collectors.toList());
+		}).toList();
 	}
 
 	public Money summe(final List<Monatskosten> moKosten) {

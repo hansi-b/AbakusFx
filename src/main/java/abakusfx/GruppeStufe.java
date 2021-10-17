@@ -18,31 +18,43 @@
  */
 package abakusfx;
 
+import java.util.Objects;
+
 import abakus.Gruppe;
 import abakus.Stelle;
 import abakus.Stufe;
 
 class GruppeStufe implements Comparable<GruppeStufe> {
-	final Gruppe gruppe;
-	final Stufe stufe;
+    final Gruppe gruppe;
+    final Stufe stufe;
 
-	private GruppeStufe(final Gruppe gruppe, final Stufe stufe) {
-		this.gruppe = gruppe;
-		this.stufe = stufe;
-	}
+    private GruppeStufe(final Gruppe gruppe, final Stufe stufe) {
+        this.gruppe = gruppe;
+        this.stufe = stufe;
+    }
 
-	static GruppeStufe of(final Stelle stelle) {
-		return stelle != null ? new GruppeStufe(stelle.gruppe, stelle.stufe) : null;
-	}
+    static GruppeStufe of(final Stelle stelle) {
+        return stelle != null ? new GruppeStufe(stelle.gruppe, stelle.stufe) : null;
+    }
 
-	@Override
-	public int compareTo(final GruppeStufe o) {
-		final int gCmp = gruppe.compareTo(o.gruppe);
-		return gCmp != 0 ? gCmp : stufe.compareTo(o.stufe);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof GruppeStufe gs) && compareTo(gs) == 0;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("%s/%s", gruppe, stufe.asString());
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(gruppe, stufe);
+    }
+
+    @Override
+    public int compareTo(final GruppeStufe o) {
+        final int gCmp = gruppe.compareTo(o.gruppe);
+        return gCmp != 0 ? gCmp : stufe.compareTo(o.stufe);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s/%s", gruppe, stufe.asString());
+    }
 }

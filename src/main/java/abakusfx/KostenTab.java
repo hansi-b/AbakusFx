@@ -18,6 +18,10 @@
  */
 package abakusfx;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
@@ -27,10 +31,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
-
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 class KostenTab {
 
