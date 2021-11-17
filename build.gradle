@@ -146,6 +146,26 @@ def isWin = currentOs.contains('win')
 assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
 
 runtime {
+	
+	// from suggestmodules
+	modules = [
+		'java.logging',
+		'java.prefs',
+		'java.rmi',
+		'java.sql',
+		'java.desktop',
+		'java.naming',
+		'java.compiler',
+		'java.scripting',
+		'java.management',
+		'java.xml',
+		'jdk.jfr',
+		'java.net.http',
+		'jdk.jsobject',
+		'jdk.xml.dom',
+		'jdk.unsupported',
+		// explicitly adding locale data
+		'jdk.localedata']
 
     options = [
         '--strip-debug',
@@ -158,9 +178,6 @@ runtime {
     launcher {
         jvmArgs = [
             '-Dlog4j.configurationFile=log4j2_prod.yaml',
-            '-Duser.country=DE',
-            '-Duser.language=de',
-            '-Djava.locale.providers=COMPAT,CLDR,SPI'
         ]
         noConsole = true
     }
