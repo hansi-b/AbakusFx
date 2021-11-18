@@ -38,7 +38,7 @@ class KostenTab {
 	private final KostenTabController kostenTabController;
 
 	KostenTab(final Supplier<KostenRechner> lazyRechner, final Runnable dirtyListener,
-			  final Runnable summeChangeListener) {
+			final Runnable summeChangeListener) {
 
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
