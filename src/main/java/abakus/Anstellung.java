@@ -34,12 +34,12 @@ import java.util.stream.Stream;
  */
 public class Anstellung {
 
-	private final NavigableMap<YearMonth, Stelle> stelleByBeginn;
+	private final NavigableMap<YearMonth, Stelle> startByBeginn;
 	final YearMonth ende;
 	final BigDecimal agz;
 
 	private Anstellung(final YearMonth ende, final BigDecimal agz) {
-		this.stelleByBeginn = new TreeMap<>();
+		this.startByBeginn = new TreeMap<>();
 		this.ende = ende;
 		this.agz = agz;
 	}
@@ -73,40 +73,8 @@ public class Anstellung {
 		if (beginn.isAfter(ende))
 			throw Errors.illegalArg("Stellenbeginn %s liegt nach dem Anstellungsende %s", beginn, ende);
 
-		assert !stelleByBeginn.containsKey(beginn);
-		stelleByBeginn.put(beginn, antrittsStelle);
-	}
-
-	YearMonth getBeginn() {
-		return stelleByBeginn.firstKey();
-	}
-
-	Stelle am(final YearMonth ym) {
-
-		if (ym.isAfter(ende))
-			throw Errors.illegalArg("Argument %s liegt nach dem Anstellungsende %s", ym, ende);
-
-		final Entry<YearMonth, Stelle> entry = stelleByBeginn.floorEntry(ym);
-		if (entry == null)
-			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
-
-		final Stelle stelle = entry.getValue();
-		final YearMonth beginn = findStufenBeginn(entry);
-
-		final Stufe neueStufe = stelle.stufe.stufeAm(beginn, ym);
-		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
-	}
-
-	private YearMonth findStufenBeginn(final Entry<YearMonth, Stelle> entry) {
-		final Stelle stelle = entry.getValue();
-		YearMonth beginn = entry.getKey();
-
-		Entry<YearMonth, Stelle> previous = stelleByBeginn.lowerEntry(beginn);
-		while (previous != null && entry.getValue().gruppe == stelle.gruppe && entry.getValue().stufe == stelle.stufe) {
-			beginn = previous.getKey();
-			previous = stelleByBeginn.lowerEntry(beginn);
-		}
-		return beginn;
+		assert !startByBeginn.containsKey(beginn);
+		startByBeginn.put(beginn, antrittsStelle);
 	}
 
 	NavigableMap<YearMonth, Stelle> monatsStellen(final YearMonth von, final YearMonth bis) {
@@ -124,14 +92,6 @@ public class Anstellung {
 		return stellenByYm;
 	}
 
-	List<YearMonth> monthsInYear(final int year) {
-		return IntStream.rangeClosed(1, 12).mapToObj(m -> YearMonth.of(year, m)).filter(this::isInAnstellung).toList();
-	}
-
-	boolean isInAnstellung(final YearMonth ym) {
-		return !ym.isBefore(getBeginn()) && !ym.isAfter(ende);
-	}
-
 	/**
 	 * @return the Stellen of the argument year for the Sonderzahlung
 	 */
@@ -142,5 +102,45 @@ public class Anstellung {
 		if (yms.isEmpty())
 			yms = Collections.singletonList(YearMonth.of(year, getBeginn().getMonth().getValue()));
 		return yms.stream().map(this::am).toList();
+	}
+
+	private Stelle am(final YearMonth ym) {
+
+		if (ym.isAfter(ende))
+			throw Errors.illegalArg("Argument %s liegt nach dem Anstellungsende %s", ym, ende);
+
+		final Entry<YearMonth, Stelle> entry = startByBeginn.floorEntry(ym);
+		if (entry == null)
+			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
+
+		final Stelle stelle = entry.getValue();
+		final YearMonth beginn = findStufenBeginn(entry);
+
+		final Stufe neueStufe = stelle.stufe.stufeAm(beginn, ym);
+		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
+	}
+
+	private YearMonth findStufenBeginn(final Entry<YearMonth, Stelle> entry) {
+		final Stelle stelle = entry.getValue();
+		YearMonth beginn = entry.getKey();
+
+		Entry<YearMonth, Stelle> previous = startByBeginn.lowerEntry(beginn);
+		while (previous != null && entry.getValue().gruppe == stelle.gruppe && entry.getValue().stufe == stelle.stufe) {
+			beginn = previous.getKey();
+			previous = startByBeginn.lowerEntry(beginn);
+		}
+		return beginn;
+	}
+
+	List<YearMonth> monthsInYear(final int year) {
+		return IntStream.rangeClosed(1, 12).mapToObj(m -> YearMonth.of(year, m)).filter(this::isInAnstellung).toList();
+	}
+
+	private boolean isInAnstellung(final YearMonth ym) {
+		return !ym.isBefore(getBeginn()) && !ym.isAfter(ende);
+	}
+
+	private YearMonth getBeginn() {
+		return startByBeginn.firstKey();
 	}
 }
