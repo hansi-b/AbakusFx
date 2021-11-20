@@ -109,27 +109,35 @@ public class Anstellung {
 		if (ym.isAfter(ende))
 			throw Errors.illegalArg("Argument %s liegt nach dem Anstellungsende %s", ym, ende);
 
-		final Entry<YearMonth, Stelle> entry = startByBeginn.floorEntry(ym);
-		if (entry == null)
-			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
+		final Entry<YearMonth, Stelle> stellenStart = getStartMitStelleFor(ym);
 
-		final Stelle stelle = entry.getValue();
-		final YearMonth beginn = findStufenBeginn(entry);
-
-		final Stufe neueStufe = stelle.stufe.stufeAm(beginn, ym);
-		return neueStufe == stelle.stufe ? stelle : Stelle.of(stelle, neueStufe);
+		Stelle stelle = stellenStart.getValue();
+		Stufe neueStufe = stelle.stufe.stufeAm(stellenStart.getKey(), ym);
+		return Stelle.of(stelle.gruppe, neueStufe, getUmfangOn(ym));
 	}
 
-	private YearMonth findStufenBeginn(final Entry<YearMonth, Stelle> entry) {
-		final Stelle stelle = entry.getValue();
-		YearMonth beginn = entry.getKey();
+	private final Entry<YearMonth, Stelle> getStartMitStelleFor(final YearMonth ym) {
 
-		Entry<YearMonth, Stelle> previous = startByBeginn.lowerEntry(beginn);
-		while (previous != null && entry.getValue().gruppe == stelle.gruppe && entry.getValue().stufe == stelle.stufe) {
-			beginn = previous.getKey();
-			previous = startByBeginn.lowerEntry(beginn);
+		Entry<YearMonth, Stelle> current = getEntryOn(ym);
+
+		Entry<YearMonth, Stelle> previous = startByBeginn.lowerEntry(current.getKey());
+		while (previous != null && current.getValue().gruppe == previous.getValue().gruppe) {
+			current = previous;
+			previous = startByBeginn.lowerEntry(previous.getKey());
 		}
-		return beginn;
+
+		return current;
+	}
+
+	private BigDecimal getUmfangOn(final YearMonth ym) {
+		return getEntryOn(ym).getValue().umfangPercent;
+	}
+
+	private Entry<YearMonth, Stelle> getEntryOn(final YearMonth ym) {
+		final Entry<YearMonth, Stelle> current = startByBeginn.floorEntry(ym);
+		if (current == null)
+			throw Errors.illegalArg("Keine Stelle zu %s gefunden (frühest bekannte ist %s)", ym, getBeginn());
+		return current;
 	}
 
 	List<YearMonth> monthsInYear(final int year) {

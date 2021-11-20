@@ -86,6 +86,33 @@ class AnstellungSpec extends Specification {
 		a.am(start_2019_12.plusMonths(13)) == Stelle.of(E10, zwei, 65)
 	}
 
+	def "mit Weiterbeschäftigung über Aufstiege (issue #46)"() {
+
+		given:
+		Anstellung weiter = Anstellung.weiter(
+				YearMonth.of(2019, 2),
+				Stelle.of(Gruppe.E13, Stufe.drei, 90),
+				// -> stufe 4 ab 02/2022; stufe 5 ab 02/2026
+				YearMonth.of(2022, 5), 55,
+				YearMonth.of(2030, 12), agz)
+
+		expect:
+		weiter.am(ym) == Stelle.of(Gruppe.E13, expectedStufe, umfang)
+
+		where:
+		ym                     | expectedStufe | umfang
+		// Aufstieg -> Stufe 4
+		YearMonth.of(2022, 1)  | Stufe.drei  | 90
+		YearMonth.of(2022, 2)  | Stufe.vier  | 90
+		YearMonth.of(2022, 5)  | Stufe.vier  | 55
+		// kein Aufstieg (issue #46)
+		YearMonth.of(2023, 1)  | Stufe.vier  | 55
+		YearMonth.of(2023, 2)  | Stufe.vier  | 55
+		// Aufstieg -> Stufe 5
+		YearMonth.of(2026, 1)  | Stufe.vier  | 55
+		YearMonth.of(2026, 2)  | Stufe.fünf  | 55
+	}
+
 	def "bei stufe sechs ist schluß"() {
 
 		given:
@@ -117,7 +144,6 @@ class AnstellungSpec extends Specification {
 		def a = Anstellung.weiter(start_2019_12, stelle_e10_1,
 				YearMonth.of(2020, 9), 65, start_2019_12.plusYears(2), agz)
 
-		println a.stelleByBeginn
 		then:
 		a.calcBaseStellen(2020) == [
 			stelle_e10_1,
@@ -147,7 +173,6 @@ class AnstellungSpec extends Specification {
 		YearMonth.of(2019, 3)  | YearMonth.of(2020, 2)  | (3..12)
 		YearMonth.of(2019, 3)  | YearMonth.of(2019, 4)  | (3..4)
 	}
-
 
 	def "Monatsstellen über Weiterbeschäftigung"() {
 

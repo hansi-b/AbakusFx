@@ -34,16 +34,16 @@ public class Stelle {
 		this.umfangPercent = umfangPercent;
 	}
 
-	public static Stelle of(final Stelle stelle, final Stufe stufe) {
-		return new Stelle(stelle.gruppe, stufe, stelle.umfangPercent);
+	static Stelle of(final Gruppe g, final Stufe s) {
+		return of(g, s, 100);
 	}
 
 	public static Stelle of(final Gruppe g, final Stufe s, final int umfang) {
-		return new Stelle(g, s, BigDecimal.valueOf(umfang));
+		return of(g, s, BigDecimal.valueOf(umfang));
 	}
 
-	static Stelle of(final Gruppe g, final Stufe s) {
-		return Stelle.of(g, s, 100);
+	public static Stelle of(Gruppe g, Stufe s, BigDecimal umfang) {
+		return new Stelle(g, s, umfang);
 	}
 
 	public boolean istVollzeit() {
