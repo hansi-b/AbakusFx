@@ -98,7 +98,7 @@ public class Tarif {
 		if (jahr > maxJahr)
 			return gruppenGehälter.get(maxJahr);
 
-		throw new IllegalArgumentException(
-				String.format("Keine Gehälter für das Jahr %d (frühestes ist %d)", jahr, Collections.min(jahre)));
+		throw new IllegalArgumentException(String
+				.format("Keine Tarifdaten für das Jahr %d vorhanden (frühestes ist %d)", jahr, Collections.min(jahre)));
 	}
 }
