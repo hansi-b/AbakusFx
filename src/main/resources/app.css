@@ -46,7 +46,7 @@
 }
 
 /* from https://stackoverflow.com/a/30883817/1016514 */
-.text-input.renamable-tab-error {
+.text-input.renamable-tab-error, .text-input.date-picker-error {
     -fx-focus-color: #d35244;
     -fx-faint-focus-color: #d3524422;
 

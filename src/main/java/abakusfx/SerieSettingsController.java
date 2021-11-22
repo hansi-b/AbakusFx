@@ -27,6 +27,7 @@ import abakus.Gruppe;
 import abakus.Stelle;
 import abakus.Stufe;
 import abakusfx.models.SeriesModel;
+import fxTools.UpdatingDatePicker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -75,6 +76,7 @@ public class SerieSettingsController {
 
 	@FXML
 	void initialize() {
+
 		von.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue.getDayOfMonth() != 1)
 				von.valueProperty().setValue(newValue.withDayOfMonth(1));
@@ -120,6 +122,10 @@ public class SerieSettingsController {
 
 		umfangSeitLabel.disableProperty().bind(weiter.selectedProperty().not());
 		umfangSeit.disableProperty().bind(weiter.selectedProperty().not());
+
+		UpdatingDatePicker.ensureDatePickerUpdate(seit);
+		UpdatingDatePicker.ensureDatePickerUpdate(von);
+		UpdatingDatePicker.ensureDatePickerUpdate(bis);
 
 		setState(SeriesModel.fallback());
 	}
