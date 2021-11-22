@@ -19,6 +19,7 @@
 package abakusfx;
 
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -44,6 +45,7 @@ public class KostenTabController {
 	private SerieTableController serieTableController;
 
 	private Supplier<KostenRechner> lazyRechner;
+	private Runnable updater;
 
 	private final ReadOnlyObjectWrapper<Money> summeInternalProperty = new ReadOnlyObjectWrapper<>(null);
 	final ReadOnlyObjectProperty<Money> summeProperty = summeInternalProperty.getReadOnlyProperty();
@@ -51,34 +53,33 @@ public class KostenTabController {
 	@FXML
 	void initialize() {
 		log.trace("KostenTabController.initialize");
-		serieSettingsController.calcKosten.setOnAction(a -> updateResult());
+		serieSettingsController.calcKosten.setOnAction(a -> updater.run());
 		serieSettingsController.addDirtyListener(this::clearResult);
 	}
 
-	void setKostenRechner(final Supplier<KostenRechner> lazyRechner) {
+	void setLazies(final Supplier<KostenRechner> lazyRechner, Runnable lazyUpdater) {
 		this.lazyRechner = lazyRechner;
+		this.updater = lazyUpdater;
 	}
 
-	void updateResult() {
+	final List<Monatskosten> monatsKosten = new ArrayList<>();
 
-		final List<Monatskosten> moKosten = calcMonatsKosten();
-		serieTableController.updateKosten(moKosten);
-		final Money summe = lazyRechner.get().summe(moKosten);
+	void updateResult() {
+		monatsKosten.clear();
+		final YearMonth von = serieSettingsController.getVon();
+		final YearMonth bis = serieSettingsController.getBis();
+		monatsKosten.addAll(lazyRechner.get().monatsKosten(serieSettingsController.getAnstellung(), von, bis));
+
+		serieTableController.updateKosten(monatsKosten);
+		final Money summe = lazyRechner.get().summe(monatsKosten);
 		summeInternalProperty.set(summe);
 		log.trace("updateResult -> {}", summe);
 	}
 
-	private List<Monatskosten> calcMonatsKosten() {
-		final YearMonth von = serieSettingsController.getVon();
-		final YearMonth bis = serieSettingsController.getBis();
-		return lazyRechner.get().monatsKosten(serieSettingsController.getAnstellung(), von, bis);
-	}
-
 	SeriesÜbersicht getÜbersicht() {
-		final List<Monatskosten> moKosten = calcMonatsKosten();
-
-		return new SeriesÜbersicht(serieSettingsController.getVon(), moKosten.get(0).stelle,
-				serieSettingsController.getBis(), moKosten.get(moKosten.size() - 1).stelle,
+		return new SeriesÜbersicht(serieSettingsController.getVon(),
+				monatsKosten.isEmpty() ? null : monatsKosten.get(0).stelle, serieSettingsController.getBis(),
+				monatsKosten.isEmpty() ? null : monatsKosten.get(monatsKosten.size() - 1).stelle,
 				serieSettingsController.getUmfang(), serieSettingsController.getAgz(), summeInternalProperty.get());
 	}
 

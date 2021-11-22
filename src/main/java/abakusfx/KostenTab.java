@@ -22,17 +22,24 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import fxTools.RenamableTab;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 
 class KostenTab {
+
+	private static final Logger log = LogManager.getLogger();
 
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
@@ -50,7 +57,7 @@ class KostenTab {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
 		kostenTabController = loader.getController();
-		kostenTabController.setKostenRechner(lazyRechner);
+		kostenTabController.setLazies(lazyRechner, () -> updateSumme());
 		kostenTabController.addDirtyListener(dirtyListener);
 		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());
 	}
@@ -86,7 +93,17 @@ class KostenTab {
 	}
 
 	void updateSumme() {
-		kostenTabController.updateResult();
+		try {
+			kostenTabController.updateResult();
+		} catch (IllegalArgumentException ex) {
+			log.error("Error in settings", ex);
+			Alert errorBox = new Alert(AlertType.ERROR);
+			errorBox.setTitle("Fehler");
+			errorBox.setHeaderText(
+					String.format("Einstellungen für '%s' sind nicht valide:", tabLabelProperty().get()));
+			errorBox.setContentText(ex.getMessage());
+			errorBox.showAndWait();
+		}
 	}
 
 	void setState(final PersonModel person) {
