@@ -66,18 +66,21 @@ public class RenamableTab {
 			final ObservableList<String> styleClass = label.getStyleClass();
 			if (Boolean.TRUE.equals(newValue)) {
 				styleClass.remove(CSS_RENAMABLE_TAB_UNSELECTED);
-				styleClass.add(CSS_RENAMABLE_TAB_SELECTED);
+				if (!styleClass.contains(CSS_RENAMABLE_TAB_SELECTED))
+					styleClass.add(CSS_RENAMABLE_TAB_SELECTED);
 			} else {
 				styleClass.remove(CSS_RENAMABLE_TAB_SELECTED);
-				styleClass.add(CSS_RENAMABLE_TAB_UNSELECTED);
+				if (!styleClass.contains(CSS_RENAMABLE_TAB_UNSELECTED))
+					styleClass.add(CSS_RENAMABLE_TAB_UNSELECTED);
 			}
 		});
 		isTabEmpty = textField.textProperty().isEmpty();
 		isTabEmpty.addListener((obs, oldVal, newVal) -> {
 			final ObservableList<String> styleClass = textField.getStyleClass();
-			if (Boolean.TRUE.equals(newVal))
-				styleClass.add(CSS_RENAMABLE_TAB_ERROR);
-			else
+			if (Boolean.TRUE.equals(newVal)) {
+				if (!styleClass.contains(CSS_RENAMABLE_TAB_ERROR))
+					styleClass.add(CSS_RENAMABLE_TAB_ERROR);
+			} else
 				styleClass.remove(CSS_RENAMABLE_TAB_ERROR);
 		});
 

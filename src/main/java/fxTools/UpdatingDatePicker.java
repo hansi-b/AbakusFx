@@ -28,7 +28,7 @@ public class UpdatingDatePicker {
 			final ObservableList<String> styleClass = datePicker.getEditor().getStyleClass();
 			if (localDate != null)
 				styleClass.remove(CSS_DATE_PICKER_ERROR);
-			else
+			else if (!styleClass.contains(CSS_DATE_PICKER_ERROR))
 				styleClass.add(CSS_DATE_PICKER_ERROR);
 			return localDate;
 		}
