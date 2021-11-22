@@ -1,144 +1,144 @@
 plugins {
-    id 'eclipse'
+	id 'eclipse'
 
-    id 'application'
-    id 'groovy'
-    id 'distribution'
-    id 'maven-publish'
+	id 'application'
+	id 'groovy'
+	id 'distribution'
+	id 'maven-publish'
 
-    id "org.openjfx.javafxplugin" version "0.0.10"
+	id "org.openjfx.javafxplugin" version "0.0.10"
 
-    id 'com.palantir.git-version' version '0.12.3'
+	id 'com.palantir.git-version' version '0.12.3'
 
-    id 'com.github.ben-manes.versions' version '0.39.0'
+	id 'com.github.ben-manes.versions' version '0.39.0'
 
-    id 'org.beryx.runtime' version '1.12.7'
+	id 'org.beryx.runtime' version '1.12.7'
 
-    // license stuff
-    id 'com.github.hierynomus.license' version '0.16.1'
+	// license stuff
+	id 'com.github.hierynomus.license' version '0.16.1'
 }
 
 group 'org.hansi-b'
 version gitVersion()
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 publishing {
 
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'abakusfx'
-            from components.java
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'abakusfx'
+			from components.java
+		}
+	}
 
-    repositories {
-        maven {
-            name = 'GitHubPackages'
-            url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
-            credentials {
-                username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
-                password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
-            }
-        }
-    }
+	repositories {
+		maven {
+			name = 'GitHubPackages'
+			url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
+			credentials {
+				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
+				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
+			}
+		}
+	}
 }
 
 license {
-    header project.file('LICENSE.HEADER')
-    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+	header project.file('LICENSE.HEADER')
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)
 
-    include '**/*.java'
+	include '**/*.java'
 }
 
 dependencies {
 
-    implementation 'org.javamoney.moneta:moneta-core:1.4.2'
+	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 
-    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+	implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+	implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0'
 
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    testImplementation 'org.objenesis:objenesis:3.2'
-    testImplementation 'org.spockframework:spock-core:2.1-M2-groovy-3.0'
+	testImplementation 'org.objenesis:objenesis:3.2'
+	testImplementation 'org.spockframework:spock-core:2.1-M2-groovy-3.0'
 
-    testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
-    testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
+	testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
+	testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
 
-    testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
+	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
 
 wrapper.gradleVersion = '7.3'
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 javafx {
-    version = "17"
-    modules = [
-        "javafx.controls",
-        "javafx.fxml",
-        "javafx.graphics",
-        "javafx.web"
-    ]
+	version = "17"
+	modules = [
+		"javafx.controls",
+		"javafx.fxml",
+		"javafx.graphics",
+		"javafx.web"
+	]
 }
 
 
 task writeVersion() {
-    doFirst {
-        file('src/main/resources/version.properties').text = """app.name=Abakus
+	doFirst {
+		file('src/main/resources/version.properties').text = """app.name=Abakus
 build.version=$version
 build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
 """
-    }
+	}
 }
 
 compileJava.dependsOn writeVersion
 
 task jpackageImageWithExtras(type: Zip) {
-    dependsOn jpackageImage
+	dependsOn jpackageImage
 
-    def imgDir = file("build/jpackage/$project.name")
+	def imgDir = file("build/jpackage/$project.name")
 
-    doFirst {
-        copy {
-            from projectDir
-            include 'LICENSE'
-            into imgDir
-        }
-    }
+	doFirst {
+		copy {
+			from projectDir
+			include 'LICENSE'
+			into imgDir
+		}
+	}
 
-    from projectDir
-    include 'src/**/*'
-    destinationDirectory = imgDir
+	from projectDir
+	include 'src/**/*'
+	destinationDirectory = imgDir
 }
 
 jpackage.dependsOn jpackageImageWithExtras
 
 tasks.withType(GroovyCompile) {
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
 /*
  * for headless tests, run as: gradle test -Pheadless=true
  */
 test {
-    useJUnitPlatform()
-    jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}"
+	useJUnitPlatform()
+	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}"
 }
 
 application {
-    mainClass = 'abakusfx.AppStarter'
+	mainClass = 'abakusfx.AppStarter'
 }
 
 def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
@@ -146,7 +146,7 @@ def isWin = currentOs.contains('win')
 assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
 
 runtime {
-	
+
 	// from suggestmodules
 	modules = [
 		'java.logging',
@@ -165,46 +165,47 @@ runtime {
 		'jdk.xml.dom',
 		'jdk.unsupported',
 		// explicitly adding locale data
-		'jdk.localedata']
+		'jdk.localedata'
+	]
 
-    options = [
-        '--strip-debug',
-        '--compress',
-        '2',
-        '--no-header-files',
-        '--no-man-pages'
-    ]
+	options = [
+		'--strip-debug',
+		'--compress',
+		'2',
+		'--no-header-files',
+		'--no-man-pages'
+	]
 
-    launcher {
-        jvmArgs = [
-            '-Dlog4j.configurationFile=log4j2_prod.yaml',
-        ]
-        noConsole = true
-    }
+	launcher {
+		jvmArgs = [
+			'-Dlog4j.configurationFile=log4j2_prod.yaml',
+		]
+		noConsole = true
+	}
 
-    jpackage {
+	jpackage {
 
-        appVersion = "${project.version}".split('-')[0]
-        installerType = isWin ? "msi" : "deb"
+		appVersion = "${project.version}".split('-')[0]
+		installerType = isWin ? "msi" : "deb"
 
-        def iconExt = isWin ? 'ico' : 'png'
-        imageOptions += [
-            "--icon",
-            "src/main/resources/logo.$iconExt"
-        ]
+		def iconExt = isWin ? 'ico' : 'png'
+		imageOptions += [
+			"--icon",
+			"src/main/resources/logo.$iconExt"
+		]
 
-        installerOptions += [
-            "--resource-dir",
-            "src/main/resources",
-            "--file-associations",
-            "src/main/resources/file_assoc_aba.properties"
-        ]
-        if (isWin) {
-            installerOptions += [
-                "--win-menu",
-                "--win-shortcut",
-                "--win-per-user-install"
-            ]
-        }
-    }
+		installerOptions += [
+			"--resource-dir",
+			"src/main/resources",
+			"--file-associations",
+			"src/main/resources/file_assoc_aba.properties"
+		]
+		if (isWin) {
+			installerOptions += [
+				"--win-menu",
+				"--win-shortcut",
+				"--win-per-user-install"
+			]
+		}
+	}
 }
