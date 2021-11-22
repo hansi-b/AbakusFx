@@ -93,6 +93,7 @@ javafx {
 	]
 }
 
+def versionedProjectName = "$project.name-${project.version}"
 
 task writeVersion() {
 	doFirst {
@@ -108,7 +109,7 @@ compileJava.dependsOn writeVersion
 task jpackageImageWithExtras(type: Zip) {
 	dependsOn jpackageImage
 
-	def imgDir = file("build/jpackage/$project.name")
+	def imgDir = file("build/jpackage/$versionedProjectName")
 
 	doFirst {
 		copy {
@@ -121,6 +122,7 @@ task jpackageImageWithExtras(type: Zip) {
 	from projectDir
 	include 'src/**/*'
 	destinationDirectory = imgDir
+	archiveName = "${versionedProjectName}-src.zip"
 }
 
 jpackage.dependsOn jpackageImageWithExtras
@@ -147,26 +149,8 @@ assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
 
 runtime {
 
-	// from suggestmodules
-	modules = [
-		'java.logging',
-		'java.prefs',
-		'java.rmi',
-		'java.sql',
-		'java.desktop',
-		'java.naming',
-		'java.compiler',
-		'java.scripting',
-		'java.management',
-		'java.xml',
-		'jdk.jfr',
-		'java.net.http',
-		'jdk.jsobject',
-		'jdk.xml.dom',
-		'jdk.unsupported',
-		// explicitly adding locale data
-		'jdk.localedata'
-	]
+	modules = ['jdk.localedata']
+	additive = true // add to suggested modules
 
 	options = [
 		'--strip-debug',
@@ -184,6 +168,8 @@ runtime {
 	}
 
 	jpackage {
+
+		imageName = "${versionedProjectName}"
 
 		appVersion = "${project.version}".split('-')[0]
 		installerType = isWin ? "msi" : "deb"
