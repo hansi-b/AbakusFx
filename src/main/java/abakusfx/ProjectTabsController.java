@@ -61,7 +61,7 @@ public class ProjectTabsController {
 	private TabPane tabPane;
 	private final ObservableList<KostenTab> kostenTabs = FXCollections.observableArrayList();
 
-	private ChangeListener<Tab> adderListener = null;
+	private ChangeListener<Tab> adderListener;
 
 	private KostenTabsChanges kostenTabChange;
 
