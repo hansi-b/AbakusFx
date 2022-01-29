@@ -19,11 +19,13 @@
 package abakus;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.time.YearMonth;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.javamoney.moneta.Money;
 
@@ -34,22 +36,20 @@ class Gehälter {
 	 * Use with caution: Not consistent with a general notion of equals for
 	 * Gehälter!
 	 */
-	static final Comparator<Gehälter> jahrUndGruppeComparator = new Comparator<Gehälter>() {
-		@Override
-		public int compare(final Gehälter o1, final Gehälter o2) {
-			final int gCmp = o1.gruppe.compareTo(o2.gruppe);
-			return gCmp != 0 ? gCmp : Integer.compare(o1.jahr, o2.jahr);
-		}
+	static final Comparator<Gehälter> gültigkeitUndGruppeComparator = (o1, o2) -> {
+		final int gCmp = o1.gruppe.compareTo(o2.gruppe);
+		return gCmp != 0 ? gCmp : o1.gültigAb.compareTo(o2.gültigAb);
 	};
 
 	final Gruppe gruppe;
-	final int jahr;
+	final YearMonth gültigAb;
 	final BigDecimal sonderzahlungProzent;
-	final Map<Stufe, Money> bruttos;
+	final EnumMap<Stufe, Money> bruttos;
 
-	Gehälter(final Gruppe gruppe, final int jahr, final BigDecimal szProzent, final Map<Stufe, Money> bruttos) {
+	Gehälter(final Gruppe gruppe, final YearMonth gültigAb, final BigDecimal szProzent,
+			final EnumMap<Stufe, Money> bruttos) {
 		this.gruppe = gruppe;
-		this.jahr = jahr;
+		this.gültigAb = gültigAb;
 		this.sonderzahlungProzent = szProzent;
 		this.bruttos = bruttos;
 	}
@@ -57,20 +57,19 @@ class Gehälter {
 
 public class Tarif {
 
-	private final Map<Gruppe, Map<Integer, Gehälter>> gehälterMapping;
+	private final EnumMap<Gruppe, NavigableMap<YearMonth, Gehälter>> gehälterMapping;
 
 	Tarif(final Set<Gehälter> parsedGehälter) {
-		this.gehälterMapping = new HashMap<>();
-		parsedGehälter.forEach(g -> {
-			this.gehälterMapping.computeIfAbsent(g.gruppe, k -> new HashMap<>()).put(g.jahr, g);
-		});
+		this.gehälterMapping = new EnumMap<>(Gruppe.class);
+		parsedGehälter
+				.forEach(g -> this.gehälterMapping.computeIfAbsent(g.gruppe, k -> new TreeMap<>()).put(g.gültigAb, g));
 	}
 
 	/**
-	 * @return the 100%-Bruttogehalt for the given Gruppe, Stufe, and Year
+	 * @return the 100%-Bruttogehalt for the given Gruppe, Stufe, and YearMonth
 	 */
-	ExplainedMoney brutto(final Gruppe gruppe, final Stufe stufe, final int jahr) {
-		return explainedBrutto(lookupYearTolerant(gruppe, jahr), stufe);
+	ExplainedMoney brutto(final Gruppe gruppe, final Stufe stufe, final YearMonth ym) {
+		return explainedBrutto(lookupYearTolerant(gruppe, ym), stufe);
 	}
 
 	/**
@@ -78,27 +77,22 @@ public class Tarif {
 	 *         and Year
 	 */
 	ExplainedMoney sonderzahlung(final Gruppe gruppe, final Stufe stufe, final int jahr) {
-		final Gehälter geh = lookupYearTolerant(gruppe, jahr);
+		final Gehälter geh = lookupYearTolerant(gruppe, YearMonth.of(jahr, 11));
 		return explainedBrutto(geh, stufe).multiplyPercent(geh.sonderzahlungProzent, "JSZ");
 	}
 
 	private ExplainedMoney explainedBrutto(final Gehälter gehälter, final Stufe stufe) {
 		return ExplainedMoney.of(gehälter.bruttos.get(stufe),
-				String.format("TV-L %d %s/%s", gehälter.jahr, gehälter.gruppe, stufe.asString()));
+				String.format("TV-L %s/%s ab %s", gehälter.gruppe, stufe.asString(), gehälter.gültigAb));
 	}
 
-	private Gehälter lookupYearTolerant(final Gruppe gruppe, final int jahr) {
-		final Map<Integer, Gehälter> gruppenGehälter = gehälterMapping.get(gruppe);
-		final Set<Integer> jahre = gruppenGehälter.keySet();
+	private Gehälter lookupYearTolerant(final Gruppe gruppe, final YearMonth ym) {
+		final NavigableMap<YearMonth, Gehälter> gruppenGehälter = gehälterMapping.get(gruppe);
+		final Entry<YearMonth, Gehälter> floor = gruppenGehälter.floorEntry(ym);
 
-		if (jahre.contains(jahr))
-			return gruppenGehälter.get(jahr);
-
-		final Integer maxJahr = Collections.max(jahre);
-		if (jahr > maxJahr)
-			return gruppenGehälter.get(maxJahr);
-
-		throw new IllegalArgumentException(String
-				.format("Keine Tarifdaten für das Jahr %d vorhanden (frühestes ist %d)", jahr, Collections.min(jahre)));
+		if (floor == null)
+			throw new IllegalArgumentException(String.format("Keine Tarifdaten für %s vorhanden (frühestes ist %s", ym,
+					gruppenGehälter.firstKey()));
+		return floor.getValue();
 	}
 }

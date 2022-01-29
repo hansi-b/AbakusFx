@@ -50,7 +50,7 @@ public class KostenRechner {
 		return anstellung.monatsStellen(von, bis).entrySet().stream().map(e -> {
 			final YearMonth current = e.getKey();
 			final Stelle aktStelle = e.getValue();
-			final ExplainedMoney monatsBrutto = monatsBrutto(aktStelle, current.getYear());
+			final ExplainedMoney monatsBrutto = monatsBrutto(aktStelle, current);
 			final ExplainedMoney sonderzahlung = sonderzahlung(current, anstellung);
 			final ExplainedMoney summe = sonderzahlung != null ? monatsBrutto.add(sonderzahlung) : monatsBrutto;
 			return new Monatskosten(current, aktStelle, summe.addPercent(anstellung.agz, "AGZ"));
@@ -61,8 +61,8 @@ public class KostenRechner {
 		return moKosten.stream().map(moKo -> moKo.kosten.money()).reduce(Constants.euros(0), Money::add);
 	}
 
-	ExplainedMoney monatsBrutto(final Stelle stelle, final int jahr) {
-		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, jahr);
+	ExplainedMoney monatsBrutto(final Stelle stelle, final YearMonth ym) {
+		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, ym);
 		return stelle.istVollzeit() ? tarifBrutto : tarifBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
 	}
 

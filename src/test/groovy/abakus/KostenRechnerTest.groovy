@@ -22,7 +22,7 @@ class KostenRechnerTest extends Specification {
 	def "monatsBrutto beinhaltet nicht arbeitgeberzuschlag"() {
 
 		when:
-		ExplainedMoney m = rechner.monatsBrutto(Stelle.of(Gruppe.E10, Stufe.drei, 80), 2020)
+		ExplainedMoney m = rechner.monatsBrutto(Stelle.of(Gruppe.E10, Stufe.drei, 80), YearMonth.of(2020, 2))
 
 		then:
 		m.money.getNumber() == 3880.76 * 0.8
