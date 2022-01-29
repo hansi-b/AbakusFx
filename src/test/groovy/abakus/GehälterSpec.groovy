@@ -12,9 +12,9 @@ import spock.lang.Specification
 class GehälterSpec extends Specification {
 
 	def oneJsz = new BigDecimal(1);
-	def oneBruttos = [ drei : euros(3) ]
+	def oneBruttos = [ (Stufe.drei) : euros(3) ] as EnumMap
 
-	def otherBruttos = [ zwei : euros(2) ]
+	def otherBruttos = [ (Stufe.zwei) : euros(2) ] as EnumMap
 	def otherJsz = new BigDecimal(9);
 
 	def cmp = Gehälter.gültigkeitUndGruppeComparator
