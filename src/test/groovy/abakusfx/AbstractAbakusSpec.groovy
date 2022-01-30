@@ -20,6 +20,7 @@ import javafx.stage.Stage
 public class AbstractAbakusSpec extends ApplicationSpec {
 
 	Parent root
+	Stage stage
 
 	AppController appController
 	AppPrefs appPrefs = Mock()
@@ -42,7 +43,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	@Override
 	void init() throws Exception {
-		FxToolkit.registerStage { new Stage() }
+		stage = FxToolkit.registerStage { new Stage() }
 		AppPrefs.Factory.fixed(appPrefs)
 		appPrefs.wasDisclaimerAccepted() >> true
 	}

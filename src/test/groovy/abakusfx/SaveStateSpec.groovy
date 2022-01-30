@@ -105,14 +105,14 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		appController.isCurrentProjectDirty.get() == false
 
 		when:
-		def tab = queryNthTab(1)
-		clickOn(tab, MouseButton.SECONDARY)
+		def tabNode = queryNthTab(1)
+		clickOn(tabNode, MouseButton.SECONDARY)
 		if (Boolean.getBoolean("headless")) {
 			/*
-			 * need something like
+			 * hack from
 			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
 			 */
-			//WaitForAsyncUtils.asyncFx { tab.node.contextmenu.show(stage.scene.window) }.get()
+			WaitForAsyncUtils.asyncFx { tabNode.tab.contextMenu.show(stage.scene.window) }.get()
 		}
 		click("Entfernen")
 
