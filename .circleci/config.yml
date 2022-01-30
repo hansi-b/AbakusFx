@@ -29,7 +29,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: gradle check jacocoTestReport -Pheadless=true --info
+      - run: gradle check -x licenseMain jacocoTestReport -Pheadless=true --info
       - codecov/upload:
           file: build/reports/jacoco/test/jacocoTestReport.xml
           token: $CODECOV_TOKEN
