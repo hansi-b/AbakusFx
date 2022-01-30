@@ -1,4 +1,7 @@
 # AbakusFx
+
+[![CircleCI](https://circleci.com/gh/hansi-b/AbakusFx/tree/master.svg?style=svg)](https://circleci.com/gh/hansi-b/AbakusFx/tree/master)
+
 ## Kostenschätzungen für Stellen im öffentlichen Dienst nach TV-L
 
 Diese Software wird unter der [Lizenz GPL3](https://www.gnu.org/licenses/gpl-3.0.en.html) zur Verfügung gestellt.
