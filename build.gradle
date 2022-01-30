@@ -2,6 +2,7 @@ plugins {
 	id 'eclipse'
 
 	id 'application'
+	id 'jacoco'
 	id 'groovy'
 	id 'distribution'
 	id 'maven-publish'
@@ -95,6 +96,13 @@ javafx {
 		"javafx.graphics",
 		"javafx.web"
 	]
+}
+
+jacocoTestReport {
+	reports {
+		xml.required=true
+		html.required=false
+	}
 }
 
 def versionedProjectName = "$project.name-${project.version}"
