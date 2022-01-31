@@ -37,12 +37,12 @@ public class HelpUtils {
 				if (foundHeader)
 					throw new IllegalStateException("Found second header");
 				foundHeader = true;
-				htmlResult.append("<tr><th>").append(l.replaceAll("\t", "</th><th>").replaceFirst("^#\s+", ""))
+				htmlResult.append("<tr><th>").append(l.replace("\t", "</th><th>").replaceFirst("^#\s+", ""))
 						.append("</th></tr>\n");
 			} else {
 				if (!foundHeader)
 					throw new IllegalStateException("Expected header first");
-				htmlResult.append("<tr><td>").append(l.replaceAll("\t", "</td><td>")).append("</td></tr>\n");
+				htmlResult.append("<tr><td>").append(l.replace("\t", "</td><td>")).append("</td></tr>\n");
 			}
 		}
 		return htmlResult.append("</table>\n").toString();
