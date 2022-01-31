@@ -56,6 +56,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import utils.HelpUtils;
 
 public class AppController {
 	static final Logger log = LogManager.getLogger();
@@ -285,10 +286,10 @@ public class AppController {
 		final WebView webView = new WebView();
 
 		try {
-			final String tarifString = ResourceLoader.loader.resourceAsString("ötv.csv");
-			final String helpString = ResourceLoader.loader.resourceAsString("doc/main.html").replace(">>>ötv.csv<<<",
-					tarifString);
-			webView.getEngine().loadContent(helpString);
+			final String resourceAsString = ResourceLoader.loader.resourceAsString("doc/main.html");
+			final String tarifCsvString = ResourceLoader.loader.resourceAsString("ötv.csv");
+			webView.getEngine().loadContent(
+					resourceAsString.replace(">>>ötv.csv<<<", HelpUtils.csvTarifToHtmlTable(tarifCsvString)));
 		} catch (final IOException e) {
 			log.error("Could not load help", e);
 			final Alert alert = new Alert(AlertType.ERROR,
