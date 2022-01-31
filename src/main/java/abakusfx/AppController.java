@@ -51,6 +51,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -284,11 +285,13 @@ public class AppController {
 	public void showHelp(final ActionEvent actionEvent) {
 		log.trace("#showHelp on {}", actionEvent);
 		final WebView webView = new WebView();
-
 		try {
 			final String resourceAsString = ResourceLoader.loader.resourceAsString("doc/main.html");
 			final String tarifCsvString = ResourceLoader.loader.resourceAsString("ötv.csv");
-			webView.getEngine().loadContent(
+			WebEngine engine = webView.getEngine();
+
+			engine.setUserStyleSheetLocation(ResourceLoader.loader.getResourceUrl("doc/style.css").toString());
+			engine.loadContent(
 					resourceAsString.replace(">>>ötv.csv<<<", HelpUtils.csvTarifToHtmlTable(tarifCsvString)));
 		} catch (final IOException e) {
 			log.error("Could not load help", e);

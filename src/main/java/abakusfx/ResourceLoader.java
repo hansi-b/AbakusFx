@@ -20,6 +20,7 @@ package abakusfx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,6 +70,10 @@ class ResourceLoader {
 	}
 
 	FXMLLoader getFxmlLoader(String fxml) {
-		return new FXMLLoader(getClass().getClassLoader().getResource(fxml));
+		return new FXMLLoader(getResourceUrl(fxml));
+	}
+
+	URL getResourceUrl(String fxml) {
+		return getClass().getClassLoader().getResource(fxml);
 	}
 }
