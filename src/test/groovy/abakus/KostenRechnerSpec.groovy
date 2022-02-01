@@ -12,7 +12,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class KostenRechnerTest extends Specification {
+class KostenRechnerSpec extends Specification {
 
 	@Shared BigDecimal agz = BigDecimal.valueOf(30.0)
 	@Shared Anstellung ans = Anstellung.of( YearMonth.of(2021, 1), Stelle.of(Gruppe.E13, Stufe.eins), YearMonth.of(2023, 1), agz)

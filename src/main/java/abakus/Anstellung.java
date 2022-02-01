@@ -69,11 +69,13 @@ public class Anstellung {
 		return a;
 	}
 
-	private void add(final YearMonth beginn, final Stelle antrittsStelle) {
+	void add(final YearMonth beginn, final Stelle antrittsStelle) {
 		if (beginn.isAfter(ende))
 			throw Errors.illegalArg("Stellenbeginn %s liegt nach dem Anstellungsende %s", beginn, ende);
 
-		assert !startByBeginn.containsKey(beginn);
+		if (startByBeginn.containsKey(beginn))
+			throw Errors.illegalArg("Doppelter Stellenbeginn %s (alt: %s, neu: %s)", beginn, startByBeginn.get(beginn),
+					antrittsStelle);
 		startByBeginn.put(beginn, antrittsStelle);
 	}
 

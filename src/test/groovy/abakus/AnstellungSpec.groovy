@@ -17,6 +17,7 @@ class AnstellungSpec extends Specification {
 
 	def start_2019_12 = YearMonth.of(2019, 12)
 	def stelle_e10_1 = Stelle.of(E10, eins)
+	def stelle_e10_3 = Stelle.of(E10, drei)
 
 	def "'am' darf nicht vor Anstellungsbeginn liegen"() {
 
@@ -30,6 +31,33 @@ class AnstellungSpec extends Specification {
 		then:
 		def ex = thrown IllegalArgumentException
 		ex.message == "Keine Stelle zu ${vorher} gefunden (frühest bekannte ist ${start_2019_12})"
+	}
+
+	def "Stelle kann nicht nach Ende hinzugefügt werden"() {
+
+		given:
+		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(2), agz)
+
+		when:
+		a.add(start_2019_12.plusYears(3), stelle_e10_3)
+
+		then:
+		def ex = thrown IllegalArgumentException
+		ex.message == "Stellenbeginn 2022-12 liegt nach dem Anstellungsende 2021-12"
+	}
+
+	def "Datum kann nicht doppelt hinzugefügt werden"() {
+
+		given:
+		def a = Anstellung.of(start_2019_12, stelle_e10_1, start_2019_12.plusYears(2), agz)
+
+		when:
+		a.add(start_2019_12.plusMonths(2), stelle_e10_1)
+		a.add(start_2019_12.plusMonths(2), stelle_e10_3)
+
+		then:
+		def ex = thrown IllegalArgumentException
+		ex.message == "Doppelter Stellenbeginn 2020-02 (alt: Stelle(E10/eins, 100%), neu: Stelle(E10/drei, 100%))"
 	}
 
 	def "einfache Anstellung"() {

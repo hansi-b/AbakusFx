@@ -1,4 +1,4 @@
-package abakus;
+package abakus
 
 import spock.lang.Specification
 

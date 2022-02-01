@@ -6,7 +6,7 @@ import spock.lang.Unroll
 import java.time.YearMonth
 
 
-class StufeTest extends Specification {
+class StufeSpec extends Specification {
 
     @Unroll
     def "Stufe 1 nach #plusMonths Monaten ist #neueStufe"() {

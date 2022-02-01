@@ -28,6 +28,41 @@ class ExplainedMoneySpec extends Specification {
 		exM(1.3, '2nd') | exM(2.6, '1st') |  2.6+1.3 | '1,30 € 2nd + 2,60 € 1st'
 	}
 
+	def "multiply percent"() {
+
+		expect:
+		def em = fst.multiplyPercent(perc, ex)
+		em.explained == resEx
+		em.money == Constants.euros(res)
+
+		where:
+		fst | perc | ex | res | resEx
+		exM(2.6, '1st') | 50 | "more" | 1.3 | '2,60 € 1st × 50% more'
+		exM(6, '2nd') | 20 | "Aufschlag" | 1.2 | '6,00 € 2nd × 20% Aufschlag'
+	}
+
+	def "add percent"() {
+
+		expect:
+		def em = fst.addPercent(snd, ex)
+		em.explained == resEx
+		em.money == Constants.euros(res)
+
+		where:
+		fst | snd | ex | res | resEx
+		exM(2.6, '1st') | 50 | "added" | 3.9 | '2,60 € 1st + 50% added'
+		exM(6, '2nd') | 20 | "Aufschlag" | 7.2 | '6,00 € 2nd + 20% Aufschlag'
+	}
+
+	def "equality"() {
+
+		expect:
+		def em = exM(5.6, 'simple')
+		em.equals(em)
+		!em.equals(null)
+		em.equals(exM(5.6, 'simple'))
+	}
+
 	def exM(n, s) {
 		ExplainedMoney.of(Constants.euros(n), s)
 	}
