@@ -32,10 +32,10 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		if (Boolean.getBoolean("headless")) {
 			println ">>> HEADLESS MODE"
 
-			System.setProperty("testfx.robot", "glass");
-			System.setProperty("testfx.headless", "true");
-			System.setProperty("prism.order", "sw");
-			System.setProperty("prism.text", "t2k");
+			System.setProperty("testfx.robot", "glass")
+			System.setProperty("testfx.headless", "true")
+			System.setProperty("prism.order", "sw")
+			System.setProperty("prism.text", "t2k")
 		} else {
 			println ">>> LIVE MODE"
 		}
