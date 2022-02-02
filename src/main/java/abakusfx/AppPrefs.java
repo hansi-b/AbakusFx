@@ -42,14 +42,14 @@ class AppPrefs {
 				return fixedPrefs;
 
 			final AppPrefs appPrefs = new AppPrefs(new UserNodePrefs<>(App.class));
-			initialize(appPrefs.prefs);
+			ensureVersion(appPrefs.prefs);
 			return appPrefs;
 		}
 
 		/**
-		 * check our prefs for version information and update if necessary
+		 * Check our prefs for version information and update if necessary.
 		 */
-		private static void initialize(final EnumPrefs<PrefKeys> prefs) {
+		private static void ensureVersion(final EnumPrefs<PrefKeys> prefs) {
 
 			if (!prefs.contains(PrefKeys._version)) {
 				prefs.put(PrefKeys._version, PrefVersion.v1.name());
