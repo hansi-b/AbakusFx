@@ -339,8 +339,12 @@ public class AppController {
 		final String frage = "Akzeptieren Sie diese Nutzungsvereinbarung?\n(\"Nein\" schließt das Programm.)";
 		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, String.format("%s%n%s", disclaimer, frage),
 				ButtonType.YES, ButtonType.NO);
-		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.NO)).setDefaultButton(true);
-		((Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.YES)).setDefaultButton(false);
+		Button noButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.NO);
+		noButton.setText("Nein");
+		noButton.setDefaultButton(true);
+		Button yesButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.YES);
+		yesButton.setText("Ja");
+		yesButton.setDefaultButton(false);
 
 		disclaimerConf.setHeaderText("Abakus - Nutzungsvereinbarung");
 		disclaimerConf.setTitle("Abakus - Nutzungsvereinbarung");
