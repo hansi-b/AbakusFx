@@ -1,5 +1,7 @@
 package abakusfx
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
@@ -19,6 +21,8 @@ import javafx.stage.Stage
  */
 public class AbstractAbakusSpec extends ApplicationSpec {
 
+	static final Logger log = LogManager.getLogger(AbstractAbakusSpec)
+
 	Parent root
 	Stage stage
 
@@ -30,21 +34,27 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	def setupSpec() {
 		if (Boolean.getBoolean("headless")) {
-			println ">>> HEADLESS MODE"
+			log.info ">>> HEADLESS MODE"
 
 			System.setProperty("testfx.robot", "glass")
 			System.setProperty("testfx.headless", "true")
 			System.setProperty("prism.order", "sw")
 			System.setProperty("prism.text", "t2k")
 		} else {
-			println ">>> LIVE MODE"
+			log.info ">>> LIVE MODE"
 		}
 	}
 
 	@Override
 	void init() throws Exception {
-		stage = FxToolkit.registerStage { new Stage() }
+		stage = FxToolkit.registerStage {
+			new Stage()
+		}
 		AppPrefs.Factory.fixed(appPrefs)
+		initAppPrefs()
+	}
+
+	void initAppPrefs() {
 		appPrefs.wasDisclaimerAccepted() >> true
 	}
 
