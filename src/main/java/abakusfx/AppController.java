@@ -103,14 +103,14 @@ public class AppController {
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
 		prefs = AppPrefs.Factory.create();
-
-		if (!prefs.wasDisclaimerAccepted()) {
-			prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
-			if (!prefs.wasDisclaimerAccepted()) {
-				Platform.exit();
-				log.info("Disclaimer was rejected");
-			}
-		}
+		if (!prefs.wasDisclaimerAccepted())
+			Platform.runLater(() -> {
+				prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
+				if (!prefs.wasDisclaimerAccepted()) {
+					Platform.exit();
+					log.info("Disclaimer was rejected");
+				}
+			});
 
 		projectTabsController.setUpdateHandler(übersichtTableController::updateItems);
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
@@ -329,7 +329,7 @@ public class AppController {
 		info.showAndWait();
 	}
 
-	public boolean displayDislaimerAndAccept() {
+	private boolean displayDislaimerAndAccept() {
 		log.trace("#showDisclaimer");
 
 		final String disclaimer = ResourceLoader.loader.loadDisclaimer();
