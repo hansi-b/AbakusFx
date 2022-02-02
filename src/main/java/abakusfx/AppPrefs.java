@@ -21,6 +21,9 @@ package abakusfx;
 import java.io.File;
 import java.util.Optional;
 
+import utils.EnumPrefs;
+import utils.UserNodePrefs;
+
 class AppPrefs {
 
 	/**
@@ -38,7 +41,7 @@ class AppPrefs {
 			if (fixedPrefs != null)
 				return fixedPrefs;
 
-			final AppPrefs appPrefs = new AppPrefs();
+			final AppPrefs appPrefs = new AppPrefs(new UserNodePrefs<>(App.class));
 			initialize(appPrefs.prefs);
 			return appPrefs;
 		}
@@ -46,7 +49,7 @@ class AppPrefs {
 		/**
 		 * check our prefs for version information and update if necessary
 		 */
-		private static void initialize(final PrefsAdapter<App, PrefKeys> prefs) {
+		private static void initialize(final EnumPrefs<PrefKeys> prefs) {
 
 			if (!prefs.contains(PrefKeys._version)) {
 				prefs.put(PrefKeys._version, PrefVersion.v1.name());
@@ -76,7 +79,11 @@ class AppPrefs {
 
 	private static final PrefVersion currentVersion = PrefVersion.v1;
 
-	private final PrefsAdapter<App, PrefKeys> prefs = new PrefsAdapter<>(App.class);
+	private final EnumPrefs<PrefKeys> prefs;
+
+	AppPrefs(EnumPrefs<PrefKeys> prefs) {
+		this.prefs = prefs;
+	}
 
 	Optional<File> getLastProject() {
 		final String s = prefs.get(PrefKeys.lastProject);

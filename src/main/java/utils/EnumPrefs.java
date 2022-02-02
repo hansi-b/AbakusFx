@@ -16,17 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package abakusfx;
-
-import java.util.prefs.Preferences;
+package utils;
 
 /**
  * a thin wrapper around java Preferences with typed keys
  *
- * @param <T> the class for these preferences
  * @param <K> the key enum
  */
-class PrefsAdapter<T, K extends Enum<K>> {
+public interface EnumPrefs<K extends Enum<K>> {
 
 	static class PrefsException extends RuntimeException {
 
@@ -37,29 +34,11 @@ class PrefsAdapter<T, K extends Enum<K>> {
 		}
 	}
 
-	private final Class<T> clazz;
+	public void put(final K key, final String value) throws PrefsException;
 
-	PrefsAdapter(final Class<T> clazz) {
-		this.clazz = clazz;
-	}
+	public String get(final K key) throws PrefsException;
 
-	public void put(final K key, final String value) {
-		backingPrefs().put(key.name(), value);
-	}
+	public boolean contains(final K key) throws PrefsException;
 
-	public String get(final K key) {
-		return backingPrefs().get(key.name(), null);
-	}
-
-	public boolean contains(final K key) throws PrefsException {
-		return get(key) != null;
-	}
-
-	public void remove(final K key) {
-		backingPrefs().remove(key.name());
-	}
-
-	private Preferences backingPrefs() {
-		return Preferences.userNodeForPackage(clazz).node(clazz.getSimpleName());
-	}
+	public void remove(final K key) throws PrefsException;
 }
