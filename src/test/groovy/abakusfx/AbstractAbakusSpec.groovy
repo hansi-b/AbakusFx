@@ -50,7 +50,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage = FxToolkit.registerStage {
 			new Stage()
 		}
-		AppPrefs.Factory.fixed(appPrefs)
+		AppPrefs.fix(appPrefs)
 		initAppPrefs()
 	}
 

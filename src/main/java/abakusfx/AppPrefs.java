@@ -26,47 +26,18 @@ import utils.UserNodePrefs;
 
 class AppPrefs {
 
+	private static AppPrefs fixedPrefs;
+
 	/**
 	 * poor person's dependency injection for preferences to use mocked prefs in
 	 * tests
 	 */
-	static class Factory {
-		private static AppPrefs fixedPrefs = null;
+	static void fix(AppPrefs prefs) {
+		fixedPrefs = prefs;
+	}
 
-		static void fixed(final AppPrefs appPrefs) {
-			fixedPrefs = appPrefs;
-		}
-
-		static AppPrefs create() {
-			if (fixedPrefs != null)
-				return fixedPrefs;
-
-			final AppPrefs appPrefs = new AppPrefs(new UserNodePrefs<>(App.class));
-			ensureVersion(appPrefs.prefs);
-			return appPrefs;
-		}
-
-		/**
-		 * Check our prefs for version information and update if necessary.
-		 */
-		private static void ensureVersion(final EnumPrefs<PrefKeys> prefs) {
-
-			if (!prefs.contains(PrefKeys._version)) {
-				prefs.put(PrefKeys._version, PrefVersion.v1.name());
-			}
-
-			final String versionName = prefs.get(PrefKeys._version);
-			try {
-				final PrefVersion incomingVersion = PrefVersion.valueOf(versionName);
-				if (incomingVersion != currentVersion)
-					throw new IllegalStateException(
-							String.format("Cannot handle outdated preferences version %s (need %s)", incomingVersion,
-									currentVersion));
-			} catch (final IllegalArgumentException ex) {
-				throw new IllegalStateException(String.format("Cannot handle unknown preferences version %s (need %s)",
-						versionName, currentVersion), ex);
-			}
-		}
+	static AppPrefs create() {
+		return fixedPrefs != null ? fixedPrefs : new AppPrefs(new UserNodePrefs<>(App.class));
 	}
 
 	enum PrefVersion {
@@ -81,8 +52,30 @@ class AppPrefs {
 
 	private final EnumPrefs<PrefKeys> prefs;
 
-	AppPrefs(EnumPrefs<PrefKeys> prefs) {
+	private AppPrefs(EnumPrefs<PrefKeys> prefs) {
 		this.prefs = prefs;
+		ensureVersion();
+	}
+
+	/**
+	 * Check our prefs for version information and update if necessary.
+	 */
+	private void ensureVersion() {
+
+		if (!prefs.contains(PrefKeys._version)) {
+			prefs.put(PrefKeys._version, PrefVersion.v1.name());
+		}
+
+		final String versionName = prefs.get(PrefKeys._version);
+		try {
+			final PrefVersion incomingVersion = PrefVersion.valueOf(versionName);
+			if (incomingVersion != currentVersion)
+				throw new IllegalStateException(String.format("Cannot handle outdated preferences version %s (need %s)",
+						incomingVersion, currentVersion));
+		} catch (final IllegalArgumentException ex) {
+			throw new IllegalStateException(String.format("Cannot handle unknown preferences version %s (need %s)",
+					versionName, currentVersion), ex);
+		}
 	}
 
 	Optional<File> getLastProject() {

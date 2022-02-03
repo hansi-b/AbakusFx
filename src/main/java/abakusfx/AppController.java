@@ -102,7 +102,7 @@ public class AppController {
 		isCurrentProjectDirty = currentProjectName.isNotEmpty().and(isSettingsChanged);
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
-		prefs = AppPrefs.Factory.create();
+		prefs = AppPrefs.create();
 		if (!prefs.wasDisclaimerAccepted())
 			Platform.runLater(() -> {
 				prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
