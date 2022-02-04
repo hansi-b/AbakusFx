@@ -26,18 +26,22 @@ import utils.UserNodePrefs;
 
 class AppPrefs {
 
-	private static AppPrefs fixedPrefs;
+	private static EnumPrefs<PrefKeys> fixedPrefs;
 
 	/**
 	 * poor person's dependency injection for preferences to use mocked prefs in
 	 * tests
 	 */
-	static void fix(AppPrefs prefs) {
+	static void fix(EnumPrefs<PrefKeys> prefs) {
 		fixedPrefs = prefs;
 	}
 
+	/**
+	 * this is called by the AppController
+	 */
 	static AppPrefs create() {
-		return fixedPrefs != null ? fixedPrefs : new AppPrefs(new UserNodePrefs<>(App.class));
+		EnumPrefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs : new UserNodePrefs<>(App.class);
+		return new AppPrefs(effectivePrefs);
 	}
 
 	enum PrefVersion {

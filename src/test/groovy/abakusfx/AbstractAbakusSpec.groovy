@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
+import abakusfx.AppPrefs.PrefKeys
 import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -14,6 +15,7 @@ import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.input.MouseButton
 import javafx.stage.Stage
+import utils.EnumPrefs
 
 /**
  * Basis boiler-plate class to derive FX-test-classes from.
@@ -27,7 +29,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	Stage stage
 
 	AppController appController
-	AppPrefs appPrefs = Mock()
+	EnumPrefs<PrefKeys> prefs = Mock()
 
 	TabPane projectTabsPane
 	ObservableList<Tab> projectTabs
@@ -50,12 +52,13 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage = FxToolkit.registerStage {
 			new Stage()
 		}
-		AppPrefs.fix(appPrefs)
+		AppPrefs.fix(prefs)
 		initAppPrefs()
 	}
 
 	void initAppPrefs() {
-		appPrefs.wasDisclaimerAccepted() >> true
+		prefs.get(PrefKeys._version) >> AppPrefs.currentVersion
+		prefs.get(PrefKeys.wasDisclaimerAccepted) >> "true"
 	}
 
 	@Override
