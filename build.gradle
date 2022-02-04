@@ -148,7 +148,8 @@ tasks.withType(GroovyCompile) {
  */
 test {
 	useJUnitPlatform()
-	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}"
+	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}",
+			'-Dlog4j.configurationFile=log4j2_test.yaml'
 }
 
 application {
