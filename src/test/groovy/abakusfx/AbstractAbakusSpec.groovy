@@ -35,6 +35,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	ObservableList<Tab> projectTabs
 
 	def setupSpec() {
+
 		if (Boolean.getBoolean("headless")) {
 			log.info ">>> HEADLESS MODE"
 
@@ -52,6 +53,8 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage = FxToolkit.registerStage {
 			new Stage()
 		}
+		stage.setTitle("Abakus Spec Window")
+
 		AppPrefs.fix(prefs)
 		initAppPrefs()
 	}
