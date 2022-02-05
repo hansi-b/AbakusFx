@@ -9,7 +9,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
 	xmlns="http://javafx.com/javafx"
 	fx:controller="abakusfx.SerieSettingsController"
-	stylesheets="app.css, serieSettings.css">
+	stylesheets="fxml/app.css, fxml/serieSettings.css">
 
 	<HBox spacing="6" alignment="CENTER_LEFT">
 		<padding>

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml"
     xmlns="http://javafx.com/javafx"
-    fx:controller="abakusfx.KostenTabController" stylesheets="app.css">
+    fx:controller="abakusfx.KostenTabController" stylesheets="fxml/app.css">
 
     <fx:include fx:id="serieSettings"
         source="serieSettings.fxml" />

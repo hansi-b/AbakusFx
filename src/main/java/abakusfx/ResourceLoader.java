@@ -70,10 +70,10 @@ class ResourceLoader {
 	}
 
 	FXMLLoader getFxmlLoader(String fxml) {
-		return new FXMLLoader(getResourceUrl(fxml));
+		return new FXMLLoader(getResourceUrl("fxml/" + fxml));
 	}
 
-	URL getResourceUrl(String fxml) {
-		return getClass().getClassLoader().getResource(fxml);
+	URL getResourceUrl(String resName) {
+		return getClass().getClassLoader().getResource(resName);
 	}
 }
