@@ -8,6 +8,7 @@ import org.testfx.framework.spock.ApplicationSpec
 import org.testfx.matcher.control.TableViewMatchers
 
 import abakusfx.AppPrefs.PrefKeys
+import fxTools.Windows
 import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -28,23 +29,13 @@ public class DisclaimerSpec extends AbstractAbakusSpec {
 	def "starting without prior disclaimer acceptance shows disclaimer"() {
 
 		when:
-		def s = findFocusedStage()
+		def s = Windows.findFocusedStage()
 		then:
 		s.getTitle().contains("Nutzungsvereinbarung")
 
 		when:
 		click("Ja")
 		then:
-		!findFocusedStage().getTitle().contains("Nutzungsvereinbarung")
-	}
-
-	/**
-	 * @return the last focused stage
-	 */
-	def findFocusedStage() {
-		return Window.getWindows().stream()//
-				.map(w -> (w instanceof Stage) ? (Stage) w : null) //
-				.filter(w -> w != null && w.isFocused())
-				.reduce((a, b) -> b).orElse(null)
+		APP_SPEC_WIDOW_TITLE.equals(Windows.findFocusedStage().getTitle())
 	}
 }
