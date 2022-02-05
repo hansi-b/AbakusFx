@@ -21,8 +21,7 @@ import javafx.stage.Window
 
 public class DisclaimerSpec extends AbstractAbakusSpec {
 
-	void initAppPrefs() {
-		prefs.put(PrefKeys._version, AppPrefs.currentVersion.name())
+	void overrideAppPrefs() {
 		prefs.put(PrefKeys.wasDisclaimerAccepted, "false")
 	}
 

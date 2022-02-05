@@ -59,13 +59,12 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage.setTitle(APP_SPEC_WIDOW_TITLE)
 
 		AppPrefs.fix(prefs)
-		initAppPrefs()
-	}
-
-	void initAppPrefs() {
 		prefs.put(PrefKeys._version, AppPrefs.currentVersion.name())
 		prefs.put(PrefKeys.wasDisclaimerAccepted, "true")
+		overrideAppPrefs()
 	}
+
+	void overrideAppPrefs() {}
 
 	@Override
 	public void start(Stage stage) throws Exception {
