@@ -65,7 +65,7 @@ public class UpdatingDatePicker {
 
 		datePicker.getEditor().textProperty().addListener((obs, oVal, nVal) -> validator.validateAndStyle());
 		datePicker.getEditor().focusedProperty().addListener((obj, wasFocused, isFocused) -> {
-			if (isFocused)
+			if (Boolean.TRUE.equals(isFocused))
 				return;
 			LocalDate date = validator.validateAndStyle();
 			if (date != null)
