@@ -21,8 +21,8 @@ import javafx.stage.Window
 public class DisclaimerSpec extends AbstractAbakusSpec {
 
 	void initAppPrefs() {
-		prefs.get(PrefKeys._version) >> AppPrefs.currentVersion
-		prefs.get(PrefKeys.wasDisclaimerAccepted) >>> ["false", "true"]
+		prefs.put(PrefKeys._version, AppPrefs.currentVersion.name())
+		prefs.put(PrefKeys.wasDisclaimerAccepted, "false")
 	}
 
 	def "starting without prior disclaimer acceptance shows disclaimer"() {

@@ -16,6 +16,7 @@ import javafx.scene.control.TabPane
 import javafx.scene.input.MouseButton
 import javafx.stage.Stage
 import utils.EnumPrefs
+import utils.InMemoryPrefs
 
 /**
  * Basis boiler-plate class to derive FX-test-classes from.
@@ -29,7 +30,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	Stage stage
 
 	AppController appController
-	EnumPrefs<PrefKeys> prefs = Mock()
+	EnumPrefs<PrefKeys> prefs = new InMemoryPrefs<PrefKeys>()
 
 	TabPane projectTabsPane
 	ObservableList<Tab> projectTabs
@@ -60,8 +61,8 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	}
 
 	void initAppPrefs() {
-		prefs.get(PrefKeys._version) >> AppPrefs.currentVersion
-		prefs.get(PrefKeys.wasDisclaimerAccepted) >> "true"
+		prefs.put(PrefKeys._version, AppPrefs.currentVersion.name())
+		prefs.put(PrefKeys.wasDisclaimerAccepted, "true")
 	}
 
 	@Override
