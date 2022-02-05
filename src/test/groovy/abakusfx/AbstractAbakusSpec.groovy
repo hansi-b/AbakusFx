@@ -26,6 +26,8 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	static final Logger log = LogManager.getLogger(AbstractAbakusSpec)
 
+	static final String APP_SPEC_WIDOW_TITLE = 'Abakus Spec Window'
+
 	Parent root
 	Stage stage
 
@@ -54,7 +56,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		stage = FxToolkit.registerStage {
 			new Stage()
 		}
-		stage.setTitle("Abakus Spec Window")
+		stage.setTitle(APP_SPEC_WIDOW_TITLE)
 
 		AppPrefs.fix(prefs)
 		initAppPrefs()
