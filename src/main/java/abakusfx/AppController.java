@@ -24,6 +24,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,6 +80,8 @@ public class AppController {
 
 	private AppPrefs prefs;
 
+	private Function<String, FileChooser> fileChooserFactory;
+
 	/**
 	 * whether we would want to alert the user to unsaved changes
 	 */
@@ -92,6 +95,8 @@ public class AppController {
 
 	@FXML
 	void initialize() throws IOException {
+
+		fileChooserFactory = this::createAbaChooser;
 
 		isSettingsChanged = new SimpleBooleanProperty(false);
 		currentProjectName = new SimpleStringProperty("");
@@ -114,6 +119,13 @@ public class AppController {
 
 		projectTabsController.setUpdateHandler(übersichtTableController::updateItems);
 		Platform.runLater(() -> projectTabsController.focusFirstTab());
+	}
+
+	/**
+	 * indirection for testing
+	 */
+	void setFileChooserFactory(Function<String, FileChooser> fileChooserFactory) {
+		this.fileChooserFactory = fileChooserFactory;
 	}
 
 	private static KostenRechner initKostenRechner() throws IOException {
@@ -158,7 +170,7 @@ public class AppController {
 			return;
 
 		log.trace("#loadProject on {}", actionEvent);
-		final FileChooser fileChooser = createAbaChooser("Projekt laden");
+		final FileChooser fileChooser = fileChooserFactory.apply("Projekt laden");
 		final File file = fileChooser.showOpenDialog(getWindow());
 		if (file == null) {
 			log.debug("No project source file for loading selected");
@@ -216,7 +228,7 @@ public class AppController {
 	void saveProjectAs(final ActionEvent actionEvent) {
 		log.trace("#saveProjectAs on {}", actionEvent);
 
-		final FileChooser fileChooser = createAbaChooser("Projekt speichern");
+		final FileChooser fileChooser = fileChooserFactory.apply("Projekt speichern");
 		File file = fileChooser.showSaveDialog(getWindow());
 		if (file == null) {
 			log.debug("No file for saving selected");
