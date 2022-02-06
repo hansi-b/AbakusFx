@@ -25,7 +25,7 @@ public class DisclaimerSpec extends AbstractAbakusSpec {
 		prefs.put(PrefKeys.wasDisclaimerAccepted, "false")
 	}
 
-	def "starting without prior disclaimer acceptance shows disclaimer"() {
+	def "accepting disclaimer opens main windows"() {
 
 		when:
 		def s = Windows.findFocusedStage()
@@ -35,6 +35,20 @@ public class DisclaimerSpec extends AbstractAbakusSpec {
 		when:
 		click("Ja")
 		then:
+		prefs.get(PrefKeys.wasDisclaimerAccepted)
 		APP_SPEC_WIDOW_TITLE.equals(Windows.findFocusedStage().getTitle())
+	}
+
+	def "rejecting disclaimer closes app"() {
+
+		when:
+		def s = Windows.findFocusedStage()
+		then:
+		s.getTitle().contains("Nutzungsvereinbarung")
+
+		when:
+		click("Nein")
+		then:
+		prefs.get(PrefKeys.wasDisclaimerAccepted) != "true"
 	}
 }
