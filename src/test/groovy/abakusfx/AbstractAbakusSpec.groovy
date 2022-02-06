@@ -1,5 +1,7 @@
 package abakusfx
 
+import java.nio.file.Path
+
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.testfx.api.FxToolkit
@@ -15,6 +17,7 @@ import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.input.MouseButton
 import javafx.stage.Stage
+import spock.lang.TempDir
 import utils.EnumPrefs
 import utils.InMemoryPrefs
 
@@ -27,6 +30,9 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	static final Logger log = LogManager.getLogger(AbstractAbakusSpec)
 
 	static final String APP_SPEC_WIDOW_TITLE = 'Abakus Spec Window'
+
+	@TempDir
+	Path tempDir
 
 	Parent root
 	Stage stage
@@ -65,6 +71,12 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	}
 
 	void overrideAppPrefs() {}
+
+	def withCurrentProject(final fileName = 'project1') {
+		def pPath = tempDir.resolve(fileName)
+		appController.setCurrentProject(pPath.toFile())
+		return pPath
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {

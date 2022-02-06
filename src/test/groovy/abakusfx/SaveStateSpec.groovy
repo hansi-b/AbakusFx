@@ -1,13 +1,9 @@
 package abakusfx
 
-import java.nio.file.Path
-
 import org.testfx.util.WaitForAsyncUtils
 
-import abakusfx.AppPrefs.PrefKeys
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
-import spock.lang.TempDir
 
 /**
  * Test for issue#25
@@ -15,9 +11,6 @@ import spock.lang.TempDir
  * Ensure the state of the "save" action reflects the project state
  */
 public class SaveStateSpec extends AbstractAbakusSpec {
-
-	@TempDir
-	Path tempDir
 
 	def "save on empty project is disabled, saveAs is enabled"() {
 		expect:
@@ -79,7 +72,6 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 
 		given:
 		def pFile = withCurrentProject()
-		prefs.get(PrefKeys.lastProject) >> pFile
 
 		when:
 		click("+")
@@ -107,11 +99,5 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 
 		then:
 		appController.isCurrentProjectDirty.get() == true
-	}
-
-	def withCurrentProject(final fileName = 'project1') {
-		def pFile = tempDir.resolve(fileName).toFile()
-		appController.setCurrentProject(pFile)
-		return pFile
 	}
 }
