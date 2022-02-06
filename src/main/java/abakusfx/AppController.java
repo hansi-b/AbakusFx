@@ -107,7 +107,7 @@ public class AppController {
 			Platform.runLater(() -> {
 				prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
 				if (!prefs.wasDisclaimerAccepted()) {
-					Platform.exit();
+					exitApp(null);
 					log.info("Disclaimer was rejected");
 				}
 			});
