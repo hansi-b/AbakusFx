@@ -1,12 +1,13 @@
 package abakusfx
 
-import java.nio.file.Files
+import java.nio.file.Path
 
 import org.testfx.util.WaitForAsyncUtils
 
 import abakusfx.AppPrefs.PrefKeys
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
+import spock.lang.TempDir
 
 /**
  * Test for issue#25
@@ -15,7 +16,8 @@ import javafx.scene.input.MouseButton
  */
 public class SaveStateSpec extends AbstractAbakusSpec {
 
-	def tempDir = Files.createTempDirectory('abakusFxProjects')
+	@TempDir
+	Path tempDir
 
 	def "save on empty project is disabled, saveAs is enabled"() {
 		expect:
