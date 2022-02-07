@@ -18,6 +18,17 @@ import javafx.stage.Stage
 
 public class TabPaneSpec extends AbstractAbakusSpec {
 
+	TabPane projectTabsPane
+	ObservableList<Tab> projectTabs
+
+	@Override
+	public void start(Stage stage) throws Exception {
+		super.start(stage)
+
+		projectTabsPane = lookup("#tabPane").query()
+		projectTabs = projectTabsPane.getTabs()
+	}
+
 	def "first tab is selected in initial setup"() {
 		expect:
 		verifyThat(projectTabsPane, isEnabled())
@@ -53,22 +64,22 @@ public class TabPaneSpec extends AbstractAbakusSpec {
 		projectTabs[1].graphic.text == 'second'
 	}
 
-    def "tab colour changes according to content status"() {
-        given:
-        doubleClickOn(queryNthTab(0))
+	def "tab colour changes according to content status"() {
+		given:
+		doubleClickOn(queryNthTab(0))
 
-        when:
-        type(KeyCode.DELETE)
+		when:
+		type(KeyCode.DELETE)
 
-        then:
-        projectTabs[0].graphic.text.isEmpty()
-        projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
+		then:
+		projectTabs[0].graphic.text.isEmpty()
+		projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
 
-        when:
-        write('x')
+		when:
+		write('x')
 
-        then:
-        !projectTabs[0].graphic.text.isEmpty()
-        !projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
-    }
+		then:
+		!projectTabs[0].graphic.text.isEmpty()
+		!projectTabs[0].graphic.styleClass.contains("renamable-tab-error")
+	}
 }

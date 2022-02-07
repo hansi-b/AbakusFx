@@ -40,9 +40,6 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	AppController appController
 	EnumPrefs<PrefKeys> prefs = new InMemoryPrefs<PrefKeys>()
 
-	TabPane projectTabsPane
-	ObservableList<Tab> projectTabs
-
 	def setupSpec() {
 
 		if (Boolean.getBoolean("headless")) {
@@ -87,9 +84,6 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		Scene scene = new Scene(root)
 		stage.setScene(scene)
 		stage.show()
-
-		projectTabsPane = lookup("#tabPane").query()
-		projectTabs = projectTabsPane.getTabs()
 	}
 
 	/**
@@ -108,11 +102,6 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	def click(query) {
 		clickOn(lookup(query).query())
-	}
-
-
-	def clickRight(query) {
-		clickOn(lookup(query).query(), MouseButton.SECONDARY)
 	}
 
 	@Override
