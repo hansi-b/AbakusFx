@@ -1,6 +1,4 @@
 plugins {
-	id 'eclipse'
-
 	id 'application'
 	id 'jacoco'
 	id 'groovy'
