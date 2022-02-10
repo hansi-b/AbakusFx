@@ -24,6 +24,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,6 +91,8 @@ public class AppController {
 	 */
 	BooleanBinding isCurrentProjectDirty;
 
+	private Supplier<File> fileToSaveAsSupplier = this::choseFileToSaveAs;
+
 	@FXML
 	void initialize() throws IOException {
 
@@ -120,6 +123,10 @@ public class AppController {
 		final Tarif tarif = new ÖtvCsvParser().parseTarif();
 		log.debug("Tarif geladen");
 		return new KostenRechner(tarif);
+	}
+
+	void setFileToSaveAsSupplier(Supplier<File> fileToSaveAsSupplier) {
+		this.fileToSaveAsSupplier = fileToSaveAsSupplier;
 	}
 
 	/**
@@ -158,8 +165,7 @@ public class AppController {
 			return;
 
 		log.trace("#loadProject on {}", actionEvent);
-		final FileChooser fileChooser = createAbaChooser("Projekt laden");
-		final File file = fileChooser.showOpenDialog(getWindow());
+		final File file = choseFileToLoad();
 		if (file == null) {
 			log.debug("No project source file for loading selected");
 			return;
@@ -216,8 +222,7 @@ public class AppController {
 	void saveProjectAs(final ActionEvent actionEvent) {
 		log.trace("#saveProjectAs on {}", actionEvent);
 
-		final FileChooser fileChooser = createAbaChooser("Projekt speichern");
-		File file = fileChooser.showSaveDialog(getWindow());
+		File file = fileToSaveAsSupplier.get();
 		if (file == null) {
 			log.debug("No file for saving selected");
 			return;
@@ -227,6 +232,14 @@ public class AppController {
 		log.debug("Saving project as '{}'", file);
 		setCurrentProject(file);
 		saveProject(actionEvent);
+	}
+
+	private File choseFileToLoad() {
+		return createAbaChooser("Projekt laden").showOpenDialog(getWindow());
+	}
+
+	private File choseFileToSaveAs() {
+		return createAbaChooser("Projekt speichern").showSaveDialog(getWindow());
 	}
 
 	private Window getWindow() {
