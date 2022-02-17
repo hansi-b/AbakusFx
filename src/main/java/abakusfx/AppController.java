@@ -48,6 +48,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -333,12 +334,24 @@ public class AppController {
 			return;
 
 		final String versionString = ResourceLoader.loader.loadVersionProperties();
-
-		final String aboutString = String.format("%s%n%n%s", versionString, disclaimer);
+		final String aboutString = disclaimer.replace(">>>build.properties<<<", versionString);
 
 		final Alert info = new Alert(AlertType.INFORMATION, aboutString);
 		info.setHeaderText("Abakus - Version & Lizenz");
 		info.setTitle("Abakus - Version und Lizenz");
+
+		TextArea textArea = new TextArea(aboutString);
+		textArea.setEditable(false);
+		textArea.setWrapText(true);
+
+		VBox.setVgrow(textArea, Priority.ALWAYS);
+
+		VBox pane = new VBox();
+		pane.getChildren().add(textArea);
+
+		info.getDialogPane().setContent(pane);
+		info.setResizable(true);
+
 		info.showAndWait();
 	}
 
