@@ -23,23 +23,26 @@ import java.util.prefs.Preferences;
 /**
  * a thin wrapper around java Preferences with typed keys
  *
- * @param <T> the class for these preferences
  * @param <K> the key enum
  */
-public class UserNodePrefs<T, K extends Enum<K>> implements EnumPrefs<K> {
+public class UserNodePrefs<K extends Enum<K>> implements EnumPrefs<K> {
 
-	private final Class<T> clazz;
+	private final Preferences node;
 
-	public UserNodePrefs(final Class<T> clazz) {
-		this.clazz = clazz;
+	UserNodePrefs(Preferences node) {
+		this.node = node;
+	}
+
+	public static <L extends Enum<L>> UserNodePrefs<L> forApp(final Class<?> clazz) {
+		return new UserNodePrefs<>(Preferences.userNodeForPackage(clazz).node(clazz.getSimpleName()));
 	}
 
 	public void put(final K key, final String value) {
-		backingPrefs().put(key.name(), value);
+		node.put(key.name(), value);
 	}
 
 	public String get(final K key) {
-		return backingPrefs().get(key.name(), null);
+		return node.get(key.name(), null);
 	}
 
 	public boolean contains(final K key) throws PrefsException {
@@ -47,10 +50,6 @@ public class UserNodePrefs<T, K extends Enum<K>> implements EnumPrefs<K> {
 	}
 
 	public void remove(final K key) {
-		backingPrefs().remove(key.name());
-	}
-
-	private Preferences backingPrefs() {
-		return Preferences.userNodeForPackage(clazz).node(clazz.getSimpleName());
+		node.remove(key.name());
 	}
 }

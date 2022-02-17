@@ -40,7 +40,7 @@ class AppPrefs {
 	 * this is called by the AppController
 	 */
 	static AppPrefs create() {
-		EnumPrefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs : new UserNodePrefs<>(App.class);
+		EnumPrefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs : UserNodePrefs.forApp(App.class);
 		return new AppPrefs(effectivePrefs);
 	}
 
