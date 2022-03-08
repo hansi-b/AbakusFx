@@ -24,27 +24,6 @@ repositories {
 	mavenCentral()
 }
 
-publishing {
-
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId = 'abakusfx'
-			from components.java
-		}
-	}
-
-	repositories {
-		maven {
-			name = 'GitHubPackages'
-			url = 'https://maven.pkg.github.com/hansi-b/abakusfx'
-			credentials {
-				username = project.hasProperty("GITHUB_ACTOR") ? GITHUB_ACTOR : ""
-				password = project.hasProperty("GITHUB_REPO_PAT") ? GITHUB_REPO_PAT : ""
-			}
-		}
-	}
-}
-
 license {
 	header project.file('LICENSE.HEADER')
 	ext.year = Calendar.getInstance().get(Calendar.YEAR)
