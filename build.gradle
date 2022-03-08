@@ -5,11 +5,11 @@ plugins {
 	id 'distribution'
 	id 'maven-publish'
 
-	id "org.openjfx.javafxplugin" version "0.0.10"
+	id "org.openjfx.javafxplugin" version "0.0.12"
 
-	id 'com.palantir.git-version' version '0.12.3'
+	id 'com.palantir.git-version' version '0.13.0'
 
-	id 'com.github.ben-manes.versions' version '0.41.0'
+	id 'com.github.ben-manes.versions' version '0.42.0'
 
 	id 'org.beryx.runtime' version '1.12.7'
 
@@ -35,25 +35,26 @@ dependencies {
 
 	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 
-	implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
-	implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+	implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 
 	testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
 	testImplementation 'org.objenesis:objenesis:3.2'
-	testImplementation 'org.spockframework:spock-core:2.1-M2-groovy-3.0'
+	testImplementation 'org.spockframework:spock-core:2.1-M1-groovy-3.0'
 
+	testImplementation 'org.hamcrest:hamcrest-core:2.2'
 	testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
 	testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
 
 	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
-wrapper.gradleVersion = '7.3.3'
+wrapper.gradleVersion = '7.4'
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
