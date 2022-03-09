@@ -38,8 +38,10 @@ public class HelpAndVersionInfoSpec extends AbstractAbakusSpec {
 
 		when:
 		interact(()->(s.getScene().getWindow()).close());
+		def t = Windows.findFocusedStage()
 
 		then:
-		APP_SPEC_WIDOW_TITLE.equals(Windows.findFocusedStage().getTitle())
+		t != null
+		APP_SPEC_WIDOW_TITLE.equals(t.getTitle())
 	}
 }
