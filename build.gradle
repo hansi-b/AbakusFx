@@ -3,7 +3,6 @@ plugins {
 	id 'jacoco'
 	id 'groovy'
 	id 'distribution'
-	id 'maven-publish'
 
 	id "org.openjfx.javafxplugin" version "0.0.12"
 
@@ -45,7 +44,7 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
 	testImplementation 'org.objenesis:objenesis:3.2'
-	testImplementation 'org.spockframework:spock-core:2.1-M1-groovy-3.0'
+	testImplementation 'org.spockframework:spock-core:2.2-M1-groovy-4.0'
 
 	testImplementation 'org.hamcrest:hamcrest-core:2.2'
 	testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
@@ -67,12 +66,12 @@ compileTestJava.options.encoding = "UTF-8"
 compileTestGroovy.options.encoding = "UTF-8"
 
 javafx {
-	version = "17"
+	version = '17'
 	modules = [
-		"javafx.controls",
-		"javafx.fxml",
-		"javafx.graphics",
-		"javafx.web"
+		'javafx.controls',
+		'javafx.fxml',
+		'javafx.graphics',
+		'javafx.web'
 	]
 }
 
