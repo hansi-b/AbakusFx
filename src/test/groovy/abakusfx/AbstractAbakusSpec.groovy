@@ -4,22 +4,18 @@ import java.nio.file.Path
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.hansib.sundries.EnumPrefs
+import org.hansib.sundries.InMemoryPrefs
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
 import abakusfx.AppPrefs.PrefKeys
-import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.MenuItem
-import javafx.scene.control.Tab
-import javafx.scene.control.TabPane
-import javafx.scene.input.MouseButton
 import javafx.stage.Stage
 import spock.lang.TempDir
-import utils.EnumPrefs
-import utils.InMemoryPrefs
 
 /**
  * Basis boiler-plate class to derive FX-test-classes from.

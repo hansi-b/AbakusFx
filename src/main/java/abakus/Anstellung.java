@@ -29,6 +29,8 @@ import java.util.TreeMap;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.hansib.sundries.Errors;
+
 /**
  * Represents a series and projection of Stellen
  */

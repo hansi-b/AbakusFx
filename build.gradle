@@ -21,6 +21,14 @@ version gitVersion()
 
 repositories {
 	mavenCentral()
+	maven {
+		name = 'GitHubPackages'
+		url = 'https://maven.pkg.github.com/hansi-b/JavaSundries'
+		credentials {
+			username = project.findProperty("GITHUB_ACTOR") ?: System.getenv("GITHUB_ACTOR")
+			password = project.findProperty("GITHUB_REPO_PAT_RO") ?: System.getenv("GITHUB_REPO_PAT_RO")
+		}
+	}
 }
 
 license {
@@ -31,6 +39,8 @@ license {
 }
 
 dependencies {
+
+	implementation 'org.hansib:sundries:0.1.4'
 
 	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 

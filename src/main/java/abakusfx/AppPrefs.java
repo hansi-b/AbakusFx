@@ -21,8 +21,8 @@ package abakusfx;
 import java.io.File;
 import java.util.Optional;
 
-import utils.EnumPrefs;
-import utils.UserNodePrefs;
+import org.hansib.sundries.EnumPrefs;
+import org.hansib.sundries.UserNodePrefs;
 
 class AppPrefs {
 

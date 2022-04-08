@@ -4,10 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-    xmlns="http://javafx.com/javafx"
-    fx:controller="abakusfx.KostenTabController" stylesheets="fxml/app.css">
+	xmlns="http://javafx.com/javafx"
+	fx:controller="abakusfx.KostenTabController" stylesheets="fxml/app.css">
 
-    <fx:include fx:id="serieSettings"
-        source="serieSettings.fxml" />
-    <fx:include fx:id="serieTable" source="serieTable.fxml" />
+	<fx:include fx:id="serieSettings"
+		source="serieSettings.fxml" />
+	<fx:include fx:id="serieTable" source="serieTable.fxml" />
 </VBox>

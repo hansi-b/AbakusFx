@@ -4,9 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-	xmlns="http://javafx.com/javafx" fx:controller="abakusfx.AppController"
-	fx:id="topLevelPane" stylesheets="fxml/app.css">
+<BorderPane xmlns="http://javafx.com/javafx/17"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="abakusfx.AppController" fx:id="topLevelPane"
+	stylesheets="fxml/app.css">
 	<padding>
 		<Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
 	</padding>
