@@ -6,7 +6,7 @@ import fxTools.Windows
 public class DisclaimerSpec extends AbstractAbakusSpec {
 
 	void overrideAppPrefs() {
-		prefs.put(PrefKeys.wasDisclaimerAccepted, "false")
+		prefsStore.put(PrefKeys.wasDisclaimerAccepted, "false")
 	}
 
 	def "accepting disclaimer opens main windows"() {
@@ -19,7 +19,7 @@ public class DisclaimerSpec extends AbstractAbakusSpec {
 		when:
 		click("Ja")
 		then:
-		prefs.get(PrefKeys.wasDisclaimerAccepted)
+		prefsStore.get(PrefKeys.wasDisclaimerAccepted)
 		APP_SPEC_WIDOW_TITLE.equals(Windows.findFocusedStage().getTitle())
 	}
 
@@ -33,6 +33,6 @@ public class DisclaimerSpec extends AbstractAbakusSpec {
 		when:
 		click("Nein")
 		then:
-		prefs.get(PrefKeys.wasDisclaimerAccepted) != "true"
+		prefsStore.get(PrefKeys.wasDisclaimerAccepted) != "true"
 	}
 }
