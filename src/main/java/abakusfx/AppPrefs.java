@@ -18,46 +18,61 @@
  */
 package abakusfx;
 
-import java.io.File;
 import java.util.Optional;
 
-import org.hansib.sundries.EnumPrefs;
-import org.hansib.sundries.UserNodePrefs;
+import org.hansib.sundries.prefs.OptEnum;
+import org.hansib.sundries.prefs.OptFile;
+import org.hansib.sundries.prefs.Prefs;
+import org.hansib.sundries.prefs.PrefsWithStore;
+import org.hansib.sundries.prefs.ReqBoolean;
+import org.hansib.sundries.prefs.store.PrefsStore;
+import org.hansib.sundries.prefs.store.UserNodePrefsStore;
 
 class AppPrefs {
 
-	private static EnumPrefs<PrefKeys> fixedPrefs;
+	private static PrefsStore<PrefKeys> fixedPrefsStore;
 
 	/**
-	 * poor person's dependency injection for preferences to use mocked prefs in
+	 * poor person's dependency injection for a prefs store to use mocked prefs in
 	 * tests
 	 */
-	static void fix(EnumPrefs<PrefKeys> prefs) {
-		fixedPrefs = prefs;
+	static void fix(PrefsStore<PrefKeys> store) {
+		fixedPrefsStore = store;
 	}
 
 	/**
 	 * this is called by the AppController
 	 */
 	static AppPrefs create() {
-		EnumPrefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs : UserNodePrefs.forApp(App.class);
-		return new AppPrefs(effectivePrefs);
+		final PrefsStore<PrefKeys> effectivePrefsStore = fixedPrefsStore != null ? fixedPrefsStore
+				: UserNodePrefsStore.forApp(App.class);
+		return new AppPrefs(new PrefsWithStore<>(effectivePrefsStore));
 	}
 
 	enum PrefVersion {
 		v1
 	}
 
-	enum PrefKeys {
-		_version, lastProject, wasDisclaimerAccepted
-	}
-
 	private static final PrefVersion currentVersion = PrefVersion.v1;
 
-	private final EnumPrefs<PrefKeys> prefs;
+	enum PrefKeys {
+		_version, //
+		lastProject, //
+		wasDisclaimerAccepted
+	}
 
-	private AppPrefs(EnumPrefs<PrefKeys> prefs) {
-		this.prefs = prefs;
+	private final OptEnum<PrefKeys, PrefVersion> version;
+
+	private final OptFile<PrefKeys> lastProject;
+	private final ReqBoolean<PrefKeys> disclaimerAccepted;
+
+	private AppPrefs(Prefs<PrefKeys> prefs) {
+
+		version = prefs.optionalEnum(PrefKeys._version, PrefVersion.class);
+
+		lastProject = prefs.optionalFile(PrefKeys.lastProject);
+		disclaimerAccepted = prefs.requiredBoolean(PrefKeys.wasDisclaimerAccepted, false);
+
 		ensureVersion();
 	}
 
@@ -66,40 +81,21 @@ class AppPrefs {
 	 */
 	private void ensureVersion() {
 
-		if (!prefs.contains(PrefKeys._version)) {
-			prefs.put(PrefKeys._version, PrefVersion.v1.name());
-		}
-
-		final String versionName = prefs.get(PrefKeys._version);
-		try {
-			final PrefVersion incomingVersion = PrefVersion.valueOf(versionName);
-			if (incomingVersion != currentVersion)
-				throw new IllegalStateException(String.format("Cannot handle outdated preferences version %s (need %s)",
-						incomingVersion, currentVersion));
-		} catch (final IllegalArgumentException ex) {
-			throw new IllegalStateException(String.format("Cannot handle unknown preferences version %s (need %s)",
-					versionName, currentVersion), ex);
+		Optional<PrefVersion> incomingVersion = version.get();
+		if (!incomingVersion.isPresent()) {
+			version.set(currentVersion);
+		} else {
+			if (incomingVersion.get() != currentVersion)
+				throw new IllegalStateException(String.format("Cannot handle preferences version %s (need %s)",
+						incomingVersion.get(), currentVersion));
 		}
 	}
 
-	Optional<File> getLastProject() {
-		final String s = prefs.get(PrefKeys.lastProject);
-		return Optional.ofNullable(s).map(File::new);
+	OptFile<PrefKeys> lastProject() {
+		return lastProject;
 	}
 
-	void setLastProject(final File projectFile) {
-		prefs.put(PrefKeys.lastProject, projectFile.getAbsolutePath());
-	}
-
-	void removeLastProject() {
-		prefs.remove(PrefKeys.lastProject);
-	}
-
-	boolean wasDisclaimerAccepted() {
-		return Boolean.valueOf(prefs.get(PrefKeys.wasDisclaimerAccepted));
-	}
-
-	void setDisclaimerAccepted(boolean wasAccepted) {
-		prefs.put(PrefKeys.wasDisclaimerAccepted, Boolean.toString(wasAccepted));
+	ReqBoolean<PrefKeys> disclaimerAccepted() {
+		return disclaimerAccepted;
 	}
 }

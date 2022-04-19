@@ -107,10 +107,10 @@ public class AppController {
 		saveItem.disableProperty().bind(isCurrentProjectDirty.not());
 
 		prefs = AppPrefs.create();
-		if (!prefs.wasDisclaimerAccepted())
+		if (prefs.disclaimerAccepted().isFalse())
 			Platform.runLater(() -> {
-				prefs.setDisclaimerAccepted(displayDislaimerAndAccept());
-				if (!prefs.wasDisclaimerAccepted()) {
+				prefs.disclaimerAccepted().set(displayDislaimerAndAccept());
+				if (prefs.disclaimerAccepted().isFalse()) {
 					exitApp(null);
 					log.info("Disclaimer was rejected");
 				}
@@ -146,7 +146,7 @@ public class AppController {
 			log.debug("got unnamed parameters: {}", unnamed);
 			loadAndShow(new File(unnamed.get(0)));
 		} else {
-			prefs.getLastProject().ifPresent(this::loadAndShow);
+			prefs.lastProject().get().ifPresent(this::loadAndShow);
 		}
 	}
 
@@ -196,10 +196,10 @@ public class AppController {
 		log.debug("Setting current project = {}", file);
 		if (file != null) {
 			currentProjectName.set(file.getName());
-			prefs.setLastProject(file);
+			prefs.lastProject().set(file);
 		} else {
 			currentProjectName.set(null);
-			prefs.removeLastProject();
+			prefs.lastProject().unset();
 		}
 		isSettingsChanged.set(false);
 	}
@@ -207,7 +207,7 @@ public class AppController {
 	@FXML
 	void saveProject(final ActionEvent actionEvent) {
 		log.trace("#saveProject on {}", actionEvent);
-		final File projectFile = prefs.getLastProject()
+		final File projectFile = prefs.lastProject().get()
 				.orElseThrow(() -> new IllegalStateException("No current project set"));
 		try {
 			projectTabsController.saveProject(projectFile);
@@ -251,7 +251,7 @@ public class AppController {
 		final FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Abakus-Projekte", "*.aba"));
 		fileChooser.setTitle(title);
-		final File dir = prefs.getLastProject().map(File::getParentFile)
+		final File dir = prefs.lastProject().get().map(File::getParentFile)
 				.orElse(new File(System.getProperty("user.home")));
 		fileChooser.setInitialDirectory(dir);
 		return fileChooser;
@@ -265,7 +265,7 @@ public class AppController {
 		if (!isSettingsChanged.get())
 			return true;
 
-		final boolean haveCurrentProject = prefs.getLastProject().isPresent();
+		final boolean haveCurrentProject = prefs.lastProject().isSet();
 
 		final ButtonType save = new ButtonType(haveCurrentProject ? "Speichern" : "Speichern...", ButtonData.YES);
 		final ButtonType dontSave = new ButtonType("Nicht speichern", ButtonData.NO);
