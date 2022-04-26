@@ -23,30 +23,28 @@ import java.util.Optional;
 import org.hansib.sundries.prefs.OptEnum;
 import org.hansib.sundries.prefs.OptFile;
 import org.hansib.sundries.prefs.Prefs;
-import org.hansib.sundries.prefs.PrefsWithStore;
 import org.hansib.sundries.prefs.ReqBoolean;
-import org.hansib.sundries.prefs.store.PrefsStore;
 import org.hansib.sundries.prefs.store.UserNodePrefsStore;
 
 class AppPrefs {
 
-	private static PrefsStore<PrefKeys> fixedPrefsStore;
+	private static Prefs<PrefKeys> fixedPrefs;
 
 	/**
 	 * poor person's dependency injection for a prefs store to use mocked prefs in
 	 * tests
 	 */
-	static void fix(PrefsStore<PrefKeys> store) {
-		fixedPrefsStore = store;
+	static void fix(Prefs<PrefKeys> prefs) {
+		fixedPrefs = prefs;
 	}
 
 	/**
 	 * this is called by the AppController
 	 */
 	static AppPrefs create() {
-		final PrefsStore<PrefKeys> effectivePrefsStore = fixedPrefsStore != null ? fixedPrefsStore
-				: UserNodePrefsStore.forApp(App.class);
-		return new AppPrefs(new PrefsWithStore<>(effectivePrefsStore));
+		final Prefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs
+				: new Prefs<>(UserNodePrefsStore.forApp(App.class));
+		return new AppPrefs(effectivePrefs);
 	}
 
 	enum PrefVersion {
@@ -61,10 +59,10 @@ class AppPrefs {
 		wasDisclaimerAccepted
 	}
 
-	private final OptEnum<PrefKeys, PrefVersion> version;
+	private final OptEnum<PrefVersion> version;
 
-	private final OptFile<PrefKeys> lastProject;
-	private final ReqBoolean<PrefKeys> disclaimerAccepted;
+	private final OptFile lastProject;
+	private final ReqBoolean disclaimerAccepted;
 
 	private AppPrefs(Prefs<PrefKeys> prefs) {
 
@@ -91,11 +89,11 @@ class AppPrefs {
 		}
 	}
 
-	OptFile<PrefKeys> lastProject() {
+	OptFile lastProject() {
 		return lastProject;
 	}
 
-	ReqBoolean<PrefKeys> disclaimerAccepted() {
+	ReqBoolean disclaimerAccepted() {
 		return disclaimerAccepted;
 	}
 }

@@ -4,8 +4,8 @@ import java.nio.file.Path
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.hansib.sundries.prefs.Prefs
 import org.hansib.sundries.prefs.store.InMemoryPrefsStore
-import org.hansib.sundries.prefs.store.PrefsStore
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
@@ -34,7 +34,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	Stage stage
 
 	AppController appController
-	PrefsStore<PrefKeys> prefsStore = new InMemoryPrefsStore<PrefKeys>()
+	Prefs<PrefKeys> prefs = new Prefs<PrefKeys>(new InMemoryPrefsStore())
 
 	def setupSpec() {
 
@@ -57,9 +57,9 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		}
 		stage.setTitle(APP_SPEC_WIDOW_TITLE)
 
-		AppPrefs.fix(prefsStore)
-		prefsStore.put(PrefKeys._version, AppPrefs.currentVersion.name())
-		prefsStore.put(PrefKeys.wasDisclaimerAccepted, "true")
+		AppPrefs.fix(prefs)
+		prefs.set(PrefKeys._version, AppPrefs.currentVersion.name())
+		prefs.set(PrefKeys.wasDisclaimerAccepted, "true")
 		overrideAppPrefs()
 	}
 
