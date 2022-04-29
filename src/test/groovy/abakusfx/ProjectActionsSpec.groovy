@@ -27,7 +27,7 @@ public class ProjectActionsSpec extends AbstractAbakusSpec {
 		appController.saveProject(null)
 
 		then:
-		prefs.get(PrefKeys.lastProject) == pPath.toString()
+		appPrefs.lastProject().get() == Optional.of(pPath.toFile())
 		Files.isRegularFile(pPath)
 	}
 
@@ -44,7 +44,7 @@ public class ProjectActionsSpec extends AbstractAbakusSpec {
 		appController.saveProjectAs(null)
 
 		then:
-		prefs.get(PrefKeys.lastProject) == p2Path.toString()
+		appPrefs.lastProject().get() == Optional.of(p2Path.toFile())
 		Files.isRegularFile(p2Path)
 		Files.readAllLines(p2Path).equals(Files.readAllLines(p1Path))
 	}

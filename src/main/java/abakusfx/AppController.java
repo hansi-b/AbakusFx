@@ -79,7 +79,7 @@ public class AppController {
 	@FXML
 	private TextField stats;
 
-	private AppPrefs prefs;
+	AppPrefs prefs;
 
 	/**
 	 * whether we would want to alert the user to unsaved changes

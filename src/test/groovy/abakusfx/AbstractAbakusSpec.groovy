@@ -4,8 +4,8 @@ import java.nio.file.Path
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.hansib.sundries.prefs.Prefs
 import org.hansib.sundries.prefs.store.InMemoryPrefsStore
+import org.hansib.sundries.prefs.store.PrefsStore
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
@@ -33,8 +33,9 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	Parent root
 	Stage stage
 
+	PrefsStore prefsStore = new InMemoryPrefsStore()
 	AppController appController
-	Prefs<PrefKeys> prefs = new Prefs<PrefKeys>(new InMemoryPrefsStore())
+	AppPrefs appPrefs
 
 	def setupSpec() {
 
@@ -57,9 +58,10 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		}
 		stage.setTitle(APP_SPEC_WIDOW_TITLE)
 
-		AppPrefs.fix(prefs)
-		prefs.set(PrefKeys._version, AppPrefs.currentVersion.name())
-		prefs.set(PrefKeys.wasDisclaimerAccepted, "true")
+		prefsStore.put(PrefKeys._version.name(), AppPrefs.currentVersion.name())
+		prefsStore.put(PrefKeys.wasDisclaimerAccepted.name(), 'true')
+
+		AppPrefs.fix(prefsStore)
 		overrideAppPrefs()
 	}
 
@@ -76,6 +78,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 		final FXMLLoader fxmlLoader = abakusfx.ResourceLoader.loader.getFxmlLoader("app.fxml")
 		root = fxmlLoader.load()
 		appController = (AppController) fxmlLoader.getController()
+		appPrefs = appController.prefs
 
 		Scene scene = new Scene(root)
 		stage.setScene(scene)

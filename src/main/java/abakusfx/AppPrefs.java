@@ -24,53 +24,54 @@ import org.hansib.sundries.prefs.OptEnum;
 import org.hansib.sundries.prefs.OptFile;
 import org.hansib.sundries.prefs.Prefs;
 import org.hansib.sundries.prefs.ReqBoolean;
+import org.hansib.sundries.prefs.store.PrefsStore;
 import org.hansib.sundries.prefs.store.UserNodePrefsStore;
 
 class AppPrefs {
 
-	private static Prefs<PrefKeys> fixedPrefs;
+	private static PrefsStore fixedPrefsStore;
 
 	/**
 	 * poor person's dependency injection for a prefs store to use mocked prefs in
 	 * tests
 	 */
-	static void fix(Prefs<PrefKeys> prefs) {
-		fixedPrefs = prefs;
+	static void fix(PrefsStore prefsStore) {
+		fixedPrefsStore = prefsStore;
 	}
 
-	/**
-	 * this is called by the AppController
-	 */
-	static AppPrefs create() {
-		final Prefs<PrefKeys> effectivePrefs = fixedPrefs != null ? fixedPrefs
-				: new Prefs<>(UserNodePrefsStore.forApp(App.class));
-		return new AppPrefs(effectivePrefs);
+	enum PrefKeys {
+		_version, // optionalEnum
+		lastProject, // optionalFile
+		wasDisclaimerAccepted; // requiredBoolean
 	}
 
 	enum PrefVersion {
 		v1
 	}
 
-	private static final PrefVersion currentVersion = PrefVersion.v1;
-
-	enum PrefKeys {
-		_version, //
-		lastProject, //
-		wasDisclaimerAccepted
+	/**
+	 * this is called by the AppController
+	 */
+	static AppPrefs create() {
+		Prefs<PrefKeys> prefs = buildPrefs(
+				fixedPrefsStore != null ? fixedPrefsStore : UserNodePrefsStore.forApp(App.class));
+		return new AppPrefs(prefs);
 	}
 
-	private final OptEnum<PrefVersion> version;
+	private static Prefs<PrefKeys> buildPrefs(PrefsStore prefsStore) {
+		return new Prefs.Builder<>(PrefKeys.class, prefsStore) //
+				.optionalEnum(PrefKeys._version, PrefVersion.class)//
+				.optionalFile(PrefKeys.lastProject)//
+				.requiredBoolean(PrefKeys.wasDisclaimerAccepted, false)//
+				.build();
+	}
 
-	private final OptFile lastProject;
-	private final ReqBoolean disclaimerAccepted;
+	private static final PrefVersion currentVersion = PrefVersion.v1;
+	private final Prefs<PrefKeys> prefs;
 
 	private AppPrefs(Prefs<PrefKeys> prefs) {
 
-		version = prefs.optionalEnum(PrefKeys._version, PrefVersion.class);
-
-		lastProject = prefs.optionalFile(PrefKeys.lastProject);
-		disclaimerAccepted = prefs.requiredBoolean(PrefKeys.wasDisclaimerAccepted, false);
-
+		this.prefs = prefs;
 		ensureVersion();
 	}
 
@@ -79,6 +80,7 @@ class AppPrefs {
 	 */
 	private void ensureVersion() {
 
+		OptEnum<PrefVersion> version = prefs.getPref(PrefKeys._version);
 		Optional<PrefVersion> incomingVersion = version.get();
 		if (!incomingVersion.isPresent()) {
 			version.set(currentVersion);
@@ -90,10 +92,10 @@ class AppPrefs {
 	}
 
 	OptFile lastProject() {
-		return lastProject;
+		return prefs.getPref(PrefKeys.lastProject);
 	}
 
 	ReqBoolean disclaimerAccepted() {
-		return disclaimerAccepted;
+		return prefs.getPref(PrefKeys.wasDisclaimerAccepted);
 	}
 }
