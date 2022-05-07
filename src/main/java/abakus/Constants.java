@@ -74,8 +74,4 @@ public class Constants {
 	static BigDecimal percent(final int percent) {
 		return percent(BigDecimal.valueOf(percent));
 	}
-
-	public static <T> boolean eq(final T one, final T other) {
-		return one == null ? other == null : one.equals(other);
-	}
 }

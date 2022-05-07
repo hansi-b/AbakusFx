@@ -18,7 +18,7 @@
  */
 package abakusfx.models;
 
-import static abakus.Constants.eq;
+import static org.hansib.sundries.Equals.nullSafeEquals;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +46,6 @@ public class ProjectModel {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 
-		return eq(persons, ((ProjectModel) obj).persons);
+		return nullSafeEquals(persons, ((ProjectModel) obj).persons);
 	}
 }

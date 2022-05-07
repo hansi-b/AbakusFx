@@ -18,6 +18,8 @@
  */
 package abakus;
 
+import static org.hansib.sundries.Equals.nullSafeEquals;
+
 import java.text.NumberFormat;
 import java.util.Objects;
 
@@ -94,8 +96,8 @@ public class ExplainedMoney {
 
 		final ExplainedMoney other = (ExplainedMoney) obj;
 
-		return Constants.eq(money, other.money) && //
-				Constants.eq(explained, other.explained) && //
+		return nullSafeEquals(money, other.money) && //
+				nullSafeEquals(explained, other.explained) && //
 				isElementary == other.isElementary;
 	}
 

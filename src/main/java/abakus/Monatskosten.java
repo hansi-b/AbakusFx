@@ -18,6 +18,8 @@
  */
 package abakus;
 
+import static org.hansib.sundries.Equals.nullSafeEquals;
+
 import java.time.YearMonth;
 import java.util.Objects;
 
@@ -49,8 +51,8 @@ public class Monatskosten {
 
 		final Monatskosten other = (Monatskosten) obj;
 
-		return Constants.eq(kosten, other.kosten) && //
-				Constants.eq(stelle, other.stelle) && //
-				Constants.eq(stichtag, other.stichtag);
+		return nullSafeEquals(kosten, other.kosten) && //
+				nullSafeEquals(stelle, other.stelle) && //
+				nullSafeEquals(stichtag, other.stichtag);
 	}
 }

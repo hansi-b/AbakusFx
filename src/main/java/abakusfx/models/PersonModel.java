@@ -18,7 +18,7 @@
  */
 package abakusfx.models;
 
-import static abakus.Constants.eq;
+import static org.hansib.sundries.Equals.nullSafeEquals;
 
 import java.util.Objects;
 
@@ -46,6 +46,6 @@ public class PersonModel {
 			return false;
 
 		final PersonModel other = (PersonModel) obj;
-		return eq(name, other.name) && eq(series, other.series);
+		return nullSafeEquals(name, other.name) && nullSafeEquals(series, other.series);
 	}
 }
