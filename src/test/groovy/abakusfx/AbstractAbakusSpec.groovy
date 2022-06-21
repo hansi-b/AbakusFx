@@ -30,7 +30,6 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	@TempDir
 	Path tempDir
 
-	Parent root
 	Stage stage
 
 	PrefsStore prefsStore = new InMemoryPrefsStore()
@@ -76,7 +75,7 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	@Override
 	public void start(Stage stage) throws Exception {
 		final FXMLLoader fxmlLoader = abakusfx.ResourceLoader.loader.getFxmlLoader("app.fxml")
-		root = fxmlLoader.load()
+		Parent root = fxmlLoader.load()
 		appController = (AppController) fxmlLoader.getController()
 		appPrefs = appController.prefs
 
