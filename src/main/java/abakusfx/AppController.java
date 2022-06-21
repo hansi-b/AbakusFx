@@ -50,7 +50,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
@@ -65,7 +65,7 @@ public class AppController {
 	static final Logger log = LogManager.getLogger();
 
 	@FXML
-	private BorderPane topLevelPane;
+	private Pane topLevelPane;
 
 	@FXML
 	private MenuItem saveItem;
