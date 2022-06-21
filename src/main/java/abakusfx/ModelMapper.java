@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 public class ModelMapper {
 
@@ -42,12 +42,11 @@ public class ModelMapper {
 	}
 
 	private static ObjectMapper createObjectMapper() {
-		final ObjectMapper om = new ObjectMapper(new YAMLFactory());
-		final SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, "", "", ""));
-		testModule.addSerializer(LocalDate.class, new LocalDateSerializer());
-		testModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
-		om.registerModule(testModule);
-		return om;
+		final SimpleModule module = new SimpleModule("MyModule", new Version(1, 0, 0, "", "", ""));
+		module.addSerializer(LocalDate.class, new LocalDateSerializer());
+		module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+
+		return YAMLMapper.builder().addModule(module).build();
 	}
 
 	public <T> T fromString(final String yaml, final Class<T> clazz) throws JsonProcessingException {
