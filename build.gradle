@@ -4,9 +4,9 @@ plugins {
 	id 'groovy'
 	id 'distribution'
 
-	id "org.openjfx.javafxplugin" version "0.0.12"
+	id "org.openjfx.javafxplugin" version "0.0.13"
 
-	id 'com.palantir.git-version' version '0.13.0'
+	id 'com.palantir.git-version' version '0.15.0'
 
 	id 'com.github.ben-manes.versions' version '0.42.0'
 
@@ -44,11 +44,11 @@ dependencies {
 
 	implementation 'org.javamoney.moneta:moneta-core:1.4.2'
 
-	implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
-	implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-api:2.18.0'
+	implementation 'org.apache.logging.log4j:log4j-core:2.18.0'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3'
 
 	testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
@@ -63,7 +63,7 @@ dependencies {
 	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
-wrapper.gradleVersion = '7.4'
+wrapper.gradleVersion = '7.5'
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
