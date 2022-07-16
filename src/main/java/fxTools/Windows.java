@@ -28,7 +28,7 @@ public class Windows {
 	 */
 	public static Stage findFocusedStage() {
 		return Window.getWindows().stream()//
-				.map(w -> (w instanceof Stage) ? (Stage) w : null) //
+				.map(w -> (w instanceof Stage s) ? s : null) //
 				.filter(w -> w != null && w.isFocused()).reduce((a, b) -> b).orElse(null);
 	}
 }
