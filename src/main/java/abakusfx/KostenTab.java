@@ -24,10 +24,10 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.sundries.fx.RenamableTab;
 
 import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
-import fxTools.RenamableTab;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;

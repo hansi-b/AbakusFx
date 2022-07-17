@@ -1,7 +1,8 @@
 package abakusfx
 
+import org.hansib.sundries.fx.Windows
+
 import abakusfx.AppPrefs.PrefKeys
-import fxTools.Windows
 
 public class DisclaimerSpec extends AbstractAbakusSpec {
 

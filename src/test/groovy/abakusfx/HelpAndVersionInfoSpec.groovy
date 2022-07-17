@@ -1,7 +1,6 @@
 package abakusfx
 
-import abakusfx.AppPrefs.PrefKeys
-import fxTools.Windows
+import org.hansib.sundries.fx.Windows
 
 public class HelpAndVersionInfoSpec extends AbstractAbakusSpec {
 

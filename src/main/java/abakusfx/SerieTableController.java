@@ -18,19 +18,20 @@
  */
 package abakusfx;
 
-import static fxTools.TableViewTools.initDragCellCol;
-import static fxTools.TableViewTools.setPrefWidth;
+import static org.hansib.sundries.fx.TableViewTools.initDragCellCol;
+import static org.hansib.sundries.fx.TableViewTools.setPrefWidth;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
 
+import org.hansib.sundries.fx.CsvCopyTable;
+import org.hansib.sundries.fx.TooltipCellDecorator;
+
 import abakus.ExplainedMoney;
 import abakus.Gruppe;
 import abakus.Monatskosten;
 import abakus.Stufe;
-import fxTools.CsvCopyTable;
-import fxTools.TooltipCellDecorator;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
