@@ -19,8 +19,8 @@
 package abakusfx;
 
 import static abakus.Constants.euros;
-import static org.hansib.sundries.fx.TableViewTools.initDragCellCol;
-import static org.hansib.sundries.fx.TableViewTools.setPrefWidth;
+import static org.hansib.sundries.fx.table.TableViewTools.initDragCellCol;
+import static org.hansib.sundries.fx.table.TableViewTools.setPrefWidth;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -28,7 +28,7 @@ import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hansib.sundries.fx.CsvCopyTable;
+import org.hansib.sundries.fx.table.CsvCopyTable;
 import org.javamoney.moneta.Money;
 
 import abakus.Constants;
