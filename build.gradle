@@ -51,9 +51,6 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3'
 
-	testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-
 	testImplementation 'org.objenesis:objenesis:3.2'
 	testImplementation 'org.spockframework:spock-core:2.2-M1-groovy-4.0'
 
@@ -131,11 +128,19 @@ tasks.withType(GroovyCompile) {
 	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+
+testing {
+	suites {
+		test {
+			useJUnitJupiter('5.9.0')
+		}
+	}
+}
 /*
  * for headless tests, run as: gradle test -Pheadless=true
  */
 test {
-	useJUnitPlatform()
+	testLogging.showStandardStreams = true
 	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}",
 			'-Dlog4j.configurationFile=log4j2_test.yaml'
 }
