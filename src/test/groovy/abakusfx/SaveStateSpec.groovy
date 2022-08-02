@@ -88,7 +88,7 @@ public class SaveStateSpec extends AbstractAbakusSpec {
 		when:
 		def tabNode = queryNthTab(1)
 		clickOn(tabNode, MouseButton.SECONDARY)
-		if (Boolean.getBoolean("headless")) {
+		if (Boolean.getBoolean("testfx.headless")) {
 			/*
 			 * hack from
 			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874

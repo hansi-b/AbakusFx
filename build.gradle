@@ -141,8 +141,15 @@ testing {
  */
 test {
 	testLogging.showStandardStreams = true
-	jvmArgs "-Dheadless=${project.hasProperty('headless') ? project.headless : false}",
-			'-Dlog4j.configurationFile=log4j2_test.yaml'
+	def isHeadlessFxMode = Boolean.valueOf(findProperty('headlessFxMode') ?: "false")
+	println "headlessFxMode = $isHeadlessFxMode"
+	if (isHeadlessFxMode) {
+		systemProperty 'testfx.robot', 'glass'
+		systemProperty 'testfx.headless', 'true'
+		systemProperty 'prism.order', 'sw'
+		systemProperty 'prism.text', 't2k'
+	}
+	jvmArgs '-Dlog4j.configurationFile=log4j2_test.yaml'
 }
 
 application {

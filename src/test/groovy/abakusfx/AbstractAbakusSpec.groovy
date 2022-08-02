@@ -36,20 +36,6 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 	AppController appController
 	AppPrefs appPrefs
 
-	def setupSpec() {
-
-		if (Boolean.getBoolean("headless")) {
-			log.info ">>> HEADLESS MODE"
-
-			System.setProperty("testfx.robot", "glass")
-			System.setProperty("testfx.headless", "true")
-			System.setProperty("prism.order", "sw")
-			System.setProperty("prism.text", "t2k")
-		} else {
-			log.info ">>> LIVE MODE"
-		}
-	}
-
 	@Override
 	void init() throws Exception {
 		stage = FxToolkit.registerStage {
