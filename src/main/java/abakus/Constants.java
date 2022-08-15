@@ -31,6 +31,10 @@ import org.javamoney.moneta.Money;
 
 public class Constants {
 
+	private Constants() {
+		// instantiation prevention
+	}
+
 	public static final Locale locale = Locale.GERMANY;
 	private static final CurrencyUnit eur = Monetary.getCurrency(locale);
 

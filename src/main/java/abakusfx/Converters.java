@@ -42,6 +42,10 @@ public class Converters {
 
 	public static final StufeConverter stufeConverter = new StufeConverter();
 
+	private Converters() {
+		// instantiation prevention
+	}
+
 	// used in FXML
 	public static StufeConverter createStufeConverter() {
 		return stufeConverter;

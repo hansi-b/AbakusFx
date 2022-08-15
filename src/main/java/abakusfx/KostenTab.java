@@ -57,7 +57,7 @@ class KostenTab {
 			throw new IllegalStateException("Could not initialize tab", ioEx);
 		}
 		kostenTabController = loader.getController();
-		kostenTabController.setLazies(lazyRechner, () -> updateSumme());
+		kostenTabController.setLazies(lazyRechner, this::updateSumme);
 		kostenTabController.addDirtyListener(dirtyListener);
 		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());
 	}

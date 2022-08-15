@@ -4,10 +4,6 @@ import static abakus.Constants.*
 
 import java.time.YearMonth
 
-import javax.money.Monetary
-
-import org.javamoney.moneta.Money
-
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -154,8 +150,6 @@ class KostenRechnerSpec extends Specification {
 		// E10, Stufe 1, 2020: 3.367,04, Faktor 75,31
 		def expected = eurosRounded(fullSalary * anteil)
 		def actual = rechner.sonderzahlung(stichtag, ans).money
-		println "Expected ${expected}"
-		println "Actual ${actual}"
 		actual == expected
 
 		where:
