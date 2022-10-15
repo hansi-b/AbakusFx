@@ -18,7 +18,6 @@
  */
 package abakusfx;
 
-import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -30,7 +29,7 @@ import abakus.KostenRechner;
 import abakusfx.models.PersonModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContextMenu;
@@ -52,13 +51,8 @@ class KostenTab {
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
 
-		final FXMLLoader loader = resourceLoader.getFxmlLoader("kostenTab.fxml");
-		try {
-			getTab().setContent(loader.load());
-		} catch (final IOException ioEx) {
-			throw new IllegalStateException("Could not initialize tab", ioEx);
-		}
-		kostenTabController = loader.getController();
+		kostenTabController = resourceLoader.fxmlControllerLoader().loadAndGetController("kostenTab.fxml",
+				(Node n) -> getTab().setContent(n));
 		kostenTabController.setLazies(lazyRechner, this::updateSumme);
 		kostenTabController.addDirtyListener(dirtyListener);
 		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());

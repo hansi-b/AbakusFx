@@ -26,8 +26,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.Errors;
 import org.hansib.sundries.ResourceLoader;
+import org.hansib.sundries.fx.FxmlControllerLoader;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -37,10 +37,13 @@ class AppResourceLoader {
 
 	private static final String ötvCsv = "ötv.csv";
 
-	private ResourceLoader resourceLoader;
+	private final ResourceLoader resourceLoader;
+
+	private final FxmlControllerLoader fxmlControllerLoader;
 
 	AppResourceLoader() {
 		this.resourceLoader = new ResourceLoader();
+		this.fxmlControllerLoader = new FxmlControllerLoader(resourceLoader);
 	}
 
 	String loadDisclaimer() {
@@ -86,8 +89,8 @@ class AppResourceLoader {
 		return resourceLoader.getResourceStream(resourceName);
 	}
 
-	FXMLLoader getFxmlLoader(String fxml) {
-		return new FXMLLoader(getResourceUrl("fxml/" + fxml));
+	FxmlControllerLoader fxmlControllerLoader() {
+		return fxmlControllerLoader;
 	}
 
 	URL getResourceUrl(String resName) {

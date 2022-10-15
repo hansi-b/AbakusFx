@@ -18,7 +18,6 @@
  */
 package abakusfx;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -29,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import abakus.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -43,7 +41,7 @@ public class App extends Application {
 	private AppResourceLoader resourceLoader = new AppResourceLoader();
 
 	@Override
-	public void start(final Stage primaryStage) throws IOException {
+	public void start(final Stage primaryStage) {
 		Locale.setDefault(Constants.locale);
 
 		String props = resourceLoader.loadVersionProperties();
@@ -56,12 +54,10 @@ public class App extends Application {
 		else
 			primaryStage.getIcons().add(new Image(stream));
 
-		final FXMLLoader fxmlLoader = resourceLoader.getFxmlLoader("app.fxml");
-		final Parent root = fxmlLoader.load();
-		final AppController appController = fxmlLoader.getController();
+		AppController appController = resourceLoader.fxmlControllerLoader().loadAndGetController("app.fxml",
+				(Parent p) -> primaryStage.setScene(new Scene(p)));
 
 		primaryStage.setTitle("Abakus");
-		primaryStage.setScene(new Scene(root));
 		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
 			if (!appController.showUnsavedChangesDialogue())
 				e.consume();
