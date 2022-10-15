@@ -21,24 +21,31 @@ package abakusfx;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.sundries.Errors;
+import org.hansib.sundries.ResourceLoader;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-class ResourceLoader {
+class AppResourceLoader {
 
 	private static final Logger log = LogManager.getLogger();
 
-	static final ResourceLoader loader = new ResourceLoader();
+	private static final String ötvCsv = "ötv.csv";
+
+	private ResourceLoader resourceLoader;
+
+	AppResourceLoader() {
+		this.resourceLoader = new ResourceLoader();
+	}
 
 	String loadDisclaimer() {
 		try {
-			return ResourceLoader.loader.resourceAsString("disclaimer.txt");
+			return resourceLoader.getResourceAsString("disclaimer.txt");
 
 		} catch (final RuntimeException | IOException e) {
 			log.error("Could not load disclaimer", e);
@@ -50,9 +57,21 @@ class ResourceLoader {
 		}
 	}
 
+	InputStream getTarifStream() {
+		return resourceLoader.getResourceStream(ötvCsv);
+	}
+
+	String getTarifString() {
+		try {
+			return resourceLoader.getResourceAsString(ötvCsv);
+		} catch (IOException e) {
+			throw Errors.illegalState(e, "Beim Auslesen der Tarifdaten aus '%s' ist ein Fehler aufgetreten", ötvCsv);
+		}
+	}
+
 	String loadVersionProperties() {
 		try {
-			return ResourceLoader.loader.resourceAsString("version.properties");
+			return resourceLoader.getResourceAsString("version.properties");
 		} catch (IOException e) {
 			log.error("Could not load version properties", e);
 			return "Version unbekannt (Fehler beim Lesen)";
@@ -60,13 +79,11 @@ class ResourceLoader {
 	}
 
 	String resourceAsString(final String resourceName) throws IOException {
-		try (InputStream resStream = getResourceStream(resourceName)) {
-			return new String(resStream.readAllBytes(), StandardCharsets.UTF_8);
-		}
+		return resourceLoader.getResourceAsString(resourceName);
 	}
 
 	InputStream getResourceStream(String resourceName) {
-		return getClass().getClassLoader().getResourceAsStream(resourceName);
+		return resourceLoader.getResourceStream(resourceName);
 	}
 
 	FXMLLoader getFxmlLoader(String fxml) {
@@ -74,6 +91,6 @@ class ResourceLoader {
 	}
 
 	URL getResourceUrl(String resName) {
-		return getClass().getClassLoader().getResource(resName);
+		return resourceLoader.getResourceUrl(resName);
 	}
 }

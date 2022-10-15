@@ -13,7 +13,7 @@ class KostenRechnerSpec extends Specification {
 	@Shared BigDecimal agz = BigDecimal.valueOf(30.0)
 	@Shared Anstellung ans = Anstellung.of( YearMonth.of(2021, 1), Stelle.of(Gruppe.E13, Stufe.eins), YearMonth.of(2023, 1), agz)
 
-	KostenRechner rechner = new KostenRechner(new ÖtvCsvParser().parseTarif())
+	KostenRechner rechner = new KostenRechner(new ÖtvCsvParser().parseTarif(getClass().getClassLoader().getResourceAsStream('ötv.csv')))
 
 	def "monatsBrutto beinhaltet nicht arbeitgeberzuschlag"() {
 

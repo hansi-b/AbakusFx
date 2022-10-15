@@ -29,7 +29,7 @@ public class SerieSettingsControllerSpec extends ApplicationSpec {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = abakusfx.ResourceLoader.loader.getFxmlLoader("serieSettings.fxml")
+		final FXMLLoader fxmlLoader = new AppResourceLoader().getFxmlLoader("serieSettings.fxml")
 		root = fxmlLoader.load()
 		controller = (SerieSettingsController) fxmlLoader.getController()
 

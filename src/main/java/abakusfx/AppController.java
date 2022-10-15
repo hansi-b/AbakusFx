@@ -64,6 +64,8 @@ import utils.HelpUtils;
 public class AppController {
 	static final Logger log = LogManager.getLogger();
 
+	private static final AppResourceLoader resourceLoader = new AppResourceLoader();
+
 	@FXML
 	private Pane topLevelPane;
 
@@ -121,7 +123,7 @@ public class AppController {
 	}
 
 	private static KostenRechner initKostenRechner() throws IOException {
-		final Tarif tarif = new ÖtvCsvParser().parseTarif();
+		final Tarif tarif = new ÖtvCsvParser().parseTarif(resourceLoader.getTarifStream());
 		log.debug("Tarif geladen");
 		return new KostenRechner(tarif);
 	}
@@ -300,13 +302,13 @@ public class AppController {
 		log.trace("#showHelp on {}", actionEvent);
 		final WebView webView = new WebView();
 		try {
-			final String resourceAsString = ResourceLoader.loader.resourceAsString("doc/main.html");
-			final String tarifCsvString = ResourceLoader.loader.resourceAsString("ötv.csv");
+			final String resourceAsString = resourceLoader.resourceAsString("doc/main.html");
+			final String tariffCsvString = resourceLoader.getTarifString();
 			WebEngine engine = webView.getEngine();
 
-			engine.setUserStyleSheetLocation(ResourceLoader.loader.getResourceUrl("doc/style.css").toString());
+			engine.setUserStyleSheetLocation(resourceLoader.getResourceUrl("doc/style.css").toString());
 			engine.loadContent(
-					resourceAsString.replace(">>>ötv.csv<<<", HelpUtils.csvTarifToHtmlTable(tarifCsvString)));
+					resourceAsString.replace(">>>ötv.csv<<<", HelpUtils.csvTarifToHtmlTable(tariffCsvString)));
 		} catch (final IOException e) {
 			log.error("Could not load help", e);
 			final Alert alert = new Alert(AlertType.ERROR,
@@ -329,11 +331,11 @@ public class AppController {
 	public void showVersion(final ActionEvent actionEvent) {
 		log.trace("#showVersion on {}", actionEvent);
 
-		final String disclaimer = ResourceLoader.loader.loadDisclaimer();
+		final String disclaimer = resourceLoader.loadDisclaimer();
 		if (disclaimer == null)
 			return;
 
-		final String versionString = ResourceLoader.loader.loadVersionProperties();
+		final String versionString = resourceLoader.loadVersionProperties();
 		final String aboutString = disclaimer.replace(">>>build.properties<<<", versionString);
 
 		final Alert info = new Alert(AlertType.INFORMATION, aboutString);
@@ -358,7 +360,7 @@ public class AppController {
 	private boolean displayDislaimerAndAccept() {
 		log.trace("#showDisclaimer");
 
-		final String disclaimer = ResourceLoader.loader.loadDisclaimer();
+		final String disclaimer = resourceLoader.loadDisclaimer();
 		if (disclaimer == null)
 			return false;
 

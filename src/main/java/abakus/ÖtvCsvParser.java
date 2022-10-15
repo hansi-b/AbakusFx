@@ -32,14 +32,10 @@ import java.util.TreeSet;
 import org.hansib.sundries.Errors;
 import org.javamoney.moneta.Money;
 
-
 public class ÖtvCsvParser {
 
-	private static final String ötvCsv = "ötv.csv";
-
-	public Tarif parseTarif() throws IOException {
-		final InputStream resStream = getClass().getClassLoader().getResourceAsStream(ötvCsv);
-		return new Tarif(parseGehälter(resStream));
+	public Tarif parseTarif(final InputStream gehälterCsv) throws IOException {
+		return new Tarif(parseGehälter(gehälterCsv));
 	}
 
 	Set<Gehälter> parseGehälter(final InputStream gehälterCsv) throws IOException {

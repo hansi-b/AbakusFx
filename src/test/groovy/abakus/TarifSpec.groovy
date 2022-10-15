@@ -11,7 +11,7 @@ import spock.lang.Specification
 
 class TarifSpec extends Specification {
 
-	def tarif = new ÖtvCsvParser().parseTarif()
+	def tarif = new ÖtvCsvParser().parseTarif(getClass().getClassLoader().getResourceAsStream('ötv.csv'))
 
 	def ym2020 = YearMonth.of(2020, 1)
 	def ym2021 = YearMonth.of(2021, 1)

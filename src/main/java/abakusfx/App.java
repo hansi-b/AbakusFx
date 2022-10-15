@@ -40,21 +40,23 @@ public class App extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
+	private AppResourceLoader resourceLoader = new AppResourceLoader();
+
 	@Override
 	public void start(final Stage primaryStage) throws IOException {
 		Locale.setDefault(Constants.locale);
 
-		String props = ResourceLoader.loader.resourceAsString("version.properties");
+		String props = resourceLoader.loadVersionProperties();
 		for (String prop : props.split("\n"))
 			log.info(prop);
 
-		final InputStream stream = ResourceLoader.loader.getResourceStream("logo.png");
+		final InputStream stream = resourceLoader.getResourceStream("logo.png");
 		if (stream == null)
 			log.warn("Could not load application icon");
 		else
 			primaryStage.getIcons().add(new Image(stream));
 
-		final FXMLLoader fxmlLoader = ResourceLoader.loader.getFxmlLoader("app.fxml");
+		final FXMLLoader fxmlLoader = resourceLoader.getFxmlLoader("app.fxml");
 		final Parent root = fxmlLoader.load();
 		final AppController appController = fxmlLoader.getController();
 

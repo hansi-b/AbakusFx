@@ -41,6 +41,8 @@ class KostenTab {
 
 	private static final Logger log = LogManager.getLogger();
 
+	private final AppResourceLoader resourceLoader = new AppResourceLoader();
+
 	private final RenamableTab renamableTab;
 	private final KostenTabController kostenTabController;
 
@@ -50,7 +52,7 @@ class KostenTab {
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
 
-		final FXMLLoader loader = ResourceLoader.loader.getFxmlLoader("kostenTab.fxml");
+		final FXMLLoader loader = resourceLoader.getFxmlLoader("kostenTab.fxml");
 		try {
 			getTab().setContent(loader.load());
 		} catch (final IOException ioEx) {
