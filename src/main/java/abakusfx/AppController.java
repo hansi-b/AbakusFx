@@ -306,7 +306,7 @@ public class AppController {
 			final String tariffCsvString = resourceLoader.getTarifString();
 			WebEngine engine = webView.getEngine();
 
-			engine.setUserStyleSheetLocation(resourceLoader.getResourceUrl("doc/style.css").toString());
+			engine.setUserStyleSheetLocation(resourceLoader.getResourceUrl("doc/style.css"));
 			engine.loadContent(
 					resourceAsString.replace(">>>ötv.csv<<<", HelpUtils.csvTarifToHtmlTable(tariffCsvString)));
 		} catch (final IOException e) {

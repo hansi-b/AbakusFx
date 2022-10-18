@@ -20,7 +20,6 @@ package abakusfx;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,8 +41,8 @@ class AppResourceLoader {
 	private final FxmlControllerLoader fxmlControllerLoader;
 
 	AppResourceLoader() {
-		this.resourceLoader = new ResourceLoader();
-		this.fxmlControllerLoader = new FxmlControllerLoader(resourceLoader);
+		this.fxmlControllerLoader = new FxmlControllerLoader();
+		this.resourceLoader = fxmlControllerLoader.getResourceLoader();
 	}
 
 	String loadDisclaimer() {
@@ -93,7 +92,7 @@ class AppResourceLoader {
 		return fxmlControllerLoader;
 	}
 
-	URL getResourceUrl(String resName) {
-		return resourceLoader.getResourceUrl(resName);
+	String getResourceUrl(String resName) {
+		return resourceLoader.getResourceUrl(resName).toString();
 	}
 }
