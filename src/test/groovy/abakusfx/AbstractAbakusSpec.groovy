@@ -10,9 +10,6 @@ import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
 import abakusfx.AppPrefs.PrefKeys
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.control.MenuItem
 import javafx.stage.Stage
 import spock.lang.TempDir
@@ -60,13 +57,9 @@ public class AbstractAbakusSpec extends ApplicationSpec {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = new AppResourceLoader().getFxmlLoader("app.fxml")
-		Parent root = fxmlLoader.load()
-		appController = (AppController) fxmlLoader.getController()
+		appController = new AppResourceLoader().loadApp(stage)
 		appPrefs = appController.prefs
 
-		Scene scene = new Scene(root)
-		stage.setScene(scene)
 		stage.show()
 	}
 

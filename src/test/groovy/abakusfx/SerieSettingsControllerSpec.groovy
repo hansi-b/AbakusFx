@@ -1,18 +1,16 @@
 package abakusfx
-
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
+import org.hansib.sundries.fx.FxmlControllerLoader
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
 import abakus.Gruppe
 import abakus.Stelle
 import abakus.Stufe
-import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.stage.Stage
 import spock.lang.Shared
 
@@ -29,12 +27,7 @@ public class SerieSettingsControllerSpec extends ApplicationSpec {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		final FXMLLoader fxmlLoader = new AppResourceLoader().getFxmlLoader("serieSettings.fxml")
-		root = fxmlLoader.load()
-		controller = (SerieSettingsController) fxmlLoader.getController()
-
-		Scene scene = new Scene(root)
-		stage.setScene(scene)
+		controller = new FxmlControllerLoader().loadToStage("serieSettings.fxml", stage)
 		stage.show()
 	}
 

@@ -20,6 +20,7 @@ package abakusfx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ import org.hansib.sundries.fx.FxmlControllerLoader;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 
 class AppResourceLoader {
 
@@ -42,7 +44,15 @@ class AppResourceLoader {
 
 	AppResourceLoader() {
 		this.fxmlControllerLoader = new FxmlControllerLoader();
-		this.resourceLoader = fxmlControllerLoader.getResourceLoader();
+		this.resourceLoader = new ResourceLoader();
+	}
+
+	AppController loadApp(Stage stage) {
+		return fxmlControllerLoader.loadToStage("app.fxml", stage);
+	}
+
+	<C, P> C load(String fxml, Consumer<P> loadConsumer) {
+		return fxmlControllerLoader.loadAndGetController(fxml, loadConsumer);
 	}
 
 	String loadDisclaimer() {
@@ -86,10 +96,6 @@ class AppResourceLoader {
 
 	InputStream getResourceStream(String resourceName) {
 		return resourceLoader.getResourceStream(resourceName);
-	}
-
-	FxmlControllerLoader fxmlControllerLoader() {
-		return fxmlControllerLoader;
 	}
 
 	String getResourceUrl(String resName) {

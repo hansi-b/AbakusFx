@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
 import abakus.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -38,24 +36,23 @@ public class App extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private AppResourceLoader resourceLoader = new AppResourceLoader();
+	private final AppResourceLoader appResourceLoader = new AppResourceLoader();
 
 	@Override
 	public void start(final Stage primaryStage) {
 		Locale.setDefault(Constants.locale);
 
-		String props = resourceLoader.loadVersionProperties();
+		String props = appResourceLoader.loadVersionProperties();
 		for (String prop : props.split("\n"))
 			log.info(prop);
 
-		final InputStream stream = resourceLoader.getResourceStream("logo.png");
+		final InputStream stream = appResourceLoader.getResourceStream("logo.png");
 		if (stream == null)
 			log.warn("Could not load application icon");
 		else
 			primaryStage.getIcons().add(new Image(stream));
 
-		AppController appController = resourceLoader.fxmlControllerLoader().loadAndGetController("app.fxml",
-				(Parent p) -> primaryStage.setScene(new Scene(p)));
+		AppController appController = appResourceLoader.loadApp(primaryStage);
 
 		primaryStage.setTitle("Abakus");
 		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {

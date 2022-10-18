@@ -51,8 +51,7 @@ class KostenTab {
 		renamableTab = new RenamableTab("NN");
 		getTab().setClosable(false);
 
-		kostenTabController = resourceLoader.fxmlControllerLoader().loadAndGetController("kostenTab.fxml",
-				(Node n) -> getTab().setContent(n));
+		kostenTabController = resourceLoader.load("kostenTab.fxml", (Node n) -> getTab().setContent(n));
 		kostenTabController.setLazies(lazyRechner, this::updateSumme);
 		kostenTabController.addDirtyListener(dirtyListener);
 		kostenTabController.summeProperty.addListener((obs, oldVal, newVal) -> summeChangeListener.run());
