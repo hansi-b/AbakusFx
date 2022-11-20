@@ -3,7 +3,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-import org.hansib.sundries.fx.FxmlControllerLoader
+import org.hansib.sundries.fx.FxResourceLoader
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 
@@ -27,7 +27,7 @@ public class SerieSettingsControllerSpec extends ApplicationSpec {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		controller = new FxmlControllerLoader().loadToStage("serieSettings.fxml", stage)
+		controller = new FxResourceLoader().loadFxmlToStage("serieSettings.fxml", stage)
 		stage.show()
 	}
 

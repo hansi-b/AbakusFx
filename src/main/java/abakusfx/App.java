@@ -18,7 +18,6 @@
  */
 package abakusfx;
 
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -46,11 +45,11 @@ public class App extends Application {
 		for (String prop : props.split("\n"))
 			log.info(prop);
 
-		final InputStream stream = appResourceLoader.getResourceStream("logo.png");
-		if (stream == null)
+		Image logo = appResourceLoader.loadLogo();
+		if (logo == null)
 			log.warn("Could not load application icon");
 		else
-			primaryStage.getIcons().add(new Image(stream));
+			primaryStage.getIcons().add(logo);
 
 		AppController appController = appResourceLoader.loadApp(primaryStage);
 

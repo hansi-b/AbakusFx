@@ -26,10 +26,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.Errors;
 import org.hansib.sundries.ResourceLoader;
-import org.hansib.sundries.fx.FxmlControllerLoader;
+import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 class AppResourceLoader {
@@ -40,19 +41,23 @@ class AppResourceLoader {
 
 	private final ResourceLoader resourceLoader;
 
-	private final FxmlControllerLoader fxmlControllerLoader;
+	private final FxResourceLoader fxResourceLoader;
 
 	AppResourceLoader() {
-		this.fxmlControllerLoader = new FxmlControllerLoader();
+		this.fxResourceLoader = new FxResourceLoader();
 		this.resourceLoader = new ResourceLoader();
 	}
 
 	AppController loadApp(Stage stage) {
-		return fxmlControllerLoader.loadToStage("app.fxml", stage);
+		return fxResourceLoader.loadFxmlToStage("app.fxml", stage);
 	}
 
 	<C, P> C load(String fxml, Consumer<P> loadConsumer) {
-		return fxmlControllerLoader.loadAndGetController(fxml, loadConsumer);
+		return fxResourceLoader.loadFxmlAndGetController(fxml, loadConsumer);
+	}
+
+	Image loadLogo() {
+		return fxResourceLoader.loadImage("logo.png");
 	}
 
 	String loadDisclaimer() {
