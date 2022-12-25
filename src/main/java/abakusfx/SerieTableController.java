@@ -54,11 +54,11 @@ public class SerieTableController {
 
 		static Kosten of(final Monatskosten mKosten) {
 			final Kosten k = new Kosten();
-			k.monat = new SimpleObjectProperty<>(mKosten.stichtag);
-			k.gruppe = new SimpleObjectProperty<>(mKosten.stelle.gruppe);
-			k.stufe = new SimpleObjectProperty<>(mKosten.stelle.stufe);
-			k.umfang = new SimpleObjectProperty<>(mKosten.stelle.umfangPercent);
-			k.betrag = new SimpleObjectProperty<>(mKosten.kosten);
+			k.monat = new SimpleObjectProperty<>(mKosten.stichtag());
+			k.gruppe = new SimpleObjectProperty<>(mKosten.stelle().gruppe());
+			k.stufe = new SimpleObjectProperty<>(mKosten.stelle().stufe());
+			k.umfang = new SimpleObjectProperty<>(mKosten.stelle().umfangPercent());
+			k.betrag = new SimpleObjectProperty<>(mKosten.kosten());
 			return k;
 		}
 
@@ -92,7 +92,7 @@ public class SerieTableController {
 		initDragCellCol(stufeCol, k -> k.stufe, null);
 		initDragCellCol(umfangCol, k -> k.umfang, null);
 		initDragCellCol(kostenCol, k -> k.betrag, em -> Converters.moneyConverter.toString(em.money()));
-		TooltipCellDecorator.decorateColumn(kostenCol, em -> em != null ? em.explain() : null);
+		TooltipCellDecorator.decorateColumn(kostenCol, em -> em != null ? em.explained() : null);
 
 		setPrefWidth(kostenTabelle, monatCol, .2);
 		setPrefWidth(kostenTabelle, gruppeCol, .18);

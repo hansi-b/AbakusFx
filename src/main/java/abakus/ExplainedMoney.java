@@ -18,36 +18,15 @@
  */
 package abakus;
 
-import static org.hansib.sundries.Equals.nullSafeEquals;
-
 import java.text.NumberFormat;
-import java.util.Objects;
 
 import org.javamoney.moneta.Money;
 
 import abakusfx.Converters;
 
-public class ExplainedMoney {
+public record ExplainedMoney(Money money, String explained, boolean isElementary) {
 
-	private final NumberFormat numberFormat = Constants.getNumberFormat();
-
-	private final Money money;
-	private final String explained;
-	private final boolean isElementary;
-
-	private ExplainedMoney(final Money money, final String explained, final boolean isElementary) {
-		this.money = money;
-		this.explained = explained;
-		this.isElementary = isElementary;
-	}
-
-	public Money money() {
-		return money;
-	}
-
-	public String explain() {
-		return explained;
-	}
+	private static final NumberFormat numberFormat = Constants.getNumberFormat();
 
 	public static ExplainedMoney of(final Money money, final String explain) {
 		return new ExplainedMoney(money, String.format("%s %s", Converters.moneyConverter.toString(money), explain),
@@ -78,31 +57,5 @@ public class ExplainedMoney {
 
 	private String quotedExpl() {
 		return isElementary ? explained : String.format("( %s )", explained);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(money, explained, isElementary);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-
-		final ExplainedMoney other = (ExplainedMoney) obj;
-
-		return nullSafeEquals(money, other.money) && //
-				nullSafeEquals(explained, other.explained) && //
-				isElementary == other.isElementary;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("ExplainedMoney[%s, \"%s\"]", money, explained);
 	}
 }

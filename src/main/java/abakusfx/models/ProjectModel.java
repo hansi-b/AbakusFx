@@ -18,10 +18,9 @@
  */
 package abakusfx.models;
 
-import static org.hansib.sundries.Equals.nullSafeEquals;
-
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,6 +45,6 @@ public class ProjectModel {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 
-		return nullSafeEquals(persons, ((ProjectModel) obj).persons);
+		return Objects.equals(persons, ((ProjectModel) obj).persons);
 	}
 }

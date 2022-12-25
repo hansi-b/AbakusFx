@@ -18,8 +18,6 @@
  */
 package abakusfx.models;
 
-import static org.hansib.sundries.Equals.nullSafeEquals;
-
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,6 +44,6 @@ public class PersonModel {
 			return false;
 
 		final PersonModel other = (PersonModel) obj;
-		return nullSafeEquals(name, other.name) && nullSafeEquals(series, other.series);
+		return Objects.equals(name, other.name) && Objects.equals(series, other.series);
 	}
 }

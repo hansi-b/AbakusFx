@@ -18,8 +18,6 @@
  */
 package abakusfx.models;
 
-import static org.hansib.sundries.Equals.nullSafeEquals;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -75,15 +73,15 @@ public class SeriesModel {
 			return false;
 		final SeriesModel other = (SeriesModel) obj;
 
-		return nullSafeEquals(von, other.von) && //
-				nullSafeEquals(bis, other.bis) && //
+		return Objects.equals(von, other.von) && //
+				Objects.equals(bis, other.bis) && //
 				gruppe == other.gruppe && //
 				stufe == other.stufe && //
-				nullSafeEquals(umfang, other.umfang) && //
+				Objects.equals(umfang, other.umfang) && //
 				isWeiter == other.isWeiter && //
-				nullSafeEquals(seit, other.seit) && //
-				nullSafeEquals(umfangSeit, other.umfangSeit) && //
-				nullSafeEquals(agz, other.agz);
+				Objects.equals(seit, other.seit) && //
+				Objects.equals(umfangSeit, other.umfangSeit) && //
+				Objects.equals(agz, other.agz);
 	}
 
 	public static SeriesModel fallback() {

@@ -66,8 +66,8 @@ public class Anstellung {
 
 		final Anstellung a = new Anstellung(ende, agz);
 		a.add(vorigerBeginn, vorigeStelle);
-		a.add(neuerBeginn,
-				Stelle.of(vorigeStelle.gruppe, vorigeStelle.stufe.stufeAm(vorigerBeginn, neuerBeginn), neuerUmfang));
+		a.add(neuerBeginn, Stelle.of(vorigeStelle.gruppe(), vorigeStelle.stufe().stufeAm(vorigerBeginn, neuerBeginn),
+				neuerUmfang));
 		return a;
 	}
 
@@ -116,8 +116,8 @@ public class Anstellung {
 		final Entry<YearMonth, Stelle> stellenStart = getStartMitStelleFor(ym);
 
 		Stelle stelle = stellenStart.getValue();
-		Stufe neueStufe = stelle.stufe.stufeAm(stellenStart.getKey(), ym);
-		return Stelle.of(stelle.gruppe, neueStufe, getUmfangOn(ym));
+		Stufe neueStufe = stelle.stufe().stufeAm(stellenStart.getKey(), ym);
+		return Stelle.of(stelle.gruppe(), neueStufe, getUmfangOn(ym));
 	}
 
 	private final Entry<YearMonth, Stelle> getStartMitStelleFor(final YearMonth ym) {
@@ -125,7 +125,7 @@ public class Anstellung {
 		Entry<YearMonth, Stelle> current = getEntryOn(ym);
 
 		Entry<YearMonth, Stelle> previous = startByBeginn.lowerEntry(current.getKey());
-		while (previous != null && current.getValue().gruppe == previous.getValue().gruppe) {
+		while (previous != null && current.getValue().gruppe() == previous.getValue().gruppe()) {
 			current = previous;
 			previous = startByBeginn.lowerEntry(previous.getKey());
 		}
@@ -134,7 +134,7 @@ public class Anstellung {
 	}
 
 	private BigDecimal getUmfangOn(final YearMonth ym) {
-		return getEntryOn(ym).getValue().umfangPercent;
+		return getEntryOn(ym).getValue().umfangPercent();
 	}
 
 	private Entry<YearMonth, Stelle> getEntryOn(final YearMonth ym) {

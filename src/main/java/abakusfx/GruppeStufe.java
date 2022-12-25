@@ -34,7 +34,7 @@ class GruppeStufe implements Comparable<GruppeStufe> {
 	}
 
 	static GruppeStufe of(final Stelle stelle) {
-		return stelle != null ? new GruppeStufe(stelle.gruppe, stelle.stufe) : null;
+		return stelle != null ? new GruppeStufe(stelle.gruppe(), stelle.stufe()) : null;
 	}
 
 	@Override

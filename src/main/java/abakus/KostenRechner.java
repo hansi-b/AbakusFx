@@ -59,12 +59,12 @@ public class KostenRechner {
 	}
 
 	public Money summe(final List<Monatskosten> moKosten) {
-		return moKosten.stream().map(moKo -> moKo.kosten.money()).reduce(Constants.euros(0), Money::add);
+		return moKosten.stream().map(moKo -> moKo.kosten().money()).reduce(Constants.euros(0), Money::add);
 	}
 
 	ExplainedMoney monatsBrutto(final Stelle stelle, final YearMonth ym) {
-		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe, stelle.stufe, ym);
-		return stelle.istVollzeit() ? tarifBrutto : tarifBrutto.multiplyPercent(stelle.umfangPercent, "Umfang");
+		final ExplainedMoney tarifBrutto = tarif.brutto(stelle.gruppe(), stelle.stufe(), ym);
+		return stelle.istVollzeit() ? tarifBrutto : tarifBrutto.multiplyPercent(stelle.umfangPercent(), "Umfang");
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class KostenRechner {
 
 		final List<Stelle> baseStellen = anstellung.calcBaseStellen(year);
 		Money summe = baseStellen.stream()
-				.map(s -> tarif.sonderzahlung(s.gruppe, s.stufe, year).money().multiply(percent(s.umfangPercent)))
+				.map(s -> tarif.sonderzahlung(s.gruppe(), s.stufe(), year).money().multiply(percent(s.umfangPercent())))
 				.reduce(euros(0), Money::add);
 		summe = summe.divide(baseStellen.size());
 

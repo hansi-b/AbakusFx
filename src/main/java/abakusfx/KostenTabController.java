@@ -78,8 +78,8 @@ public class KostenTabController {
 
 	SeriesÜbersicht getÜbersicht() {
 		return new SeriesÜbersicht(serieSettingsController.getVon(),
-				monatsKosten.isEmpty() ? null : monatsKosten.get(0).stelle, serieSettingsController.getBis(),
-				monatsKosten.isEmpty() ? null : monatsKosten.get(monatsKosten.size() - 1).stelle,
+				monatsKosten.isEmpty() ? null : monatsKosten.get(0).stelle(), serieSettingsController.getBis(),
+				monatsKosten.isEmpty() ? null : monatsKosten.get(monatsKosten.size() - 1).stelle(),
 				serieSettingsController.getUmfang(), serieSettingsController.getAgz(), summeInternalProperty.get());
 	}
 

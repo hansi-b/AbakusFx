@@ -19,20 +19,10 @@
 package abakus;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class Stelle {
+public record Stelle(Gruppe gruppe, Stufe stufe, BigDecimal umfangPercent) {
+
 	private static final BigDecimal BIG_100 = BigDecimal.valueOf(100);
-
-	public final Gruppe gruppe;
-	public final Stufe stufe;
-	public final BigDecimal umfangPercent;
-
-	private Stelle(final Gruppe g, final Stufe s, final BigDecimal umfangPercent) {
-		this.gruppe = g;
-		this.stufe = s;
-		this.umfangPercent = umfangPercent;
-	}
 
 	static Stelle of(final Gruppe g, final Stufe s) {
 		return of(g, s, 100);
@@ -48,22 +38,6 @@ public class Stelle {
 
 	public boolean istVollzeit() {
 		return BIG_100.compareTo(umfangPercent) == 0;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null || getClass() != obj.getClass())
-			return false;
-
-		final Stelle other = (Stelle) obj;
-		return gruppe == other.gruppe && stufe == other.stufe && umfangPercent.equals(other.umfangPercent);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(gruppe, stufe, umfangPercent);
 	}
 
 	@Override
