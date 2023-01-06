@@ -1,7 +1,7 @@
 /**
  * Abakus - https://github.com/hansi-b/AbakusFx
  *
- * Copyright (C) 2022 Hans Bering
+ * Copyright (C) 2023 Hans Bering
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
