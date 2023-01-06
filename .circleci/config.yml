@@ -1,11 +1,19 @@
 version: 2.1
 
 orbs:
-    codecov: codecov/codecov@1.0.2
+  codecov: codecov/codecov@3.2.4
+
+workflows:
+  check_and_coverage:
+    jobs:
+      - build:
+          context:
+            - github
+
 jobs:
   build:
     docker:
-      - image: cimg/openjdk:17.0.1
+      - image: cimg/openjdk:17.0.4
 
     working_directory: ~/repo
 
@@ -32,5 +40,4 @@ jobs:
       - run: gradle check jacocoTestReport -PheadlessFxMode=true --info
       - codecov/upload:
           file: build/reports/jacoco/test/jacocoTestReport.xml
-          token: $CODECOV_TOKEN
 
