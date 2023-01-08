@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
 
-import org.hansib.sundries.fx.table.CsvCopyTable;
+import org.hansib.sundries.fx.table.CsvCopyTableEnabler;
 import org.hansib.sundries.fx.table.TooltipCellDecorator;
 
 import abakus.ExplainedMoney;
@@ -45,7 +45,7 @@ import javafx.scene.control.TableView;
 
 public class SerieTableController {
 
-	static class Kosten implements CsvCopyTable.CsvRow {
+	static class Kosten implements CsvCopyTableEnabler.CsvRow {
 		ObjectProperty<YearMonth> monat;
 		ObjectProperty<Gruppe> gruppe;
 		ObjectProperty<Stufe> stufe;
@@ -108,7 +108,7 @@ public class SerieTableController {
 		kostenTabelle.setItems(monatsKostenListe);
 
 		kostenTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		CsvCopyTable.setCsvCopy(kostenTabelle);
+		new CsvCopyTableEnabler(L10n.csvTableMenuItemsLocalizer).enableSelectAndCopyCapability(kostenTabelle);
 	}
 
 	/**

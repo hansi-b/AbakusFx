@@ -28,7 +28,7 @@ import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hansib.sundries.fx.table.CsvCopyTable;
+import org.hansib.sundries.fx.table.CsvCopyTableEnabler;
 import org.javamoney.moneta.Money;
 
 import abakus.Constants;
@@ -49,7 +49,7 @@ public class ÜbersichtTableController {
 
 	private final NumberFormat numberFormat = Constants.getNumberFormat();
 
-	static class ÜbersichtRow implements CsvCopyTable.CsvRow {
+	static class ÜbersichtRow implements CsvCopyTableEnabler.CsvRow {
 
 		private final NumberFormat numberFormat = Constants.getNumberFormat();
 
@@ -160,7 +160,7 @@ public class ÜbersichtTableController {
 		übersichtTabelle.setItems(FXCollections.observableArrayList());
 		übersichtTabelle.setPlaceholder(new Label("Keine Daten"));
 		übersichtTabelle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		CsvCopyTable.setCsvCopy(übersichtTabelle);
+		new CsvCopyTableEnabler(L10n.csvTableMenuItemsLocalizer).enableSelectAndCopyCapability(übersichtTabelle);
 		setRowFactoryForSumRowStyle();
 		setSortPolicyForSumRowPosition();
 	}
